@@ -7,8 +7,8 @@
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
-			<Host Name="PHXS" Version="[14.0,14.9]" />
-			<Host Name="PHSP" Version="[14.0,14.9]" />
+			<Host Name="PHXS" Version="[14.0,15.9]" />
+			<Host Name="PHSP" Version="[14.0,15.9]" />
 		</HostList>
 		<LocaleList>
 			<Locale Code="All" />
@@ -20,6 +20,7 @@
 	</ExecutionEnvironment>
 	<DispatchInfoList>
 		<Extension Id="com.example.P2GUIPanel.extension1">
+
 			<DispatchInfo >
 				<Resources>
 				<MainPath>./index.html</MainPath>
@@ -33,9 +34,17 @@
 					<Menu>P2GUIPanel</Menu>
 					<Geometry>
 						<Size>
-							<Height>200</Height>
-							<Width>200</Width>
+							<Height>600</Height>
+							<Width>300</Width>
 						</Size>
+						<MaxSize>
+							<Height>600</Height>
+							<Width>300</Width>
+						</MaxSize>
+						<MinSize>
+							<Height>600</Height>
+							<Width>300</Width>
+						</MinSize>
 					</Geometry>
 				</UI>
 			</DispatchInfo>
