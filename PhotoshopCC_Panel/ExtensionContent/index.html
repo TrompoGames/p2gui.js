@@ -1,23 +1,107 @@
 <!doctype html>
-
 <html>
 <head>
-<meta charset="utf-8">
-<script src="./ext.js"></script>
-<script src="./lib/CSInterface-4.0.0.js"></script>
 
-<link id="ppstyle" rel="stylesheet" type="text/css" href="./style.css">
-<title>P2GUIPanel</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="stylesheet" href="./css/style.css" />
+<link rel="stylesheet" href="./css/foundation.css" />
+
+<script src="./lib/CSInterface-4.0.0.js"></script>
+<script src="./lib/modernizr.js"></script>
+<script src="./lib/jquery-2.1.1.min.js"></script>
+<script src="./lib/foundation.min.js"></script>
+
+<script src="./js/main.js"></script>
+
+<title>P2GUI Toolkit</title>
+
 </head>
 
-<body onLoad="onLoaded()">
-<div id="content">
-  <ul>
-    
+<body>
 
-			<li><button class="default" id="btn_PHXS" onClick="onClickButton('PHXS')" disabled="true">Run ps code</button></li>
-		
-  </ul>
-</div></body>
+	<div class="off-canvas-wrap" data-offcanvas>
+		<div class="inner-wrap">
+			<nav class="tab-bar">
+				<section class="left-small">
+					<a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+				</section>
 
+				<section class="middle tab-bar-section">
+					<span class="current-section">P2GUI Toolkit</span>
+				</section>
+			</nav>
+
+			<aside class="left-off-canvas-menu">
+				<ul class="off-canvas-list">
+					<li><label>Document</label></li>
+					<li><a href="#configuration">Configuration</a></li>
+					<li><label>Elements</label></li>
+					<li><a href="#layout">Layout</a></li>
+					<li><label>Settings</label></li>
+					<li><a href="#exportOptions">Export Options</a></li>
+					<li><label>P2GUI</label></li>
+					<li><a href="#tab3">About...</a></li>
+					<li><a href="#tab4">Trompo Games</a></li>
+				</ul>
+			</aside>
+
+			<section class="main-section">
+				<div class="main-content">
+					<div id="detecting-p2gui">
+						<p class="content-text-bold">DETECTING P2GUI...</p>
+					</div>
+					
+					<div id="enable-p2gui">
+						<p class="content-text-bold">Please enable P2GUI in this file!</p>
+					</div>
+					
+					<div id="configuration">
+						<p class="content-text-bold">Configuration here...</p>
+					</div>
+					
+					<div id="layout">
+						<p class="content-text-bold">Tab #1 content goes here!</p>
+						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
+							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
+							mauris eget aliquet lacinia! Donec pulvinar massa interdum risus
+							ornare mollis.</p>
+					</div>
+
+					<div id="exportOptions">
+						<p class="content-text-bold">Tab #2 content goes here!</p>
+						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
+							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
+							mauris eget aliquet lacinia! Donec pulvinar massa interdum risus
+							ornare mollis. In hac habitasse platea dictumst. Ut euismod
+							tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales
+							gravida! Aliquam tellus orci, iaculis vel.</p>
+					</div>
+
+					<div id="tab3">
+						<p class="content-text-bold">Tab #3 content goes here!</p>
+						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
+							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
+							mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
+					</div>
+
+					<div id="tab4">
+						<p class="content-text-bold">Tab #4 content goes here!</p>
+						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
+							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
+							mauris eget aliquet lacinia! Donec pulvinar massa interdum risus
+							ornare mollis. In hac habitasse platea dictumst. Ut euismod
+							tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales
+							gravida! Aliquam tellus orci, iaculis vel.</p>
+					</div>
+				</div>
+			</section>
+
+			<a class="exit-off-canvas"></a>
+
+		</div>
+	</div>
+
+</body>
 </html>
