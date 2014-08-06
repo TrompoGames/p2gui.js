@@ -20,7 +20,18 @@
 </head>
 
 <body>
+	<!-- P2GUI Disabled modal -->
+	<div id="p2guiDisabledModal" class="reveal-modal full" data-reveal>
+		<h2>P2GUI Disabled!</h2>
+		<p class="subtitle">Please enable P2GUI for this file.</p>
+		
+		<li style="display: inline-block; width: 100%; max-width: 100%;">
+			<a id="activate-p2gui-button" href="#" class="button expand"
+			style="position: absolute; bottom: 3%; left: 0;">Enable P2GUI</a>
+		</li>
+	</div>
 
+	<!-- Off canvas menu and content -->
 	<div class="off-canvas-wrap" data-offcanvas>
 		<div class="inner-wrap">
 			<nav class="tab-bar">
@@ -52,48 +63,124 @@
 					<div id="detecting-p2gui">
 						<p class="content-text-bold">DETECTING P2GUI...</p>
 					</div>
-					
-					<div id="enable-p2gui">
-						<p class="content-text-bold">Please enable P2GUI in this file!</p>
-					</div>
-					
+
 					<div id="configuration">
-						<p class="content-text-bold">Configuration here...</p>
+						<form>
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="exportJsonNameInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Name of the json file used to save the export. Exclude the extension (.json)">
+										Export json name
+										</span>
+										<input type="text" placeholder="Same as PSD file" />
+									</label>
+								</div>
+							</div>
+							<div class="row">
+    							<div class="small-6 columns">
+									<label id="autoClassTypeInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="How default class names should be mapped">
+										Auto-class type
+										</span>
+										<select>
+											<option value="pixi.js">pixi.js</option>
+											<option value="cocos2d">Cocos2D</option>
+											<option value="custom">Custom</option>
+								        </select>
+									</label>
+								</div>
+								<div class="small-6 columns">
+									<label id="classFieldsTypeInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="How fields of each class should be exported">
+										Class fields type
+										</span>
+										<select>
+											<option value="none">None</option>
+											<option value="custom">Custom</option>
+								        </select>
+									</label>
+								</div>
+							</div>
+							<div class="row">
+    							<div class="small-12 columns">
+    								<label id="exportJsonPrettyInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="This defines if the exported json should be human readable or minified">
+										Human readable json  
+										</span>
+										<input type="checkbox" placeholder="Same as PSD file" />
+									</label>
+    							</div>
+    						</div>
+    						<div class="row">
+								<fieldset>
+									<legend class="no-background">
+										Config Files
+									</legend>
+									<label id="exportJsonPathInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Path where the exported json should be placed. Relative to the PSD file">
+										Export json path
+										</span>
+										<input type="text" placeholder="P2GUI/JSON" />
+									</label>
+									<label id="exportImagePathInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Path where the exported PNG assets should be placed. Relative to the PSD file">
+										Export image path
+										</span>
+										<input type="text" placeholder="P2GUI/PNG" />
+									</label>
+									<label id="autoClassInput" class="content-text">
+										<span data-tooltip class="has-tip" title="Path to the file describing how default class names should be mapped. Relative to the PSD file">
+										Auto-classes descriptor
+										</span>
+										<input type="text" placeholder="none" />
+									</label>
+									<label id="classDescriptorInput" class="content-text">
+										<span data-tooltip class="has-tip tip-top" title="Path to the file describing which fields of each class should be exported. Relative to the PSD file">
+										Class fields descriptor
+										</span>
+										<input type="text" placeholder="none" />
+									</label>
+								</fieldset>
+							</div>
+						</form>
 					</div>
-					
+
 					<div id="layout">
 						<p class="content-text-bold">Tab #1 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
-							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
-							mauris eget aliquet lacinia! Donec pulvinar massa interdum risus
-							ornare mollis.</p>
+						<p class="content-text">Donec pulvinar neque sed semper
+							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
+							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
+							pulvinar massa interdum risus ornare mollis.</p>
 					</div>
 
 					<div id="exportOptions">
 						<p class="content-text-bold">Tab #2 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
-							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
-							mauris eget aliquet lacinia! Donec pulvinar massa interdum risus
-							ornare mollis. In hac habitasse platea dictumst. Ut euismod
-							tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales
-							gravida! Aliquam tellus orci, iaculis vel.</p>
+						<p class="content-text">Donec pulvinar neque sed semper
+							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
+							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
+							pulvinar massa interdum risus ornare mollis. In hac habitasse
+							platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing
+							nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis
+							vel.</p>
 					</div>
 
 					<div id="tab3">
 						<p class="content-text-bold">Tab #3 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
-							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
-							mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
+						<p class="content-text">Donec pulvinar neque sed semper
+							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
+							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
+							pulvinar massa interdum ri.</p>
 					</div>
 
 					<div id="tab4">
 						<p class="content-text-bold">Tab #4 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper lacinia. Curabitur lacinia
-							ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit
-							mauris eget aliquet lacinia! Donec pulvinar massa interdum risus
-							ornare mollis. In hac habitasse platea dictumst. Ut euismod
-							tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales
-							gravida! Aliquam tellus orci, iaculis vel.</p>
+						<p class="content-text">Donec pulvinar neque sed semper
+							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
+							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
+							pulvinar massa interdum risus ornare mollis. In hac habitasse
+							platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing
+							nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis
+							vel.</p>
 					</div>
 				</div>
 			</section>

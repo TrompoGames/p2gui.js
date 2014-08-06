@@ -1,10 +1,22 @@
-window.jQuery = require('./lib/jquery-2.1.1.min.js');
+var hasRequire = false;
+if (this.require)
+{
+	hasRequire = true;
+}
+
+if (hasRequire)
+{
+	window.jQuery = require('./lib/jquery-2.1.1.min.js');
+}
 
 var p2guiEnabled = false;
 
 // jQuery code //
 (function($) {
-	$(document).foundation = require('./lib/foundation.min.js');
+	if (hasRequire)
+	{
+		$(document).foundation = require('./lib/foundation.min.js');
+	}
 
 	$(document).ready(function() {
 		$(document).foundation({
@@ -34,7 +46,11 @@ var p2guiEnabled = false;
 				off_canvas_wrap.foundation('offcanvas', 'close', 'move-right');
 			}
 		});
-
+		
+		$('#activate-p2gui-button').on('click', Foundation.utils.debounce(function(e)
+		{
+			activateP2GUI();	
+		}, 300, true));
 		reset();
 	});
 
@@ -48,7 +64,7 @@ var p2guiEnabled = false;
 	function reset() {
 		showSection('.main-content #detecting-p2gui');
 		$('.current-section').text("P2GUI Toolkit");
-		p2guiEnabled = true;
+		p2guiEnabled = false;
 		detectP2GUI();
 	}
 
@@ -58,8 +74,14 @@ var p2guiEnabled = false;
 			showSection('.main-content #configuration');
 			$('.current-section').text("Configuration");
 		} else {
-			showSection('.main-content #enable-p2gui');
+			$('#p2guiDisabledModal').foundation('reveal', 'open');
 		}
+	}
+	
+	function activateP2GUI()
+	{
+		p2guiEnabled = true;
+		$('#p2guiDisabledModal').foundation('reveal', 'close');
 	}
 })(jQuery);
 

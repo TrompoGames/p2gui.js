@@ -3263,13 +3263,13 @@ dialog.full, .reveal-modal.full {
     background: white !important; } }
 /* Tooltips */
 .has-tip {
-  border-bottom: dotted 1px #cccccc;
+  border-bottom: dotted 1px #FFFFFF;
   cursor: help;
   font-weight: bold;
-  color: #333333; }
+  color: #FFFFFF; }
   .has-tip:hover, .has-tip:focus {
-    border-bottom: dotted 1px #003f54;
-    color: #008cba; }
+    border-bottom: dotted 1px #ff8d1d;
+    color: #ff8d1d; }
   .has-tip.tip-left, .has-tip.tip-right {
     float: none !important; }
 
@@ -3278,9 +3278,9 @@ dialog.full, .reveal-modal.full {
   position: absolute;
   z-index: 999;
   font-weight: normal;
-  font-size: 0.875rem;
-  line-height: 1.3;
-  padding: 0.75rem;
+  font-size: 0.6rem;
+  line-height: 1.1;
+  padding: 0.3rem;
   max-width: 300px;
   left: 50%;
   width: 100%;
@@ -4498,7 +4498,7 @@ table {
 
 /* Standard Forms */
 form {
-  margin: 0 0 1rem; }
+  margin: 0 0 0; }
 
 /* Using forms within rows, we need to set some defaults */
 form .row .row {
@@ -4643,10 +4643,10 @@ textarea {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.75);
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   margin: 0 0 1rem 0;
   padding: 0.5rem;
-  height: 2.3125rem;
+  height: 1.4rem;
   width: 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -4776,12 +4776,12 @@ select {
   background-position: 100% center;
   background-repeat: no-repeat;
   border: 1px solid #cccccc;
-  padding: 0.5rem;
-  font-size: 0.875rem;
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
   color: rgba(0, 0, 0, 0.75);
   line-height: normal;
   border-radius: 0;
-  height: 2.3125rem; }
+  height: 1.4rem; }
   select.radius {
     border-radius: 3px; }
   select:hover {
@@ -4814,7 +4814,7 @@ input[type="file"] {
 /* We add basic fieldset styling */
 fieldset {
   border: 1px solid #dddddd;
-  padding: 1.25rem;
+  padding: 0.2rem 1rem 0.2rem 1rem;
   margin: 1.125rem 0; }
   fieldset legend {
     font-weight: bold;
