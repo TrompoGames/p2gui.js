@@ -1,19 +1,22 @@
-var hasRequire = false;
-if (this.require)
+var isPhotoshop = false;
+var csInterface = new CSInterface();
+var host = csInterface.hostEnvironment;
+if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
 {
-	hasRequire = true;
+	isPhotoshop = true;
 }
 
-if (hasRequire)
+if (isPhotoshop)
 {
 	window.jQuery = require('./lib/jquery-2.1.1.min.js');
 }
 
-var p2guiEnabled = false;
+var p2guiEnabled = !isPhotoshop;
 
 // jQuery code //
 (function($) {
-	if (hasRequire)
+	
+	if (isPhotoshop)
 	{
 		$(document).foundation = require('./lib/foundation.min.js');
 	}
@@ -51,6 +54,7 @@ var p2guiEnabled = false;
 		{
 			activateP2GUI();	
 		}, 300, true));
+		
 		reset();
 	});
 
@@ -59,6 +63,17 @@ var p2guiEnabled = false;
 		element.show().siblings().hide()
 		$('.off-canvas-wrap, .inner-wrap, .main-section, .main-content')
 				.height("100%");
+		callEnterFunction(section);
+	}
+	
+	function callEnterFunction(section)
+	{
+		var sectionName = section.substr(section.indexOf('#') + 1, section.length); 
+		var enterFunction = enterFunctionTable[sectionName + "_enter"];
+		if(typeof enterFunction === 'function')
+		{
+			enterFunction.call(this);
+		}
 	}
 
 	function reset() {
@@ -70,19 +85,62 @@ var p2guiEnabled = false;
 
 	function detectP2GUI() {
 		// code //
-		if (p2guiEnabled) {
-			showSection('.main-content #configuration');
-			$('.current-section').text("Configuration");
-		} else {
-			$('#p2guiDisabledModal').foundation('reveal', 'open');
+		if (isPhotoshop)
+		{
+			csInterface.evalScript("isP2GUIEnabled()", function(result)
+			{
+				p2guiEnabled = (result === 'true');
+				if (p2guiEnabled) {
+					showSection('.main-content #document_configuration');
+					$('.current-section').text("Configuration");
+				} else {
+					$('#p2guiDisabledModal').foundation('reveal', 'open');
+				}				
+			});
 		}
 	}
 	
 	function activateP2GUI()
 	{
-		p2guiEnabled = true;
-		$('#p2guiDisabledModal').foundation('reveal', 'close');
+		csInterface.evalScript("enableP2GUI()", function(result)
+		{
+			p2guiEnabled = (result === 'true');
+			if (p2guiEnabled)
+			{
+				showSection('.main-content #document_configuration');
+				$('.current-section').text("Configuration");
+				$('#p2guiDisabledModal').foundation('reveal', 'close');
+			}
+			else
+			{
+				nativeAlert("ERROR: Could not enable P2GUI on this file");
+			}
+		});
 	}
+	
+	// Enter functions //
+	var enterFunctionTable = enterFunctionTable || {};
+	
+	enterFunctionTable.document_configuration_enter = function()
+	{
+		if (isPhotoshop)
+		{
+			csInterface.evalScript("sayHello()", alertJSXResult);
+		}
+	}
+	
+	
+	// JSX tools //
+	function alertJSXResult(result)
+	{
+		alert(result);
+	}
+	
+	function nativeAlert(string)
+	{
+		csInterface.evalScript("showAlert(\"" + string + "\")");
+	}
+	
 })(jQuery);
 
 // ul.off-canvas-list li a
