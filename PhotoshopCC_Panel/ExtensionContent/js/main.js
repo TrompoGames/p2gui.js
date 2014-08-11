@@ -138,8 +138,7 @@ var showingSection = null;
 	function showSection(section) {
 		var element = $(section);
 		element.show().siblings().hide()
-		$('.off-canvas-wrap, .inner-wrap, .main-section, .main-content')
-				.height("100%");
+		$('.off-canvas-wrap, .inner-wrap, .main-section, .main-content').height("100%");
 		callEnterFunction(section);
 	}
 	
@@ -285,6 +284,9 @@ var showingSection = null;
 			{
 				nativeAlert("Unknown HTML tag: " + htmlTag);
 			}
+			
+			/* trigger an onChanged event for every field (to update custom GUI elements) */
+			P2GUI.eventManager.emit("onChanged_" + key, value);
 		}
 		
 		if (needsUpdate)
