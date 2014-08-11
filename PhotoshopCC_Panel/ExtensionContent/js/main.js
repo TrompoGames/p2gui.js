@@ -2,6 +2,7 @@ var isPhotoshop = false;
 var csInterface = new CSInterface();
 var P2GUI = {};
 var host = csInterface.hostEnvironment;
+var Minibus = null;
 if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
 {
 	isPhotoshop = true;
@@ -10,6 +11,7 @@ if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
 if (isPhotoshop)
 {
 	window.jQuery = require('./lib/jquery-2.1.1.min.js');
+	Minibus = require('./lib/minibus.min.js');
 }
 
 // function to load arbitrary files to the jsx engine //
@@ -35,6 +37,7 @@ var showingSection = null;
 		csInterface.evalScript("bridgeObject(P2GUI)", function(result)
 		{
 			P2GUI = JSON.parse(result);
+			P2GUI.eventManager = Minibus.create();
 		});
 	}
 
@@ -102,7 +105,7 @@ var showingSection = null;
 				functionName = "getDocumentProperties";
 			}
 			
-			csInterface.evalScript("bridgeObject(" + functionname + "(\"" + key + "\"))", function(result)
+			csInterface.evalScript("bridgeObject(" + functionName + "(\"" + key + "\"))", function(result)
 			{
 				nativeAlert(result);
 				var properties = JSON.parse(result);
@@ -133,7 +136,8 @@ var showingSection = null;
 	
 	function callEnterFunction(section)
 	{
-		var sectionName = section.substr(section.indexOf('#') + 1, section.length); 
+		var sectionName = section.substr(section.indexOf('#') + 1, section.length);
+		
 		var enterFunction = enterFunctionTable[sectionName + "_enter"];
 		if(typeof enterFunction === 'function')
 		{
@@ -189,24 +193,57 @@ var showingSection = null;
 	// document --> configuration //
 	enterFunctionTable.document_configuration_enter = function()
 	{
+		updateMetadataAndGUI(P2GUI.document.configuration, P2GUI.document.configurationDefaults);
+	}
+	
+	
+	/* metadata */
+	function updateMetadataAndGUI(reference, defaults)
+	{
 		if (isPhotoshop)
 		{
-			var args = propertyQueryFromObject(P2GUI.document.configuration);
-			csInterface.evalScript("bridgeObject(getDocumentProperties(" + args + "))", function(result)
+			var getFunctionName = null;
+			var setFunctionName = null;
+			
+			var isDocumentSection = false;
+			for(var key in P2GUI.document)
+			{
+			    if(P2GUI.document.hasOwnProperty(key))
+			    {
+			        if(P2GUI.document[key] === reference) {
+			        	isDocumentSection = true;
+			        }
+			    }
+			}
+			
+			if (isDocumentSection)
+			{
+				getFunctionName = "getDocumentProperties";
+				setFunctionName = "setDocumentProperties";
+			}
+			else
+			{
+				getFunctionName = "getLayerProperties";
+				setFunctionName = "setLayerProperties";
+			}
+			
+			var args = propertyQueryFromObject(reference);
+			csInterface.evalScript("bridgeObject(" + getFunctionName + "(" + args + "))", function(result)
 			{
 				var properties = JSON.parse(result);
-				properties = updateHTMLGUI(properties, P2GUI.document.configuration, P2GUI.document.configurationDefaults);
+				properties = updateHTMLGUI(properties, reference, defaults);
 				
 				if (properties != null)
 				{
 					var args = propertyAssignFromObject(properties);
-					csInterface.evalScript("setDocumentProperties(" + args + ")");
+					csInterface.evalScript(setFunctionName + "(" + args + ")");
 				}
 			});
 		}
 	}
 	
-	// GUI tools //
+	
+	/* GUI tools */
 	function updateHTMLGUI(properties, reference, defaults)
 	{
 		var needsUpdate = false;
