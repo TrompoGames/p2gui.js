@@ -87,13 +87,19 @@ var showingSection = null;
 		/* checkbox callbacks */
 		$("input[type=checkbox]").change(function () {
 			var element = $(this);
-			writeMetaKeyValue(element.prop("id"), (element.prop('checked') ? P2GUI.value.YES : P2GUI.value.NO));
+			var id = element.prop("id");
+			var value = (element.prop('checked') ? P2GUI.value.YES : P2GUI.value.NO);
+			writeMetaKeyValue(id, value);
+			P2GUI.eventManager.emit("onChanged_" + id, value);
 		});
 		
 		/* dropdown callbacks */
 		$("select").change(function () {
 			var element = $(this);
-			writeMetaKeyValue(element.prop("id"), element.val());
+			var id = element.prop("id");
+			var value = element.val();
+			writeMetaKeyValue(id, value);
+			P2GUI.eventManager.emit("onChanged_" + id, value);
 		});
 		
 		/* input text callbacks */
@@ -110,7 +116,6 @@ var showingSection = null;
 			
 			csInterface.evalScript("bridgeObject(" + functionName + "(\"" + key + "\"))", function(result)
 			{
-				nativeAlert(result);
 				var properties = JSON.parse(result);
 				var text = properties[key];
 				if (text == P2GUI.value.none)
@@ -121,6 +126,7 @@ var showingSection = null;
 				if (value != text)
 				{
 					writeMetaKeyValue(key, value);
+					P2GUI.eventManager.emit("onChanged_" + key, value);
 				}
 			});
 		});
