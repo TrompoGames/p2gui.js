@@ -3,7 +3,7 @@
 <ExtensionManifest Version="4.0" ExtensionBundleId="com.trompogames.P2GUIPanel" ExtensionBundleVersion="1.0.0"
 		ExtensionBundleName="P2GUIPanel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<ExtensionList>
-		<Extension Id="com.trompogames.P2GUIPanel.extension" Version="1.0" />
+		<Extension Id="com.trompogames.P2GUIPanel" Version="1.0" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
@@ -18,7 +18,7 @@
 		</RequiredRuntimeList>
 	</ExecutionEnvironment>
 	<DispatchInfoList>
-		<Extension Id="com.trompogames.P2GUIPanel.extension">
+		<Extension Id="com.trompogames.P2GUIPanel">
 
 			<DispatchInfo >
 				<Resources>
