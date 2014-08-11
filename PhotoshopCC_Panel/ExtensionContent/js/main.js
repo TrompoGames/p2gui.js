@@ -1,6 +1,7 @@
 var isPhotoshop = false;
 var csInterface = new CSInterface();
 var P2GUI = {};
+var sectionHandlers = {};
 var host = csInterface.hostEnvironment;
 var Minibus = null;
 if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
@@ -38,6 +39,8 @@ var showingSection = null;
 		{
 			P2GUI = JSON.parse(result);
 			P2GUI.eventManager = Minibus.create();
+			/* load section handlers */
+			sectionHandlers.document = require("./js/document.js");
 		});
 	}
 
@@ -137,11 +140,9 @@ var showingSection = null;
 	function callEnterFunction(section)
 	{
 		var sectionName = section.substr(section.indexOf('#') + 1, section.length);
-		
-		var enterFunction = enterFunctionTable[sectionName + "_enter"];
-		if(typeof enterFunction === 'function')
+		if (P2GUI.eventManager)
 		{
-			enterFunction.call(this);
+			P2GUI.eventManager.emit("onEnter_" + sectionName);
 		}
 	}
 
@@ -187,16 +188,6 @@ var showingSection = null;
 		});
 	}
 	
-	// Enter functions //
-	var enterFunctionTable = enterFunctionTable || {};
-	
-	// document --> configuration //
-	enterFunctionTable.document_configuration_enter = function()
-	{
-		updateMetadataAndGUI(P2GUI.document.configuration, P2GUI.document.configurationDefaults);
-	}
-	
-	
 	/* metadata */
 	function updateMetadataAndGUI(reference, defaults)
 	{
@@ -241,6 +232,8 @@ var showingSection = null;
 			});
 		}
 	}
+	
+	this.updateMetadataAndGUI = updateMetadataAndGUI;
 	
 	
 	/* GUI tools */
@@ -350,14 +343,11 @@ var showingSection = null;
 		return str;
 	}
 	
-	function alertJSXResult(result)
-	{
-		alert(result);
-	}
-	
 	function nativeAlert(string)
 	{
 		csInterface.evalScript("showAlert(\"" + string + "\")");
 	}
+	
+	this.nativeAlert = nativeAlert;
 	
 })(jQuery);
