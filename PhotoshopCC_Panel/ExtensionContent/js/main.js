@@ -11,8 +11,12 @@ if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
 
 if (isPhotoshop)
 {
+	/* load jQuery */
 	window.jQuery = require('./lib/jquery-2.1.1.min.js');
+	
+	/* load the event manager */
 	Minibus = require('./lib/minibus.min.js');
+	P2GUI.eventManager = Minibus.create();
 }
 
 // function to load arbitrary files to the jsx engine //
@@ -31,17 +35,37 @@ var showingSection = null;
 	/* Photoshop specific code */
 	if (isPhotoshop)
 	{
+		/* load foundation */
 		$(document).foundation = require('./lib/foundation.min.js');
-		// load JSON in the jsx engine //
+		
+		/* load JSON in the jsx engine */
 		loadJSX("lib/json2.js");
-		// get the P2GUI constants from the jsx //
+		
+		/* get the P2GUI constants from the jsx */
 		csInterface.evalScript("bridgeObject(P2GUI)", function(result)
 		{
-			P2GUI = JSON.parse(result);
-			P2GUI.eventManager = Minibus.create();
+			/* parse the returned object */
+			var parsedObject = JSON.parse(result);
+			for (var key in parsedObject)
+			{
+				P2GUI[key] = parsedObject[key];
+			}
+			
 			/* load section handlers */
 			sectionHandlers.document = require("./js/document.js");
+			
 		});
+		
+		/* initialize event types */
+		P2GUI.appEvents = {
+			open		: charIDToTypeID("Opn ").toString(),
+			make		: charIDToTypeID("Mk  ").toString(),
+			del			: charIDToTypeID("Dlt ").toString(),
+			select		: charIDToTypeID("slct").toString(),
+			move		: charIDToTypeID("move").toString(),
+			save		: charIDToTypeID("save").toString(),
+			canvasSize	: charIDToTypeID("CnvS").toString()
+		};
 	}
 
 	/* document ready callback */
@@ -132,6 +156,39 @@ var showingSection = null;
 		});
 		
 		reset();
+		
+		/* bind reset event handlers */
+		P2GUI.eventManager.on("onAppEvent_open", reset);
+		P2GUI.eventManager.on("onAppEvent_select", reset);
+		
+		/* register for photoshop events */
+		var event = new CSEvent("com.adobe.PhotoshopRegisterEvent", "APPLICATION");
+		event.extensionId = "com.trompogames.P2GUIPanel";
+		var eventIDs = "";
+		eventIDs += P2GUI.appEvents.open + ","; /* open */
+		eventIDs += P2GUI.appEvents.make + ","; /* make */
+		eventIDs += P2GUI.appEvents.del + ","; /* delete */
+		eventIDs += P2GUI.appEvents.select + ","; /* select */
+		eventIDs += P2GUI.appEvents.move + ","; /* move */
+		eventIDs += P2GUI.appEvents.save + ","; /* save */
+		eventIDs += P2GUI.appEvents.canvasSize; /* canvas size */
+		event.data = eventIDs;
+		csInterface.dispatchEvent(event);
+		csInterface.addEventListener("PhotoshopCallback", function(csEvent)
+		{
+			var dataArray = csEvent.data.split(",");
+			var eventID = dataArray[0].toString();
+			for(var key in P2GUI.appEvents)
+			{
+			    if(P2GUI.appEvents.hasOwnProperty(key))
+			    {
+			        if(P2GUI.appEvents[key] === eventID)
+			        {
+			        	P2GUI.eventManager.emit("onAppEvent_" + key);
+			        }
+			    }
+			}
+		});
 	});
 	
 
@@ -168,6 +225,7 @@ var showingSection = null;
 				if (p2guiEnabled) {
 					showSection('.main-content #document_configuration');
 					$('.current-section').text("Configuration");
+					$('#p2guiDisabledModal').foundation('reveal', 'close');
 				} else {
 					$('#p2guiDisabledModal').foundation('reveal', 'open');
 				}				
@@ -298,7 +356,17 @@ var showingSection = null;
 	}
 	
 	
-	// JSX tools //
+	/* JSX tools */
+	function charIDToTypeID(keyword)
+	{
+		var value = 0;
+		value  = keyword.charCodeAt(0) * 256 * 256 * 256;
+		value += keyword.charCodeAt(1) * 256 * 256;
+		value += keyword.charCodeAt(2) * 256;
+		value += keyword.charCodeAt(3);
+		return value;
+	}
+	
 	function writeMetaKeyValue(key, value)
 	{
 		var functionName = "setLayerProperties";
