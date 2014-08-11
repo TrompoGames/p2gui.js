@@ -74,7 +74,7 @@
 										<span data-tooltip class="has-tip content-text-bold" title="Name of the json file used to save the export. Exclude the extension (.json)">
 										Export json name
 										</span>
-										<input type="text" placeholder="Same as PSD file" />
+										<input id="P2GUI_doc_config_exportJsonName" type="text" placeholder="Same as PSD file" />
 									</label>
 								</div>
 							</div>
@@ -84,10 +84,10 @@
 										<span data-tooltip class="has-tip content-text-bold" title="How default class names should be mapped">
 										Auto-class type
 										</span>
-										<select>
-											<option value="pixi.js">pixi.js</option>
-											<option value="cocos2d">Cocos2D</option>
-											<option value="custom">Custom</option>
+										<select id="P2GUI_doc_config_autoClassType">
+											<option value="P2GUI_pixi.js">pixi.js</option>
+											<option value="P2GUI_cocos2d">Cocos2D</option>
+											<option value="P2GUI_custom">Custom</option>
 								        </select>
 									</label>
 								</div>
@@ -96,9 +96,9 @@
 										<span data-tooltip class="has-tip content-text-bold" title="How fields of each class should be exported">
 										Class fields type
 										</span>
-										<select>
-											<option value="none">None</option>
-											<option value="custom">Custom</option>
+										<select id="P2GUI_doc_config_classFieldsType">
+											<option value="P2GUI_none">None</option>
+											<option value="P2GUI_custom">Custom</option>
 								        </select>
 									</label>
 								</div>
@@ -109,7 +109,7 @@
 										<span data-tooltip class="has-tip content-text-bold" title="This defines if the exported json should be human readable or minified">
 										Human readable json  
 										</span>
-										<input type="checkbox" placeholder="Same as PSD file" />
+										<input id="P2GUI_doc_config_humanReadable" type="checkbox" placeholder="Same as PSD file" />
 									</label>
     							</div>
     						</div>
@@ -122,25 +122,25 @@
 										<span data-tooltip class="has-tip content-text-bold" title="Path where the exported json should be placed. Relative to the PSD file">
 										Export json path
 										</span>
-										<input type="text" placeholder="P2GUI/JSON" />
+										<input id="P2GUI_doc_config_exportJsonPath" type="text" placeholder="P2GUI/JSON" />
 									</label>
 									<label id="exportImagePathInput" class="content-text">
 										<span data-tooltip class="has-tip content-text-bold" title="Path where the exported PNG assets should be placed. Relative to the PSD file">
 										Export image path
 										</span>
-										<input type="text" placeholder="P2GUI/PNG" />
+										<input id="P2GUI_doc_config_exportImagePath" type="text" placeholder="P2GUI/PNG" />
 									</label>
 									<label id="autoClassInput" class="content-text">
 										<span data-tooltip class="has-tip" title="Path to the file describing how default class names should be mapped. Relative to the PSD file">
 										Auto-classes descriptor
 										</span>
-										<input type="text" placeholder="none" />
+										<input id="P2GUI_doc_config_autoClassDescriptor" type="text" placeholder="none" />
 									</label>
 									<label id="classDescriptorInput" class="content-text">
 										<span data-tooltip class="has-tip tip-top" title="Path to the file describing which fields of each class should be exported. Relative to the PSD file">
 										Class fields descriptor
 										</span>
-										<input type="text" placeholder="none" />
+										<input id="P2GUI_doc_config_classFieldsDescriptor" type="text" placeholder="none" />
 									</label>
 								</fieldset>
 							</div>
