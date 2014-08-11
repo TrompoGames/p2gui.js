@@ -1,17 +1,54 @@
 //------------///////////////////////////////////------------//
-//------------///////// GLOBAL VARIABLES ////////------------//
+//------------//////////// CONSTANTS ////////////------------//
 //------------///////////////////////////////////------------//
-var g_P2GUINamespace = "http://p2gui.trompogames.com/1.0.0";
-var g_P2GUINamespacePrefix = "p2gui:";
-var g_P2GUIEnabled = "P2GUIEnabled";
-var g_P2GUIYES = "YES";
-var g_P2GUINO = " NO";
+var P2GUI = {
+	/* global */
+	namespace 		: "http://p2gui.trompogames.com/1.0.0",
+	namespacePrefix	: "p2gui:",
+	enabled			: "P2GUIEnabled",
+	
+	/* values */
+	value			: {
+		YES			: "P2GUI_YES",
+		NO			: "P2GUI_NO",
+		none		: "P2GUI_none",
+		custom		: "P2GUI_custom",
+		cocos2d		: "P2GUI_cocos2d",
+		pixijs		: "P2GUI_pixi.js",
+	},
+
+	/* document */
+	document		: {
+		/* configuration */
+		configuration	: {
+			exportJsonName			: "P2GUI_doc_config_exportJsonName",
+			autoClassType			: "P2GUI_doc_config_autoClassType",
+			classFieldsType			: "P2GUI_doc_config_classFieldsType",
+			humanReadable			: "P2GUI_doc_config_humanReadable",
+			exportJsonPath			: "P2GUI_doc_config_exportJsonPath",
+			exportImagePath			: "P2GUI_doc_config_exportImagePath",
+			autoClassDescriptor		: "P2GUI_doc_config_autoClassDescriptor",
+			classFieldsDescriptor	: "P2GUI_doc_config_classFieldsDescriptor",
+		},
+	},
+}
+
+/* configuration defaults */
+P2GUI.document.configurationDefaults = {
+	exportJsonName			: "",
+	autoClassType			: P2GUI.value.pixijs,
+	classFieldsType			: P2GUI.value.none,
+	humanReadable			: P2GUI.value.NO,
+	exportJsonPath			: "",
+	exportImagePath			: "",
+	autoClassDescriptor		: "",
+	classFieldsDescriptor	: "",
+};
 
 
 //------------///////////////////////////////////------------//
 //------------////// XMP LIBRARY UTILITIES //////------------//
 //------------///////////////////////////////////------------//
-
 
 /**
 The function loads the XMP Script Library.
@@ -48,12 +85,141 @@ function unloadXMPLibrary(){
 //------------///////////////////////////////////------------//
 //------------/////// METADATA UTILITIES ////////------------//
 //------------///////////////////////////////////------------//
+function bridgeObject(obj)
+{
+	if (obj)
+	{
+		return JSON.stringify(obj);
+	}
+	
+	return "{}";
+}
+
+function receiveObject(obj)
+{
+	if (obj)
+	{
+		return JSON.parse(obj);
+	}
+	
+	return {};
+}
+
+function getLayerProperties()
+{
+	if (hasActiveDocument)
+	{
+		var layer = app.activeDocument.activeLayer;
+		if (!layer.isBackgroundLayer)
+		{
+			var newArgs = [layer];
+			newArgs.push.apply(newArgs, arguments);
+			return getObjectProperties.apply(this, newArgs);
+		}
+		else
+		{
+			alert("P2GUI Cannot work on background layers.")
+		}
+	}
+	
+	return null;
+}
+
+function setLayerProperties()
+{
+	if (hasActiveDocument)
+	{
+		var layer = app.activeDocument.activeLayer;
+		if (!layer.isBackgroundLayer)
+		{
+			var newArgs = [layer];
+			newArgs.push.apply(newArgs, arguments);
+			return setObjectProperties.apply(this, newArgs);
+		}
+		else
+		{
+			alert("P2GUI Cannot work on background layers.")
+		}
+	}
+	
+	return false;
+}
+
+function getDocumentProperties()
+{
+	if (hasActiveDocument())
+	{
+		var newArgs = [app.activeDocument];
+		newArgs.push.apply(newArgs, arguments);
+		return getObjectProperties.apply(this, newArgs);
+	}
+	return null;
+}
+
+function setDocumentProperties()
+{
+	if (hasActiveDocument())
+	{
+		var newArgs = [app.activeDocument];
+		newArgs.push.apply(newArgs, arguments);
+		return setObjectProperties.apply(this, newArgs);
+	}
+	
+	return false;
+}
+
+function getObjectProperties(obj)
+{
+	var ret = {};
+	if(obj && arguments.length > 1 && loadXMPLibrary())
+	{
+		var argumentLength = arguments.length;
+		for (var i = 1; i < argumentLength; ++i)
+		{
+			var property = arguments[i];
+			var value = getObjectMetadata(obj, property);
+			if (value)
+			{
+				ret[property] = value;
+			}
+		}
+		
+		unloadXMPLibrary();
+	}
+	
+	return ret;
+}
+
+function setObjectProperties(obj)
+{
+	if(obj && arguments.length > 1 && loadXMPLibrary())
+	{
+		var argumentLength = arguments.length;
+		for (var i = 1; i < argumentLength; i += 2)
+		{
+			var property = arguments[i];
+			var propertyValue = arguments[i + 1];
+			
+			var success = setObjectMetadata(obj, property, propertyValue);
+			if (!success)
+			{
+				unloadXMPLibrary();
+				return false;
+			}
+		}
+		
+		unloadXMPLibrary();
+		return true;
+	}
+	
+	return false;
+}
 
 function getObjectMetadata(obj, propertyName)
 {
     var ret = null;
     
-    if(obj && loadXMPLibrary())
+    if(obj && propertyName)
     {
         var xmp;
         try
@@ -63,7 +229,6 @@ function getObjectMetadata(obj, propertyName)
         catch(e)
         {
         	$.writeln(arguments.callee.name + ": " + e.toString());
-            unloadXMPLibrary();
             return ret;
         }
         
@@ -71,12 +236,11 @@ function getObjectMetadata(obj, propertyName)
         var propertyValue;
         try
         {
-            propertyValue = xmp.getProperty(g_P2GUINamespace, propertyName).toString();
+            propertyValue = xmp.getProperty(P2GUI.namespace, propertyName).toString();
         }
         catch(e)
         {
         	$.writeln(arguments.callee.name + ": " + e.toString());
-            unloadXMPLibrary();
             return ret;
         }
         
@@ -87,39 +251,37 @@ function getObjectMetadata(obj, propertyName)
 
 function setObjectMetadata(obj, propertyName, propertyValue)
 {
-    if(obj && loadXMPLibrary())
+    if(obj && propertyName && (typeof propertyValue == 'string' || propertyValue instanceof String))
     {
         var xmp;
         try
-        { 
+        {
 			xmp = new XMPMeta(obj.xmpMetadata.rawData);
         }
         catch(e)
         {
-        	$.writeln(arguments.callee.name + ": " + e.toString());
-            unloadXMPLibrary();
+        	alert(arguments.callee.name + ": " + e.toString());
             return false;
         }
         
         try
         {
-        	XMPMeta.registerNamespace(g_P2GUINamespace, g_P2GUINamespacePrefix);
+        	XMPMeta.registerNamespace(P2GUI.namespace, P2GUI.namespacePrefix);
         }
         catch (e)
         {
-        	$.writeln(arguments.callee.name + ": " + e.toString());
+        	alert(arguments.callee.name + ": " + e.toString());
         }
         
         // try to set the property value //
         try
         {
-        	xmp.setProperty(g_P2GUINamespace, propertyName, propertyValue);
+        	xmp.setProperty(P2GUI.namespace, propertyName, propertyValue);
         	obj.xmpMetadata.rawData = xmp.serialize();
         }
         catch(e)
         {
-        	$.writeln(arguments.callee.name + ": " + e.toString());
-            unloadXMPLibrary();
+        	alert(arguments.callee.name + ": " + e.toString());
             return false;
         }
         
@@ -163,8 +325,8 @@ function isP2GUIEnabled()
 {
 	if (hasActiveDocument())
 	{
-		var metadata = getObjectMetadata(app.activeDocument, g_P2GUIEnabled);
-		return (metadata == g_P2GUIYES);
+		var metadata = getObjectProperties(app.activeDocument, P2GUI.enabled);
+		return (metadata[P2GUI.enabled] == P2GUI.value.YES);
 	}
 	return false;
 }
@@ -182,7 +344,7 @@ function enableP2GUI()
 		return false;
 	}
 	
-	var result = setObjectMetadata(app.activeDocument, g_P2GUIEnabled, g_P2GUIYES);
+	var result = setObjectProperties(app.activeDocument, P2GUI.enabled, P2GUI.value.YES);
 	return  result;
 }
 
