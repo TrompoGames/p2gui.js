@@ -48,7 +48,8 @@
 				<ul class="off-canvas-list">
 					<li><label>Document</label></li>
 					<li><a href="#document_configuration">Configuration</a></li>
-					<li><label>Elements</label></li>
+					<li><label>Element</label></li>
+					<li><a href="#element_information">Information</a></li>
 					<li><a href="#element_layout">Layout</a></li>
 					<li><a href="#element_exportOptions">Export Options</a></li>
 					<li><label>P2GUI</label></li>
@@ -143,6 +144,59 @@
 										<input id="P2GUI_doc_config_classFieldsDescriptor" type="text" placeholder="none" />
 									</label>
 								</fieldset>
+							</div>
+						</form>
+					</div>
+					
+					<!-- Element >>> Information -->
+					<div id="element_information">
+						<form>
+							<!-- name -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementNameInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Name of the currently selected object. Names must be unique amongst all elements in a single file">
+										Name
+										</span>
+										<input id="P2GUI_obj_info_name" type="text" placeholder="Unique name" />
+									</label>
+								</div>
+							</div>
+							
+							<!-- id -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementIdInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="ID of the currently selected object. IDs do not have to be unique and can be used as a mechanisim to group objects">
+										ID
+										</span>
+										<input id="P2GUI_obj_info_id" type="text" placeholder="Element ID" />
+									</label>
+								</div>
+							</div>
+							
+							<!-- class -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementClassInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Handler class of the currently selected object. The class that will be used to handle the creation of this object when it is imported at runtime">
+										Class
+										</span>
+										<input id="P2GUI_obj_info_class" type="text" placeholder="Element class" />
+									</label>
+								</div>
+							</div>
+							
+							<!-- misc -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementMiscInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Extra information passed at runtime. Use this field to define misc information needed by classes to handle this object at runtime. Although the recomended format for misc information is JSON, any text written in this field will be passed verbatim to the importer class">
+										Misc
+										</span>
+										<textarea id="P2GUI_obj_info_misc" placeholder="..." rows=14 style="resize: none;"></textarea>
+									</label>
+								</div>
 							</div>
 						</form>
 					</div>

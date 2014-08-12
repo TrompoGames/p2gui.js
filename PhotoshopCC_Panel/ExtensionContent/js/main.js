@@ -54,6 +54,7 @@ var showingSection = null;
 			
 			/* load section handlers */
 			sectionHandlers.document = require("./js/document.js");
+			sectionHandlers.document = require("./js/element.js");
 			
 		});
 		
@@ -130,7 +131,7 @@ var showingSection = null;
 		});
 		
 		/* input text callbacks */
-		$("input[type=text]").blur(function()
+		var textChanged = function()
 		{
 			console.log("input[type=text].blur()");
 			var element = $(this);
@@ -142,8 +143,10 @@ var showingSection = null;
 				functionName = "getDocumentProperties";
 			}
 			
-			csInterface.evalScript("bridgeObject(" + functionName + "(\"" + key + "\"))", function(result)
+			var script = "bridgeObject(" + functionName + "(\"" + key + "\"))";
+			csInterface.evalScript(script, function(result)
 			{
+				console.log(script + ": " + result);
 				var properties = JSON.parse(result);
 				var text = properties[key];
 				if (text == P2GUI.value.none)
@@ -151,14 +154,19 @@ var showingSection = null;
 					text = "";
 				}
 				
+				value = encodeURI(value);
+				
 				if (value != text)
 				{
 					writeMetaKeyValue(key, value);
-					console.log("onChanged_" + key);
+					console.log("onChanged_" + key + "(" + value + ")");
 					P2GUI.eventManager.emit("onChanged_" + key, value);
 				}
 			});
-		});
+		};
+		
+		$("input[type=text]").blur(textChanged);
+		$("textarea").blur(textChanged);
 		
 		reset();
 		
@@ -298,8 +306,10 @@ var showingSection = null;
 			}
 			
 			var args = propertyQueryFromObject(reference);
-			csInterface.evalScript("bridgeObject(" + getFunctionName + "(" + args + "))", function(result)
+			var script = "bridgeObject(" + getFunctionName + "(" + args + "))"
+			csInterface.evalScript(script, function(result)
 			{
+				console.log(script + ": " + result);
 				var properties = JSON.parse(result);
 				properties = updateHTMLGUI(properties, reference, defaults);
 				
@@ -343,7 +353,7 @@ var showingSection = null;
 					{
 						value = "";
 					}
-					htmlObject.val(value);
+					htmlObject.val(decodeURI(value));
 				}
 				else if (type == "checkbox")
 				{
@@ -353,6 +363,14 @@ var showingSection = null;
 			else if (htmlTag == "SELECT")
 			{
 				htmlObject.val(value);
+			}
+			else if (htmlTag == "TEXTAREA")
+			{
+				if (value == P2GUI.value.none)
+				{
+					value = "";
+				}
+				htmlObject.val(decodeURI(value));
 			}
 			else
 			{
@@ -396,7 +414,9 @@ var showingSection = null;
 			value = P2GUI.value.none;
 		}
 		
-		csInterface.evalScript(functionName + "(\"" + key + "\",\"" + value + "\")");
+		var script = functionName + "(\"" + key + "\",\"" + value + "\")";
+		console.log(script);
+		csInterface.evalScript(script);
 	}
 	
 	function propertyQueryFromObject(obj)
@@ -443,3 +463,62 @@ var showingSection = null;
 	this.nativeAlert = nativeAlert;
 	
 })(window.jQuery);
+
+
+/* utf8 encoder */
+var Utf8 = {
+		 
+    // public method for url encoding
+    encode : function (string) {
+        string = string.replace(/\r\n/g,"\n");
+        var utftext = "";
+ 
+        for (var n = 0; n < string.length; n++) {
+ 
+            var ch = string.charCodeAt(n);
+			 
+			if (ch < 128)
+			{
+				utftext += String.fromCharCode(ch);
+			}
+			else if (ch <= 2047)
+			{
+				utftext += String.fromCharCode(192 + (ch / 64));
+				utftext += String.fromCharCode(128 + (ch % 64));
+			}
+			else if (ch <= 65535)
+			{
+				utftext += String.fromCharCode(224 + (ch / 4096));
+				utftext += String.fromCharCode(128 + ((ch / 64) % 64));
+				utftext += String.fromCharCode(128 + (ch % 64));
+			}
+			else if (ch <= 2097151)
+			{
+				utftext += String.fromCharCode(240 + (ch / 262144));
+				utftext += String.fromCharCode(128 + ((ch / 4096) % 64));
+				utftext += String.fromCharCode(128 + ((ch / 64) % 64));
+				utftext += String.fromCharCode(128 + (ch % 64));
+			}
+			else if (ch <=67108863)
+			{
+				utftext += String.fromCharCode(248 + (ch / 16777216));
+				utftext += String.fromCharCode(128 + ((ch / 262144) % 64));
+				utftext += String.fromCharCode(128 + ((ch / 4096) % 64));
+				utftext += String.fromCharCode(128 + ((ch / 64) % 64));
+				utftext += String.fromCharCode(128 + (ch % 64));
+			}
+			else if (ch <=2147483647)
+			{
+				utftext += String.fromCharCode(252 + (ch / 1073741824));
+				utftext += String.fromCharCode(128 + ((ch / 16777216) % 64));
+				utftext += String.fromCharCode(128 + ((ch / 262144) % 64));
+				utftext += String.fromCharCode(128 + ((ch / 4096) % 64));
+				utftext += String.fromCharCode(128 + ((ch / 64) % 64));
+				utftext += String.fromCharCode(128 + (ch % 64));
+			}                                       
+        }
+		return utftext;
+    }
+}
+
+

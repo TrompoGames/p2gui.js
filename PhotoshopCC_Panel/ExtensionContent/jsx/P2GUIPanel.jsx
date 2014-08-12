@@ -31,9 +31,20 @@ var P2GUI = {
 			classFieldsDescriptor	: "P2GUI_doc_config_classFieldsDescriptor",
 		},
 	},
+	
+	/* element */
+	element			: {
+		/* configuration */
+		information		: {
+			name					: "P2GUI_obj_info_name",
+			id						: "P2GUI_obj_info_id",
+			className				: "P2GUI_obj_info_class",
+			misc					: "P2GUI_obj_info_misc",
+		},
+	},
 }
 
-/* configuration defaults */
+/* document configuration defaults */
 P2GUI.document.configurationDefaults = {
 	exportJsonName			: "",
 	autoClassType			: P2GUI.value.pixijs,
@@ -43,6 +54,14 @@ P2GUI.document.configurationDefaults = {
 	exportImagePath			: "",
 	autoClassDescriptor		: "",
 	classFieldsDescriptor	: "",
+};
+
+/* element information defaults */
+P2GUI.element.informationDefaults = {
+	name					: "",
+	id						: "",
+	className				: "",
+	misc					: "",
 };
 
 
@@ -228,19 +247,30 @@ function getObjectMetadata(obj, propertyName)
         }
         catch(e)
         {
-        	$.writeln(arguments.callee.name + ": " + e.toString());
-            return ret;
+        	if (obj == app.activeDocument)
+        	{
+	        	alert(arguments.callee.name + "::XMPMeta: " + e.toString());
+	            return ret;
+        	}
+        	else
+        	{
+        		xmp = new XMPMeta();
+        	}
         }
         
         // try to get the property value //
         var propertyValue;
         try
         {
-            propertyValue = xmp.getProperty(P2GUI.namespace, propertyName).toString();
+            propertyValue = xmp.getProperty(P2GUI.namespace, propertyName);
+            if (propertyValue)
+            {
+            	propertyValue = propertyValue.toString();
+            }
         }
         catch(e)
         {
-        	$.writeln(arguments.callee.name + ": " + e.toString());
+        	alert(arguments.callee.name + "::getProperty: " + e.toString());
             return ret;
         }
         
@@ -260,8 +290,15 @@ function setObjectMetadata(obj, propertyName, propertyValue)
         }
         catch(e)
         {
-        	alert(arguments.callee.name + ": " + e.toString());
-            return false;
+        	if (obj == app.activeDocument)
+        	{
+	        	alert(arguments.callee.name + "::XMPMeta: " + e.toString());
+	            return false;
+        	}
+        	else
+        	{
+        		xmp = new XMPMeta();
+        	}
         }
         
         try
@@ -270,7 +307,7 @@ function setObjectMetadata(obj, propertyName, propertyValue)
         }
         catch (e)
         {
-        	alert(arguments.callee.name + ": " + e.toString());
+        	alert(arguments.callee.name + "::registerNamespace: " + e.toString());
         }
         
         // try to set the property value //
@@ -281,7 +318,7 @@ function setObjectMetadata(obj, propertyName, propertyValue)
         }
         catch(e)
         {
-        	alert(arguments.callee.name + ": " + e.toString());
+        	alert(arguments.callee.name + "::setProperty: " + e.toString());
             return false;
         }
         
