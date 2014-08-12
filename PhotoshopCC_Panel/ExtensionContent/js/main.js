@@ -332,6 +332,7 @@ var showingSection = null;
 		
 		for (var field in reference)
 		{
+			var triggerSyncEvent = true;
 			var key = reference[field];
 			var value = properties[key];
 			if (typeof value === 'undefined' || value == null)
@@ -353,7 +354,16 @@ var showingSection = null;
 					{
 						value = "";
 					}
-					htmlObject.val(decodeURI(value));
+					
+					if (value == P2GUI.value.layerName)
+					{
+						triggerSyncEvent = false;
+						layerNameToHTML(htmlObject, key);
+					}
+					else
+					{
+						htmlObject.val(decodeURI(value));
+					}
 				}
 				else if (type == "checkbox")
 				{
@@ -370,7 +380,16 @@ var showingSection = null;
 				{
 					value = "";
 				}
-				htmlObject.val(decodeURI(value));
+				
+				if (value == P2GUI.value.layerName)
+				{
+					triggerSyncEvent = false;
+					layerNameToHTML(htmlObject, key);
+				}
+				else
+				{
+					htmlObject.val(decodeURI(value));
+				}
 			}
 			else
 			{
@@ -378,7 +397,10 @@ var showingSection = null;
 			}
 			
 			/* trigger an onChanged event for every field (to update custom GUI elements) */
-			P2GUI.eventManager.emit("onChanged_" + key, value);
+			if (triggerSyncEvent)
+			{
+				P2GUI.eventManager.emit("onChanged_" + key, value);
+			}
 		}
 		
 		if (needsUpdate)
@@ -387,6 +409,15 @@ var showingSection = null;
 		}
 		
 		return null;
+	}
+	
+	function layerNameToHTML(htmlObject, key)
+	{
+		csInterface.evalScript("getLayerName()", function(result)
+		{
+			htmlObject.val(result);
+			P2GUI.eventManager.emit("onChanged_" + key, result);
+		});
 	}
 	
 	

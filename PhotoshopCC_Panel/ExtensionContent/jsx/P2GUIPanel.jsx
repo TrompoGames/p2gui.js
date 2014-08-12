@@ -15,6 +15,13 @@ var P2GUI = {
 		custom		: "P2GUI_custom",
 		cocos2d		: "P2GUI_cocos2d",
 		pixijs		: "P2GUI_pixi.js",
+		layerName	: "P2GUI_layerName",
+		absolute	: "P2GUI_absolute",
+		relative	: "P2GUI_relative",
+		snap		: "P2GUI_snap",
+		left		: "P2GUI_left",
+		right		: "P2GUI_right",
+		leftRight	: "P2GUI_leftRight",
 	},
 
 	/* document */
@@ -34,13 +41,23 @@ var P2GUI = {
 	
 	/* element */
 	element			: {
-		/* configuration */
+		/* information */
 		information		: {
 			name					: "P2GUI_obj_info_name",
 			id						: "P2GUI_obj_info_id",
 			className				: "P2GUI_obj_info_class",
 			misc					: "P2GUI_obj_info_misc",
 		},
+		
+		/* layout */
+		layout			: {
+			horizontalPosition		: "P2GUI_obj_layout_hPosition",
+			verticalPosition		: "P2GUI_obj_layout_vPosition",
+			horizontalSnapTo		: "P2GUI_obj_layout_hSnapTo",
+			verticalSnapTo			: "P2GUI_obj_layout_vSnapTo",
+			horizontalRelative		: "P2GUI_obj_layout_hRelative",
+			verticalRelative		: "P2GUI_obj_layout_vRelative",
+		}
 	},
 }
 
@@ -58,7 +75,7 @@ P2GUI.document.configurationDefaults = {
 
 /* element information defaults */
 P2GUI.element.informationDefaults = {
-	name					: "",
+	name					: P2GUI.value.layerName,
 	id						: "",
 	className				: "",
 	misc					: "",
@@ -383,6 +400,24 @@ function enableP2GUI()
 	
 	var result = setObjectProperties(app.activeDocument, P2GUI.enabled, P2GUI.value.YES);
 	return  result;
+}
+
+function getLayerName()
+{
+	if (hasActiveDocument() && !app.activeDocument.activeLayerisBackgroundLayer)
+	{
+		return app.activeDocument.activeLayer.name;
+	}
+	
+	return "";
+}
+
+function setLayerName(name)
+{
+	if (hasActiveDocument() && !app.activeDocument.activeLayerisBackgroundLayer)
+	{
+		app.activeDocument.activeLayer.name = name;
+	}
 }
 
 function sayHello()
