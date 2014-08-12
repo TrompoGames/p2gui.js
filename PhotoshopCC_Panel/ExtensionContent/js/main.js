@@ -2,6 +2,7 @@ var isPhotoshop = false;
 var csInterface = new CSInterface();
 var P2GUI = {};
 var sectionHandlers = {};
+var currentSection = null;
 var host = csInterface.hostEnvironment;
 var Minibus = null;
 if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
@@ -114,6 +115,7 @@ var showingSection = null;
 			var id = element.prop("id");
 			var value = (element.prop('checked') ? P2GUI.value.YES : P2GUI.value.NO);
 			writeMetaKeyValue(id, value);
+			console.log("onChanged_" + id);
 			P2GUI.eventManager.emit("onChanged_" + id, value);
 		});
 		
@@ -123,12 +125,14 @@ var showingSection = null;
 			var id = element.prop("id");
 			var value = element.val();
 			writeMetaKeyValue(id, value);
+			console.log("onChanged_" + id);
 			P2GUI.eventManager.emit("onChanged_" + id, value);
 		});
 		
 		/* input text callbacks */
 		$("input[type=text]").blur(function()
 		{
+			console.log("input[type=text].blur()");
 			var element = $(this);
 			var key = element.prop("id");
 			var value = element.val();
@@ -150,6 +154,7 @@ var showingSection = null;
 				if (value != text)
 				{
 					writeMetaKeyValue(key, value);
+					console.log("onChanged_" + key);
 					P2GUI.eventManager.emit("onChanged_" + key, value);
 				}
 			});
@@ -184,7 +189,11 @@ var showingSection = null;
 			    {
 			        if(P2GUI.appEvents[key] === eventID)
 			        {
-			        	P2GUI.eventManager.emit("onAppEvent_" + key);
+			        	if (p2guiEnabled || eventID == P2GUI.appEvents.open || eventID == P2GUI.appEvents.select)
+			        	{
+			        		console.log("onAppEvent_" + key);
+			        		P2GUI.eventManager.emit("onAppEvent_" + key);
+			        	}
 			        }
 			    }
 			}
@@ -202,8 +211,15 @@ var showingSection = null;
 	function callEnterFunction(section)
 	{
 		var sectionName = section.substr(section.indexOf('#') + 1, section.length);
-		if (P2GUI.eventManager)
+		if (sectionName != currentSection && P2GUI.eventManager)
 		{
+			if (currentSection != null)
+			{
+				console.log("onExit_" + currentSection);
+				P2GUI.eventManager.emit("onExit_" + currentSection);
+			}
+			currentSection = sectionName;
+			console.log("onEnter_" + sectionName);
 			P2GUI.eventManager.emit("onEnter_" + sectionName);
 		}
 	}
@@ -426,4 +442,4 @@ var showingSection = null;
 	
 	this.nativeAlert = nativeAlert;
 	
-})(jQuery);
+})(window.jQuery);
