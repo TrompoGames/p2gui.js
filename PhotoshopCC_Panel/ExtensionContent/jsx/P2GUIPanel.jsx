@@ -22,6 +22,11 @@ var P2GUI = {
 		left		: "P2GUI_left",
 		right		: "P2GUI_right",
 		leftRight	: "P2GUI_leftRight",
+		top			: "P2GUI_top",
+		bottom		: "P2GUI_bottom",
+		topBottom	: "P2GUI_topBottom",
+		relativeH	: "P2GUI_relative_horizontal",
+		relativeV	: "P2GUI_relative_vertical",
 	},
 
 	/* document */
@@ -81,6 +86,74 @@ P2GUI.element.informationDefaults = {
 	misc					: "",
 };
 
+/* element layout defaults */
+P2GUI.element.layoutDefaults = {
+	horizontalPosition		: P2GUI.value.absolute,
+	verticalPosition		: P2GUI.value.absolute,
+	horizontalSnapTo		: P2GUI.value.left,
+	verticalSnapTo			: P2GUI.value.top,
+	horizontalRelative		: P2GUI.value.relativeH,
+	verticalRelative		: P2GUI.value.relativeV,
+}
+
+//------------///////////////////////////////////------------//
+//------------///////////// GLOBALS /////////////------------//
+//------------///////////////////////////////////------------//
+var g_doc = null;
+var g_layer = null;
+
+//------------///////////////////////////////////------------//
+//------------//// TRACK LAYER AND DOCUMENT /////------------//
+//------------///////////////////////////////////------------//
+
+function saveDocumentAndLayer()
+{
+	if (hasActiveDocument())
+	{
+		g_doc = app.activeDocument;
+		g_layer = app.activeDocument.activeLayer;
+	}
+	else
+	{
+		g_doc = null;
+		g_layer = null;
+	}
+}
+
+function updateSelectedDocument()
+{
+	var newDocument = null;
+	if (hasActiveDocument())
+	{
+		newDocument = app.activeDocument;
+	}
+	
+	if (newDocument != g_doc)
+	{
+		g_doc = newDocument;
+		updateSelectedLayer();
+		return true;
+	}
+	
+	return false;
+}
+
+function updateSelectedLayer()
+{
+	var newLayer = null;
+	if (hasActiveDocument())
+	{
+		newLayer = app.activeDocument.activeLayer;
+	}
+	
+	if (newLayer != g_layer)
+	{
+		g_layer = newLayer;
+		return true;
+	}
+	
+	return false;
+}
 
 //------------///////////////////////////////////------------//
 //------------////// XMP LIBRARY UTILITIES //////------------//
@@ -143,7 +216,7 @@ function receiveObject(obj)
 
 function getLayerProperties()
 {
-	if (hasActiveDocument)
+	if (hasActiveDocument())
 	{
 		var layer = app.activeDocument.activeLayer;
 		if (!layer.isBackgroundLayer)
@@ -163,7 +236,7 @@ function getLayerProperties()
 
 function setLayerProperties()
 {
-	if (hasActiveDocument)
+	if (hasActiveDocument())
 	{
 		var layer = app.activeDocument.activeLayer;
 		if (!layer.isBackgroundLayer)
@@ -287,7 +360,7 @@ function getObjectMetadata(obj, propertyName)
         }
         catch(e)
         {
-        	alert(arguments.callee.name + "::getProperty: " + e.toString());
+        	//alert(arguments.callee.name + "::getProperty: " + e.toString());
             return ret;
         }
         
@@ -335,7 +408,7 @@ function setObjectMetadata(obj, propertyName, propertyValue)
         }
         catch(e)
         {
-        	alert(arguments.callee.name + "::setProperty: " + e.toString());
+        	//alert(arguments.callee.name + "::setProperty: " + e.toString());
             return false;
         }
         
@@ -377,10 +450,13 @@ function isDocumentSaved()
 
 function isP2GUIEnabled()
 {
+	saveDocumentAndLayer();
 	if (hasActiveDocument())
 	{
 		var metadata = getObjectProperties(app.activeDocument, P2GUI.enabled);
-		return (metadata[P2GUI.enabled] == P2GUI.value.YES);
+		var ret = (metadata[P2GUI.enabled] == P2GUI.value.YES);
+		
+		return ret;
 	}
 	return false;
 }
@@ -399,12 +475,17 @@ function enableP2GUI()
 	}
 	
 	var result = setObjectProperties(app.activeDocument, P2GUI.enabled, P2GUI.value.YES);
+	if (result)
+	{
+		saveDocumentAndLayer();
+	}
+	
 	return  result;
 }
 
 function getLayerName()
 {
-	if (hasActiveDocument() && !app.activeDocument.activeLayerisBackgroundLayer)
+	if (hasActiveDocument() && !app.activeDocument.activeLayer.isBackgroundLayer)
 	{
 		return app.activeDocument.activeLayer.name;
 	}
@@ -414,14 +495,120 @@ function getLayerName()
 
 function setLayerName(name)
 {
-	if (hasActiveDocument() && !app.activeDocument.activeLayerisBackgroundLayer)
+	if (hasActiveDocument() && !app.activeDocument.activeLayer.isBackgroundLayer)
 	{
 		app.activeDocument.activeLayer.name = name;
 	}
 }
 
-function sayHello()
+
+//------------///////////////////////////////////------------//
+//------------///// LAYER UTILITY FUNCTIONS /////------------//
+//------------///////////////////////////////////------------//
+
+function getLayerRelativeHorizontal()
 {
-	alert("Hello Dario!");
-	return "well this works!";
+	return getLayerRelativePosition().x;
 }
+
+function getLayerRelativeVertical()
+{
+	return getLayerRelativePosition().y;
+}
+
+function getLayerRelativePosition()
+{
+	var ret = getLayerCenter();
+	
+	if (hasActiveDocument())
+	{
+		var doc = app.activeDocument;
+		ret.x = ret.x / doc.width.as('px');
+		ret.y = ret.y / doc.height.as('px');
+	}
+	
+	return ret;
+}
+
+function setLayerRelativeX(x)
+{
+	if (hasActiveDocument())
+	{
+		setLayerPosition(g_doc.width.as('px') * x, null);
+	}
+}
+
+function setLayerRelativeY(y)
+{
+	if (hasActiveDocument())
+	{
+		setLayerPosition(null, g_doc.height.as('px') * y);
+	}
+}
+
+function setLayerRelativePosition(x, y)
+{
+	if (hasActiveDocument())
+	{
+		setLayerPosition(g_doc.width.as('px') * x, g_doc.height.as('px') * y);
+	}
+}
+
+function setLayerPosition(x, y)
+{
+	if (hasActiveDocument())
+	{
+		var saveUnit = preferences.rulerUnits;
+		var layerCenter = getLayerCenter();
+		var newX = (x != null) ? x - layerCenter.x : 0;
+		var newY = (y != null) ? layerCenter.y - y : 0;
+		preferences.rulerUnits = Units.PIXELS;
+		g_doc.activeLayer.translate(newX, newY);
+		preferences.rulerUnits = saveUnit;
+	}
+}
+
+function getLayerRect()
+{
+	var ret = {
+			x		: 0,
+			y		: 0,
+			width	: 0,
+			height	: 0
+	};
+	
+	if (hasActiveDocument())
+	{
+		var layer = app.activeDocument.activeLayer;
+		if (!layer.isBackgroundLayer)
+		{
+			var bounds = layer.bounds;
+			ret.x = bounds[0].as('px');
+			ret.y = bounds[1].as('px');
+			ret.width = (bounds[2].as('px') - bounds[0].as('px'));
+			ret.height = (bounds[3].as('px') - bounds[1].as('px'));
+		}
+	}
+	
+	return ret;
+}
+
+function getLayerCenter()
+{
+	var ret = {
+			x	: 0,
+			y	: 0
+	};
+	
+	if (hasActiveDocument())
+	{
+		var doc = app.activeDocument;
+		var rect = getLayerRect();
+		ret.x = (rect.x + (rect.width * 0.5));
+		ret.y = (doc.height.as('px') - (rect.y + (rect.height * 0.5)));
+	}
+	
+	return ret;
+}
+
+
