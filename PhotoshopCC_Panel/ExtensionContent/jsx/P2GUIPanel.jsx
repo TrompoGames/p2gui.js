@@ -62,6 +62,7 @@ var P2GUI = {
 			verticalSnapTo			: "P2GUI_obj_layout_vSnapTo",
 			horizontalRelative		: "P2GUI_obj_layout_hRelative",
 			verticalRelative		: "P2GUI_obj_layout_vRelative",
+			maintainRelativeScale	: "P2GUI_obj_layout_relativeScale",
 		}
 	},
 }
@@ -94,6 +95,7 @@ P2GUI.element.layoutDefaults = {
 	verticalSnapTo			: P2GUI.value.top,
 	horizontalRelative		: P2GUI.value.relativeH,
 	verticalRelative		: P2GUI.value.relativeV,
+	maintainRelativeScale	: P2GUI.value.YES,
 }
 
 //------------///////////////////////////////////------------//
