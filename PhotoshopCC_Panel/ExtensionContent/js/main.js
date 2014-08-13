@@ -27,6 +27,12 @@ function loadJSX(fileName)
     csInterface.evalScript('$.evalFile("' + extensionRoot + fileName + '")');
 }
 
+function validateNumber(evt)
+{
+	var theEvent = evt || window.event;
+	console.log(theEvent.toString());
+}
+
 var p2guiEnabled = !isPhotoshop;
 var showingSection = null;
 
@@ -133,6 +139,13 @@ var showingSection = null;
 		/* input text callbacks */
 		var textChanged = function()
 		{
+			function writeMetadataAndTriggerEvent(key, value)
+			{
+				writeMetaKeyValue(key, value);
+				console.log("onChanged_" + key + "(" + value + ")");
+				P2GUI.eventManager.emit("onChanged_" + key, value);
+			}
+			
 			console.log("input[type=text].blur()");
 			var element = $(this);
 			var key = element.prop("id");
@@ -154,13 +167,30 @@ var showingSection = null;
 					text = "";
 				}
 				
-				value = encodeURI(value);
-				
-				if (value != text)
+				if (value == P2GUI.value.relativeH)
 				{
-					writeMetaKeyValue(key, value);
-					console.log("onChanged_" + key + "(" + value + ")");
-					P2GUI.eventManager.emit("onChanged_" + key, value);
+					csInterface.evalScript("getLayerRelativeHorizontal()", function(result)
+					{
+						element.val(result);
+						writeMetadataAndTriggerEvent(key, result);
+					});
+				}
+				else if (value == P2GUI.value.relativeV)
+				{
+					csInterface.evalScript("getLayerRelativeVertical()", function(result)
+					{
+						element.val(result);
+						writeMetadataAndTriggerEvent(key, result);
+					});
+				}
+				else
+				{
+					value = encodeURI(value);
+					
+					if (value != text)
+					{
+						writeMetadataAndTriggerEvent(key, value);
+					}
 				}
 			});
 		};
@@ -172,7 +202,34 @@ var showingSection = null;
 		
 		/* bind reset event handlers */
 		P2GUI.eventManager.on("onAppEvent_open", reset);
-		P2GUI.eventManager.on("onAppEvent_select", reset);
+		P2GUI.eventManager.on("onAppEvent_changedDocument", reset);
+		
+		/* filter the select event */
+		var checkDocumentAndLayer = function()
+		{
+			csInterface.evalScript("updateSelectedDocument()", function(result)
+			{
+				if (result == "true")
+				{
+					console.log("onAppEvent_changedDocument");
+	        		P2GUI.eventManager.emit("onAppEvent_changedDocument");
+				}
+				else if (p2guiEnabled)
+				{
+					csInterface.evalScript("updateSelectedLayer()", function(result)
+					{
+						if (result == "true")
+						{
+			        		console.log("onAppEvent_changedLayer");
+			        		P2GUI.eventManager.emit("onAppEvent_changedLayer");
+						}
+					});
+				}
+			});
+		};
+		
+		P2GUI.eventManager.on("onAppEvent_select", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_make", checkDocumentAndLayer);
 		
 		/* register for photoshop events */
 		var event = new CSEvent("com.adobe.PhotoshopRegisterEvent", "APPLICATION");
