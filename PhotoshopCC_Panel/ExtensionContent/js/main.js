@@ -209,6 +209,12 @@ var showingSection = null;
 		
 		$("input[type=text]").blur(textChanged);
 		$("textarea").blur(textChanged);
+		$("input[type=text]").keyup(function(event)
+		{
+		    if(event.keyCode == 13){
+		        textChanged.apply(this);
+		    }
+		});
 		
 		reset();
 		
