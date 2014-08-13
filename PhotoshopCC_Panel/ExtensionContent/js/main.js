@@ -116,6 +116,18 @@ var showingSection = null;
 			activateP2GUI();
 		}, 300, true));
 		
+		/* button callbacks */
+		$('.button').on('click', Foundation.utils.debounce(function(e)
+		{
+			var element = $(this);
+			var id = element.prop("id");
+			if (id && id.length)
+			{
+				console.log("onClicked_" + id);
+				P2GUI.eventManager.emit("onClicked_" + id);
+			}
+		}, 300, true));
+		
 		/* checkbox callbacks */
 		$("input[type=checkbox]").change(function () {
 			var element = $(this);
