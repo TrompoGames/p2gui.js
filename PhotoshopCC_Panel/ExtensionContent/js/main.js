@@ -184,6 +184,7 @@ var showingSection = null;
 				{
 					csInterface.evalScript("getLayerRelativeHorizontal()", function(result)
 					{
+						result = parseFloat(result).toFixed(3);
 						element.val(result);
 						writeMetadataAndTriggerEvent(key, result);
 					});
@@ -192,6 +193,7 @@ var showingSection = null;
 				{
 					csInterface.evalScript("getLayerRelativeVertical()", function(result)
 					{
+						result = parseFloat(result).toFixed(3);
 						element.val(result);
 						writeMetadataAndTriggerEvent(key, result);
 					});
