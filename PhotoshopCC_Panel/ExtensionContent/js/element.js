@@ -11,6 +11,26 @@
 		updateMetadataAndGUI(P2GUI.element.layout, P2GUI.element.layoutDefaults);
 	};
 	
+	var updateRelativeHorizontal = function()
+	{
+		var element = jQuery("#" + P2GUI.element.layout.horizontalRelative);
+		if (element.is(':visible'))
+		{
+			element.val(P2GUI.value.relativeH);
+			element.blur();
+		}
+	};
+	
+	var updateRelativeVertical = function()
+	{
+		var element = jQuery("#" + P2GUI.element.layout.verticalRelative);
+		if (element.is(':visible'))
+		{
+			element.val(P2GUI.value.relativeV);
+			element.blur();
+		}
+	}
+	
 	var informationUpdateEvent = null;
 	var layoutUpdateEvent = null;
 	
@@ -62,6 +82,12 @@
 						}
 					}),
 					
+			onLayerMoved			: P2GUI.eventManager.on("onAppEvent_move", function()
+					{
+						updateRelativeHorizontal();
+						updateRelativeVertical();
+					}),
+					
 			hotizontalPosition		: P2GUI.eventManager.on("onChanged_" + P2GUI.element.layout.horizontalPosition, function(newValue)
 					{
 						var snapTo = jQuery("#horizontalSnapBox");
@@ -87,16 +113,7 @@
 						}
 					}),
 					
-			calculateHorizontal		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_horizontal_relative_calculate", function()
-					{
-						var element = jQuery("#" + P2GUI.element.layout.horizontalRelative);
-						if (element.is(':visible'))
-						{
-							element.val(P2GUI.value.relativeH);
-							element.blur();
-						}
-						
-					}),
+			calculateHorizontal		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_horizontal_relative_calculate", updateRelativeHorizontal),
 					
 			verticalPosition		: P2GUI.eventManager.on("onChanged_" + P2GUI.element.layout.verticalPosition, function(newValue)
 					{
@@ -123,16 +140,7 @@
 						}
 					}),
 					
-			calculateVertical		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_vertical_relative_calculate", function()
-					{
-						var element = jQuery("#" + P2GUI.element.layout.verticalRelative);
-						if (element.is(':visible'))
-						{
-							element.val(P2GUI.value.relativeV);
-							element.blur();
-						}
-						
-					}),
+			calculateVertical		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_vertical_relative_calculate", updateRelativeVertical),
 					
 			horizontalRelative		: P2GUI.eventManager.on("onChanged_" + P2GUI.element.layout.horizontalRelative, function(newValue)
 					{
