@@ -76,14 +76,26 @@
 						{
 							snapTo.hide();
 							relative.show();
-							relative.val(P2GUI.value.relativeH);
-							relative.blur();
+							var element = jQuery("#" + P2GUI.element.layout.horizontalRelative);
+							element.val(P2GUI.value.relativeH);
+							element.blur();
 						}
 						else if (newValue == P2GUI.value.snap)
 						{
 							snapTo.show();
 							relative.hide();
 						}
+					}),
+					
+			calculateHorizontal		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_horizontal_relative_calculate", function()
+					{
+						var element = jQuery("#" + P2GUI.element.layout.horizontalRelative);
+						if (element.is(':visible'))
+						{
+							element.val(P2GUI.value.relativeH);
+							element.blur();
+						}
+						
 					}),
 					
 			verticalPosition		: P2GUI.eventManager.on("onChanged_" + P2GUI.element.layout.verticalPosition, function(newValue)
@@ -100,14 +112,26 @@
 						{
 							snapTo.hide();
 							relative.show();
-							relative.val(P2GUI.value.relativeV);
-							relative.blur();
+							var element = jQuery("#" + P2GUI.element.layout.verticalRelative);
+							element.val(P2GUI.value.relativeV);
+							element.blur();
 						}
 						else if (newValue == P2GUI.value.snap)
 						{
 							snapTo.show();
 							relative.hide();
 						}
+					}),
+					
+			calculateVertical		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_vertical_relative_calculate", function()
+					{
+						var element = jQuery("#" + P2GUI.element.layout.verticalRelative);
+						if (element.is(':visible'))
+						{
+							element.val(P2GUI.value.relativeV);
+							element.blur();
+						}
+						
 					}),
 					
 			horizontalRelative		: P2GUI.eventManager.on("onChanged_" + P2GUI.element.layout.horizontalRelative, function(newValue)
@@ -119,7 +143,7 @@
 							element.val(P2GUI.value.relativeH);
 							element.blur();
 						}
-						else
+						else if (element.is(':visible'))
 						{
 							csInterface.evalScript("setLayerRelativeX(" + newValue + ")");
 						}
@@ -134,7 +158,7 @@
 							element.val(P2GUI.value.relativeV);
 							element.blur();
 						}
-						else
+						else if (element.is(':visible'))
 						{
 							csInterface.evalScript("setLayerRelativeY(" + newValue + ")");
 						}
