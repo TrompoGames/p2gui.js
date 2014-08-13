@@ -72,7 +72,8 @@ var showingSection = null;
 			select		: charIDToTypeID("slct").toString(),
 			move		: charIDToTypeID("move").toString(),
 			save		: charIDToTypeID("save").toString(),
-			canvasSize	: charIDToTypeID("CnvS").toString()
+			canvasSize	: charIDToTypeID("CnvS").toString(),
+			close		: charIDToTypeID("Cls ").toString(),
 		};
 	}
 
@@ -248,18 +249,21 @@ var showingSection = null;
 		
 		P2GUI.eventManager.on("onAppEvent_select", checkDocumentAndLayer);
 		P2GUI.eventManager.on("onAppEvent_make", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_close", checkDocumentAndLayer);
 		
 		/* register for photoshop events */
 		var event = new CSEvent("com.adobe.PhotoshopRegisterEvent", "APPLICATION");
 		event.extensionId = "com.trompogames.P2GUIPanel";
 		var eventIDs = "";
-		eventIDs += P2GUI.appEvents.open + ","; /* open */
-		eventIDs += P2GUI.appEvents.make + ","; /* make */
-		eventIDs += P2GUI.appEvents.del + ","; /* delete */
-		eventIDs += P2GUI.appEvents.select + ","; /* select */
-		eventIDs += P2GUI.appEvents.move + ","; /* move */
-		eventIDs += P2GUI.appEvents.save + ","; /* save */
-		eventIDs += P2GUI.appEvents.canvasSize; /* canvas size */
+		for (var key in P2GUI.appEvents)
+		{
+			if (eventIDs.length > 0)
+			{
+				eventIDs += ",";
+			}
+			eventIDs += P2GUI.appEvents[key];
+		}
+		
 		event.data = eventIDs;
 		csInterface.dispatchEvent(event);
 		csInterface.addEventListener("PhotoshopCallback", function(csEvent)
