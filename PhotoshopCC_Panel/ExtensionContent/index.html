@@ -114,7 +114,7 @@
 									</label>
     							</div>
     						</div>
-    						<div class="row">
+    						<div class="row collapse">
 								<fieldset>
 									<legend class="no-background">
 										Config Files
@@ -194,7 +194,7 @@
 										<span data-tooltip class="has-tip content-text-bold" title="Extra information passed at runtime. Use this field to define misc information needed by classes to handle this object at runtime. Although the recomended format for misc information is JSON, any text written in this field will be passed verbatim to the importer class">
 										Misc
 										</span>
-										<textarea id="P2GUI_obj_info_misc" placeholder="..." rows=14 style="resize: none;"></textarea>
+										<textarea id="P2GUI_obj_info_misc" placeholder="..." rows=13 style="resize: none;"></textarea>
 									</label>
 								</div>
 							</div>
@@ -203,13 +203,129 @@
 					
 					<!-- Element >>> Layout -->
 					<div id="element_layout">
-						<p class="content-text-bold">Tab #1 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper
-							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
-							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
-							pulvinar massa interdum risus ornare mollis.</p>
+						<form>
+							<!-- horizontal alignment -->
+							<div class="row collapse">
+								<div class="small-5 columns">
+									<label for="P2GUI_obj_layout_hPosition" id="autoClassTypeInput" class="content-text inline">
+										<span data-tooltip class="has-tip content-text-bold" title="<b>Horizontal position type.</b><br/><b>Absolute:</b> The absolute position with the top left corner as the origin is exported (same as snap to top/left).<br/><b>Relative:</b> The element's relative position to the stage is exported, represented as a percentile value.<br/><b>Snap:</b> Exports the element's edge distance to the defined side, if two sides are selected, the element is scaled at import time to preserve the distance between its edges and the selected sides.">
+										Horizontal position:
+										</span>
+									</label>
+								</div>
+								<div class="small-7 columns top-offset">
+									<select id=P2GUI_obj_layout_hPosition>
+										<option value="P2GUI_absolute">Absolute</option>
+										<option value="P2GUI_relative">Relative</option>
+										<option value="P2GUI_snap">Snap</option>
+							        </select>
+								</div>
+							</div>
+							
+							<div class="row collapse">
+								<!-- relative box -->
+								<div id="horizontalRelativeBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_hRelative" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="A value between 0 and 1 representing the percentage of the document the element should be placed at. Press 'calculate' to calculate the element's current percentage">
+											Percentage:
+											</span>
+										</label>
+									</div>
+									<div class="small-3 columns">
+										<input class="top-offset" id="P2GUI_obj_layout_hRelative" type="text" placeholder="%" />
+									</div>
+									<div class="small-1 columns">
+										<span class="content-text-bold">%</span>
+									</div>
+									<div class="small-3 columns">
+										<a href="#" class="button tiny radius">Calculate</a>
+									</div>
+								</div>
+								
+								<!-- snap box -->
+								<div id="horizontalSnapBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_hSnapTo" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="Select the edge of the screen this element will snap to">
+											Snap to:
+											</span>
+										</label>
+									</div>
+									<div class="small-7 columns">
+										<select id=P2GUI_obj_layout_hSnapTo>
+											<option value="P2GUI_left">Left</option>
+											<option value="P2GUI_right">Right</option>
+											<option value="P2GUI_leftRight">Left/right</option>
+								        </select>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row collapse" style="margin:2rem">
+							</div>
+							
+							<!-- vertical alignment -->
+							<div class="row collapse">
+								<div class="small-5 columns">
+									<label for="P2GUI_obj_layout_vPosition" id="autoClassTypeInput" class="content-text inline">
+										<span data-tooltip class="has-tip content-text-bold" title="<b>Vertical position type.</b><br/><b>Absolute:</b> The absolute position with the top left corner as the origin is exported (same as snap to top/left).<br/><b>Relative:</b> The element's relative position to the stage is exported, represented as a percentile value.<br/><b>Snap:</b> Exports the element's edge distance to the defined side, if two sides are selected, the element is scaled at import time to preserve the distance between its edges and the selected sides.">
+										Vertical position:
+										</span>
+									</label>
+								</div>
+								<div class="small-7 columns">
+									<select id=P2GUI_obj_layout_vPosition>
+										<option value="P2GUI_absolute">Absolute</option>
+										<option value="P2GUI_relative">Relative</option>
+										<option value="P2GUI_snap">Snap</option>
+							        </select>
+								</div>
+							</div>
+							
+							<div class="row collapse">
+								<!-- relative box -->
+								<div id="verticalRelativeBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_vRelative" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="A value between 0 and 1 representing the percentage of the document the element should be placed at. Press 'calculate' to calculate the element's current percentage">
+											Percentage:
+											</span>
+										</label>
+									</div>
+									<div class="small-3 columns">
+										<input class="top-offset" id="P2GUI_obj_layout_vRelative" type="text" placeholder="%" />
+									</div>
+									<div class="small-1 columns">
+										<span class="content-text-bold">%</span>
+									</div>
+									<div class="small-3 columns">
+										<a href="#" class="button tiny radius">Calculate</a>
+									</div>
+								</div>
+								
+								<!-- snap box -->
+								<div id="verticalSnapBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_vSnapTo" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="Select the edge of the screen this element will snap to">
+											Snap to:
+											</span>
+										</label>
+									</div>
+									<div class="small-7 columns">
+										<select id=P2GUI_obj_layout_vSnapTo>
+											<option value="P2GUI_top">Top</option>
+											<option value="P2GUI_bottom">Bottom</option>
+											<option value="P2GUI_topBottom">Top/bottom</option>
+								        </select>
+									</div>
+								</div>
+							</div>
+						</form>
 					</div>
 
+					<!-- Element >>> Export Options -->
 					<div id="element_exportOptions">
 						<p class="content-text-bold">Tab #2 content goes here!</p>
 						<p class="content-text">Donec pulvinar neque sed semper
