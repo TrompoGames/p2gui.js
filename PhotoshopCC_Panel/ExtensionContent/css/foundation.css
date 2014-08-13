@@ -1146,11 +1146,15 @@ button, .button {
     padding-left: 1.75rem;
     font-size: 0.8125rem; }
   button.tiny, .button.tiny {
-    padding-top: 0.625rem;
-    padding-right: 1.25rem;
-    padding-bottom: 0.6875rem;
-    padding-left: 1.25rem;
+  	background-color: #7d7d7d;
+  	border-color: #878787;
+    padding-top: 0.45rem;
+    padding-right: 1rem;
+    padding-bottom: 0.45rem;
+    padding-left: 1rem;
     font-size: 0.6875rem; }
+  button.tiny:hover, button.tiny:focus, .button.tiny:hover, .button.tiny:focus {
+    background-color: #333333; }
   button.expand, .button.expand {
     padding-right: 0;
     padding-left: 0;
@@ -4644,7 +4648,7 @@ textarea {
   color: rgba(0, 0, 0, 0.75);
   display: block;
   font-size: 0.8rem;
-  margin: 0 0 1rem 0;
+  margin: 0.16rem 0 1rem 0;
   padding: 0.5rem;
   height: 1.4rem;
   width: 100%;
@@ -4815,7 +4819,7 @@ input[type="file"] {
 fieldset {
   border: 1px solid #dddddd;
   padding: 0.2rem 1rem 0.2rem 1rem;
-  margin: 1.125rem 0; }
+  margin: 0; }
   fieldset legend {
     font-weight: bold;
     background: white;
