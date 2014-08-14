@@ -1,6 +1,6 @@
 (function()
 {
-	/* infomration */
+	/* supporting functions */
 	var updateInformation = function()
 	{
 		updateMetadataAndGUI(P2GUI.element.information, P2GUI.element.informationDefaults);
@@ -9,6 +9,11 @@
 	var updateLayout = function()
 	{
 		updateMetadataAndGUI(P2GUI.element.layout, P2GUI.element.layoutDefaults);
+	};
+	
+	var updateExportOptions = function()
+	{
+		updateMetadataAndGUI(P2GUI.element.exportOptions, P2GUI.element.exportOptionsDefaults);
 	};
 	
 	var updateRelativeHorizontal = function()
@@ -31,9 +36,12 @@
 		}
 	}
 	
+	/* supporting variables */
 	var informationUpdateEvent = null;
 	var layoutUpdateEvent = null;
+	var exportOptionsUpdateEvent = null;
 	
+	/* information */
 	var infomration = {
 			
 			onEnter					: P2GUI.eventManager.on("onEnter_element_information", function()
@@ -65,6 +73,7 @@
 					}),
 	};
 	
+	/* layout */
 	var layout = {
 			
 			onEnter					: P2GUI.eventManager.on("onEnter_element_layout", function()
@@ -169,6 +178,24 @@
 						else if (element.is(':visible'))
 						{
 							csInterface.evalScript("setLayerRelativeY(" + newValue + ")");
+						}
+					}),
+	};
+	
+	/* export options */
+	var exportOptions = {
+			onEnter					: P2GUI.eventManager.on("onEnter_element_exportOptions", function()
+					{
+						updateExportOptions();
+						exportOptionsUpdateEvent = P2GUI.eventManager.on("onAppEvent_changedLayer", updateExportOptions);
+					}),
+					
+			onExit					: P2GUI.eventManager.on("onExit_element_exportOptions", function()
+					{
+						if (exportOptionsUpdateEvent != null)
+						{
+							P2GUI.eventManager.off(exportOptionsUpdateEvent);
+							exportOptionsUpdateEvent = null;
 						}
 					}),
 	};

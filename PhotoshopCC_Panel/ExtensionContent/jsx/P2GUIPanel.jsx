@@ -27,6 +27,8 @@ var P2GUI = {
 		topBottom	: "P2GUI_topBottom",
 		relativeH	: "P2GUI_relative_horizontal",
 		relativeV	: "P2GUI_relative_vertical",
+		exportAll	: "P2GUI_exportAll",
+		onlyBasic	: "P2GUI_onlyBasic"
 	},
 
 	/* document */
@@ -63,6 +65,13 @@ var P2GUI = {
 			horizontalRelative		: "P2GUI_obj_layout_hRelative",
 			verticalRelative		: "P2GUI_obj_layout_vRelative",
 			maintainRelativeScale	: "P2GUI_obj_layout_relativeScale",
+		},
+		
+		/* export options */
+		exportOptions	: {
+			exportPNG				: "P2GUI_obj_exportConfig_exportPNG",
+			ignore					: "P2GUI_obj_exportConfig_ignore",
+			overrideClassFields		: "P2GUI_obj_exportConfig_classFields"
 		}
 	},
 }
@@ -96,7 +105,15 @@ P2GUI.element.layoutDefaults = {
 	horizontalRelative		: P2GUI.value.relativeH,
 	verticalRelative		: P2GUI.value.relativeV,
 	maintainRelativeScale	: P2GUI.value.YES,
-}
+};
+
+/* element export options defaults */
+P2GUI.element.exportOptionsDefaults = {
+	exportPNG				: P2GUI.value.YES,
+	quickExportPNG			: P2GUI.value.none,
+	ignore					: P2GUI.value.NO,
+	overrideClassFields		: P2GUI.value.none
+};
 
 //------------///////////////////////////////////------------//
 //------------///////////// GLOBALS /////////////------------//

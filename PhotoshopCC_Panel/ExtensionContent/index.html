@@ -332,7 +332,7 @@
 							<div class="row collapse">
     							<div class="small-12 columns">
     								<label id="elementRelativeScale" class="content-text">
-										<span data-tooltip class="has-tip content-text-bold" title="If enabled, elements' scale relative to the document size will be maintained when placed on bigger, smaller or different aspect ratio screens">
+										<span data-tooltip class="has-tip content-text-bold" title="If enabled, the element's scale relative to the document size will be maintained when placed on bigger, smaller or different aspect ratio screens">
 										Preserve relative scale
 										</span>
 										&emsp;&emsp;&emsp;
@@ -345,14 +345,58 @@
 
 					<!-- Element >>> Export Options -->
 					<div id="element_exportOptions">
-						<p class="content-text-bold">Tab #2 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper
-							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
-							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
-							pulvinar massa interdum risus ornare mollis. In hac habitasse
-							platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing
-							nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis
-							vel.</p>
+						<form>
+							<!-- Export PNG -->
+							<div class="row">
+    							<div class="small-12 columns">
+    								<label id="exportPNG" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="If enabled, the contents of the element's layer will be exported as a PNG file and placed in the defined export image path">
+										Export PNG
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_exportConfig_exportPNG" type="checkbox" />
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- Quick Export PNG -->
+    						<div class="row">
+    							<div class="small-12 columns">
+    								<label id="quickExportPNG" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Exports the current layer as a PNG file and places it in the defined export image path">
+											<a href="#" id="P2GUI_obj_exportConfig_quickExport" class="button tiny radius">Quick Export PNG</a>
+										</span>
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- Ignore -->
+    						<div class="row">
+    							<div class="small-12 columns">
+    								<label id="exportPNG" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="If enabled, this element and all of its sub-elements (if any) will not be exported">
+										Ignore
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_exportConfig_ignore" type="checkbox" />
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- Class fields override -->
+    						<div class="small-12 columns">
+									<label id="classFieldsOverrideInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="<b>Defines if this element should override the class fields specified in the document configuration.</b><br /><b>None:</b> Class fields will be exported as specified in the document configuration<br /><b>Export All:</b> This element will be exported with all the information available, including photoshop's layer information, effects and metadata<br /><b>Only Basic Info:</b> This element will be exported with all the information specified in this panel plus only the basic information needed to load, size and position the asset">
+										Override class fields
+										</span>
+										<select id="P2GUI_obj_exportConfig_classFields">
+											<option value="P2GUI_none">None</option>
+											<option value="P2GUI_exportAll">Export All</option>
+											<option value="P2GUI_onlyBasic">Only Basic Info</option>
+								        </select>
+									</label>
+								</div>
+						</form>
 					</div>
 
 					<div id="tab3">
