@@ -52,9 +52,10 @@
 					<li><a href="#element_information">Information</a></li>
 					<li><a href="#element_layout">Layout</a></li>
 					<li><a href="#element_exportOptions">Export Options</a></li>
+					<li><label>Export</label></li>
+					<li><a href="#export_export">Export...</a></li>
 					<li><label>P2GUI</label></li>
-					<li><a href="#tab3">About...</a></li>
-					<li><a href="#tab4">Trompo Games</a></li>
+					<li><a href="#P2GUI_about">About...</a></li>
 				</ul>
 			</aside>
 
@@ -343,12 +344,16 @@
 						</form>
 					</div>
 
-					<!-- Element >>> Export Options -->
+					<!-- Element >>> Export Options -->		
 					<div id="element_exportOptions">
 						<form>
-							<!-- Export PNG -->
+							<!-- spacer -->
+							<div class="row collapse" style="margin:1rem">
+							</div>
+							
 							<div class="row">
-    							<div class="small-12 columns">
+								<!-- Export PNG -->
+    							<div class="small-6 columns">
     								<label id="exportPNG" class="content-text">
 										<span data-tooltip class="has-tip content-text-bold" title="If enabled, the contents of the element's layer will be exported as a PNG file and placed in the defined export image path">
 										Export PNG
@@ -357,23 +362,10 @@
 										<input id="P2GUI_obj_exportConfig_exportPNG" type="checkbox" />
 									</label>
     							</div>
-    						</div>
-    						
-    						<!-- Quick Export PNG -->
-    						<div class="row">
-    							<div class="small-12 columns">
-    								<label id="quickExportPNG" class="content-text">
-										<span data-tooltip class="has-tip content-text-bold" title="Exports the current layer as a PNG file and places it in the defined export image path">
-											<a href="#" id="P2GUI_obj_exportConfig_quickExport" class="button tiny radius">Quick Export PNG</a>
-										</span>
-									</label>
-    							</div>
-    						</div>
-    						
-    						<!-- Ignore -->
-    						<div class="row">
-    							<div class="small-12 columns">
-    								<label id="exportPNG" class="content-text">
+    							
+    							<!-- Ignore -->
+    							<div class="small-6 columns">
+    								<label id="ignoreForExport" class="content-text right">
 										<span data-tooltip class="has-tip content-text-bold" title="If enabled, this element and all of its sub-elements (if any) will not be exported">
 										Ignore
 										</span>
@@ -383,8 +375,24 @@
     							</div>
     						</div>
     						
+    						<!-- spacer -->
+							<div class="row collapse" style="margin:1rem">
+							</div>
+    						
+    						<div class="row">
+    							<!-- Quick Export PNG -->
+    							<div class="small-7 small-centered columns">
+    								<label id="quickExportPNG" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Exports the current layer as a PNG file and places it in the defined export image path">
+											<a href="#" id="P2GUI_obj_exportConfig_quickExport" class="button tiny radius">Quick Export PNG</a>
+										</span>
+									</label>
+    							</div>
+    						</div>
+    						
     						<!-- Class fields override -->
-    						<div class="small-12 columns">
+    						<div class="row">
+    							<div class="small-12 columns">
 									<label id="classFieldsOverrideInput" class="content-text">
 										<span data-tooltip class="has-tip content-text-bold" title="<b>Defines if this element should override the class fields specified in the document configuration.</b><br /><b>None:</b> Class fields will be exported as specified in the document configuration<br /><b>Export All:</b> This element will be exported with all the information available, including photoshop's layer information, effects and metadata<br /><b>Only Basic Info:</b> This element will be exported with all the information specified in this panel plus only the basic information needed to load, size and position the asset">
 										Override class fields
@@ -396,27 +404,62 @@
 								        </select>
 									</label>
 								</div>
+							</div>
 						</form>
 					</div>
-
-					<div id="tab3">
-						<p class="content-text-bold">Tab #3 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper
-							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
-							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
-							pulvinar massa interdum ri.</p>
+					
+					<!-- Export >>> Export... -->
+					<div id="export_export">
+						<div class="row">
+							<p class="content-text-bold">Instructions:</p>
+							<ol class="content-text">
+								<li>Check the export paths in the document configuration</li>
+								<li>Make sure all layers have unique names</li>
+								<li>Double check for spelling mistakes in the layer information section</li>
+								<li>If you are having issues with sizing, try enabling/disabling the "Preserve relative scale" option on your layers</li>
+								<li>Enable the "Ignore" option for layers that you don't want to export</li>
+								<li>Only enable the "Export PNG" option for layers which you want to be exported as images</li>
+								<li>Brace yourself</li>
+								<li>Click the red button!</li>
+							</ol>
+						</div>
+						<li style="display: inline-block; width: 100%; max-width: 100%;">
+							<a id="P2GUI_exportDocument" href="#" class="button alert expand"
+							style="position: absolute; bottom: 4%; left: 0;">EXPORT</a>
+						</li>
 					</div>
-
-					<div id="tab4">
-						<p class="content-text-bold">Tab #4 content goes here!</p>
-						<p class="content-text">Donec pulvinar neque sed semper
-							lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit
-							eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec
-							pulvinar massa interdum risus ornare mollis. In hac habitasse
-							platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing
-							nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis
-							vel.</p>
+					
+					
+					<div id="P2GUI_about">
+						<div class="row collapse">
+							<img src="./assets/TrompoGames_Banner_950x150.png" alt="Trompo Games Inc." />
+						</div>
+						
+						<!-- spacer -->
+						<div class="row collapse" style="margin:1rem">
+						</div>
+						
+						<div class="row">
+							<p class="content-text"><br />P2GUI v1.0.0 -Norris-<br />Created by Trompo Games Inc. 2014</p>
+							<p class="content-text">
+							<b>P2GUI depends on these open source projects:</b><br />
+							<b>jquery - </b><a href="http://jquery.com/" target="_blank">http://jquery.com/</a><br />
+							<b>Foundation - </b><a href="http://foundation.zurb.com/" target="_blank">http://foundation.zurb.com/</a><br />
+							<b>json2 - </b><a href="https://github.com/douglascrockford/JSON-js" target="_blank">https://github.com/douglascrockford/JSON-js</a><br />
+							<b>minibus.js - </b><a href="https://github.com/axelpale/minibus" target="_blank">https://github.com/axelpale/minibus</a><br />
+							<b>Modernizr - </b><a href="http://modernizr.com/" target="_blank">http://modernizr.com/</a><br />
+							</p>
+						</div>
+						
+						<!-- spacer -->
+						<div class="row collapse" style="margin:1rem">
+						</div>
+						
+						<div class="row">
+							<p class="content-text-bold text-center">"2014 is the year of the ant"</p>
+						</div>
 					</div>
+					
 				</div>
 			</section>
 
