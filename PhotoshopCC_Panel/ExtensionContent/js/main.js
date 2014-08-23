@@ -48,6 +48,9 @@ var showingSection = null;
 		/* load JSON in the jsx engine */
 		loadJSX("lib/json2.js");
 		
+		/* load the exporter in the jsx engine */
+		loadJSX("jsx/Exporter.jsx");
+		
 		/* get the P2GUI constants from the jsx */
 		csInterface.evalScript("bridgeObject(P2GUI)", function(result)
 		{
