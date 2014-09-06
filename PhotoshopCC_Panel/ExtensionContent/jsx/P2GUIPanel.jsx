@@ -70,9 +70,19 @@ var P2GUI = {
 		/* export options */
 		exportOptions	: {
 			exportPNG				: "P2GUI_obj_exportConfig_exportPNG",
-			ignore					: "P2GUI_obj_exportConfig_ignore",
+			exportJSON				: "P2GUI_obj_exportConfig_exportJSON",
+			ignoreChildren			: "P2GUI_obj_exportConfig_ignoreChildren",
 			overrideClassFields		: "P2GUI_obj_exportConfig_classFields"
 		}
+	},
+	
+	/* exporter */
+	exporter		: {
+		/* overrides */
+		overrides		: {
+			exportJSON				: "P2GUI_exp_overrides_exportJSON",
+			exportPNG				: "P2GUI_exp_overrides_exportPNG",
+		},
 	},
 }
 
@@ -110,16 +120,24 @@ P2GUI.element.layoutDefaults = {
 /* element export options defaults */
 P2GUI.element.exportOptionsDefaults = {
 	exportPNG				: P2GUI.value.YES,
+	exportJSON				: P2GUI.value.YES,
+	ignoreChildren			: P2GUI.value.NO,
+	overrideClassFields		: P2GUI.value.none,
 	quickExportPNG			: P2GUI.value.none,
-	ignore					: P2GUI.value.NO,
-	overrideClassFields		: P2GUI.value.none
 };
+
+/* exporter overrides defaults */
+P2GUI.exporter.overridesDefaults = {
+	exportJSON				: P2GUI.value.YES,
+	exportPNG				: P2GUI.value.YES,
+}
 
 //------------///////////////////////////////////------------//
 //------------///////////// GLOBALS /////////////------------//
 //------------///////////////////////////////////------------//
 var g_doc = null;
 var g_layer = null;
+var g_isExporting = false;
 
 //------------///////////////////////////////////------------//
 //------------//// TRACK LAYER AND DOCUMENT /////------------//
@@ -629,5 +647,115 @@ function getLayerCenter()
 	
 	return ret;
 }
+
+
+//------------///////////////////////////////////------------//
+//------------/// EXPORTER UTILITY FUNCTIONS ////------------//
+//------------///////////////////////////////////------------//
+
+function isExporting()
+{
+	return g_isExporting;
+}
+
+function setIsExporting(flag)
+{
+	g_isExporting = flag
+}
+
+function exportFolderPNG()
+{
+	var exportFolder = null;
+	if (hasActiveDocument())
+	{
+		exportFolder = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.exportImagePath);
+		if (!exportFolder || exportFolder == P2GUI.value.none || exportFolder.length == 0)
+		{
+			exportFolder = "P2GUI/PNG";
+		}
+		exportFolder = app.activeDocument.fullName.path + "/" + exportFolder + "/";
+	}
+	
+	return exportFolder;
+}
+
+function exportFolderJSON()
+{
+	var exportFolder = null;
+	if (hasActiveDocument())
+	{
+		exportFolder = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.exportJsonPath);
+		if (!exportFolder || exportFolder == P2GUI.value.none || exportFolder.length == 0)
+		{
+			exportFolder = "P2GUI/JSON";
+		}
+		exportFolder = app.activeDocument.fullName.path + "/" + exportFolder + "/";
+	}
+	return exportFolder;
+}
+
+function exportLayoutName()
+{
+	var layoutName = null;
+	
+	if (hasActiveDocument())
+	{
+		layoutName = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.exportJsonName);
+		if (!layoutName || layoutName == P2GUI.value.none || layoutName.length == 0)
+		{
+			layoutName = app.activeDocument.name.match(/([^\.]+)/)[1];;
+		}
+	}
+	
+	return layoutName;
+}
+
+function exportCurrentLayerToPNG()
+{
+	if (hasActiveDocument())
+	{
+		var layer = app.activeDocument.activeLayer;
+		if (!layer.isBackgroundLayer)
+		{	
+			loadXMPLibrary();
+			var exportFolder = exportFolderPNG();
+			var exportName = getObjectMetadata(layer, P2GUI.element.information.name);
+			unloadXMPLibrary();
+			
+			if (exportName)
+			{
+				exportLayerToFile(layer, exportName, exportFolder);
+			}
+			else
+			{
+				alert("Layer Metadata ERROR: Cannot export layer to file.")
+			}
+		}
+	}
+}
+
+
+function exportCurrentDocumentLayout()
+{
+	if (hasActiveDocument())
+	{
+		loadXMPLibrary();
+		var folderPNG = exportFolderPNG();
+		var folderJSON = exportFolderJSON();
+		var exportName = exportLayoutName();
+		unloadXMPLibrary();
+		
+		try
+		{
+			exportLayout(app.activeDocument, exportName, folderJSON, folderPNG, "1.0.0");
+		}
+		catch (e)
+		{
+			alert("Exception: " + e);
+		}
+	}
+}
+
+
 
 

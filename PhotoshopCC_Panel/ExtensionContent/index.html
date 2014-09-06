@@ -53,6 +53,7 @@
 					<li><a href="#element_layout">Layout</a></li>
 					<li><a href="#element_exportOptions">Export Options</a></li>
 					<li><label>Export</label></li>
+					<li><a href="#exporter_overrides">Overrides</a></li>
 					<li><a href="#export_export">Export...</a></li>
 					<li><label>P2GUI</label></li>
 					<li><a href="#P2GUI_about">About...</a></li>
@@ -363,14 +364,27 @@
 									</label>
     							</div>
     							
-    							<!-- Ignore -->
+    							<!-- Export JSON -->
     							<div class="small-6 columns">
-    								<label id="ignoreForExport" class="content-text right">
-										<span data-tooltip class="has-tip content-text-bold" title="If enabled, this element and all of its sub-elements (if any) will not be exported">
-										Ignore
+    								<label id="exportJSON" class="content-text right">
+										<span data-tooltip class="has-tip content-text-bold" title="If disabled, this element and all of its sub-elements (if any) will not be exported in the JSON layout, the export PNG option is independent from this value">
+										Export JSON
 										</span>
 										&emsp;&emsp;&emsp;
-										<input id="P2GUI_obj_exportConfig_ignore" type="checkbox" />
+										<input id="P2GUI_obj_exportConfig_exportJSON" type="checkbox" />
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- Ignore children -->
+    						<div class="row">
+    							<div class="small-8 small-centered columns">
+    								<label id="ignoreChildren" class="content-text right">
+										<span data-tooltip class="has-tip content-text-bold" title="If the export JSON option is enabled, this is a group layer and this option is enabled, all the group's sub-layers will be ignored.">
+										Ignore Children (if any)
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_exportConfig_ignoreChildren" type="checkbox" />
 									</label>
     							</div>
     						</div>
@@ -408,6 +422,35 @@
 						</form>
 					</div>
 					
+					<!-- Export >>> Overrides -->
+					<div id="exporter_overrides">
+						<!-- Export PNG -->
+   						<div class="row">
+   							<div class="small-8 small-centered columns">
+   								<label id="exporterExportPNG" class="content-text">
+									<span data-tooltip class="has-tip content-text-bold" title="When this option is disabled no element will be exported as a PNG file even if otherwise configured in such element's configuration. When enabled, only elements configured to export PNG files will be processed">
+									Export PNG
+									</span>
+									&emsp;&emsp;&emsp;
+									<input id="P2GUI_exp_overrides_exportPNG" type="checkbox" />
+								</label>
+   							</div>
+   						</div>
+   						
+   						<!-- Export JSON -->
+   						<div class="row">
+   							<div class="small-8 small-centered columns">
+   								<label id="exporterExportJSON" class="content-text">
+									<span data-tooltip class="has-tip content-text-bold" title="When this option is disabled the exporter will not write a JSON file. When enabled, only elements configured to export JSON files will be processed">
+									Export JSON
+									</span>
+									&emsp;&emsp;&emsp;
+									<input id="P2GUI_exp_overrides_exportJSON" type="checkbox" />
+								</label>
+   							</div>
+   						</div>
+					</div>
+					
 					<!-- Export >>> Export... -->
 					<div id="export_export">
 						<div class="row">
@@ -429,7 +472,7 @@
 						</li>
 					</div>
 					
-					
+					<!-- About -->
 					<div id="P2GUI_about">
 						<div class="row collapse">
 							<img src="./assets/TrompoGames_Banner_950x150.png" alt="Trompo Games Inc." />

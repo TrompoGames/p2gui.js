@@ -198,6 +198,17 @@
 							exportOptionsUpdateEvent = null;
 						}
 					}),
+			
+			onExportPNG				: P2GUI.eventManager.on("onClicked_P2GUI_obj_exportConfig_quickExport", function()
+					{
+						csInterface.evalScript("setIsExporting(true)",  function(result)
+						{
+							csInterface.evalScript("exportCurrentLayerToPNG()", function(result)
+							{
+								setTimeout(function(){csInterface.evalScript("setIsExporting(false)");}, 1);
+							});
+						});
+					}),
 	};
 	
 })();

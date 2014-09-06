@@ -64,6 +64,7 @@ var showingSection = null;
 			/* load section handlers */
 			sectionHandlers.document = require("./js/document.js");
 			sectionHandlers.document = require("./js/element.js");
+			sectionHandlers.document = require("./js/export.js");
 			
 		});
 		
@@ -167,7 +168,7 @@ var showingSection = null;
 			var key = element.prop("id");
 			var value = element.val();
 			var functionName = "getLayerProperties";
-			if (key.lastIndexOf("P2GUI_doc", 0) === 0)
+			if (key.lastIndexOf("P2GUI_doc", 0) === 0 || key.lastIndexOf("P2GUI_exp", 0) === 0)
 			{
 				functionName = "getDocumentProperties";
 			}
@@ -273,22 +274,28 @@ var showingSection = null;
 		csInterface.dispatchEvent(event);
 		csInterface.addEventListener("PhotoshopCallback", function(csEvent)
 		{
-			var dataArray = csEvent.data.split(",");
-			var eventID = dataArray[0].toString();
-			for(var key in P2GUI.appEvents)
+			csInterface.evalScript("isExporting()", function(result)
 			{
-			    if(P2GUI.appEvents.hasOwnProperty(key))
-			    {
-			        if(P2GUI.appEvents[key] === eventID)
-			        {
-			        	if (p2guiEnabled || eventID == P2GUI.appEvents.open || eventID == P2GUI.appEvents.select)
-			        	{
-			        		console.log("onAppEvent_" + key);
-			        		P2GUI.eventManager.emit("onAppEvent_" + key);
-			        	}
-			        }
-			    }
-			}
+				if (result == "false")
+				{
+					var dataArray = csEvent.data.split(",");
+					var eventID = dataArray[0].toString();
+					for(var key in P2GUI.appEvents)
+					{
+					    if(P2GUI.appEvents.hasOwnProperty(key))
+					    {
+					        if(P2GUI.appEvents[key] === eventID)
+					        {
+					        	if (p2guiEnabled || eventID == P2GUI.appEvents.open || eventID == P2GUI.appEvents.select)
+					        	{
+					        		console.log("onAppEvent_" + key);
+					        		P2GUI.eventManager.emit("onAppEvent_" + key);
+					        	}
+					        }
+					    }
+					}
+				}
+			});
 		});
 	});
 	
@@ -373,6 +380,16 @@ var showingSection = null;
 			    if(P2GUI.document.hasOwnProperty(key))
 			    {
 			        if(P2GUI.document[key] === reference) {
+			        	isDocumentSection = true;
+			        }
+			    }
+			}
+			
+			for(var key in P2GUI.exporter)
+			{
+			    if(P2GUI.exporter.hasOwnProperty(key))
+			    {
+			        if(P2GUI.exporter[key] === reference) {
 			        	isDocumentSection = true;
 			        }
 			    }
@@ -519,7 +536,7 @@ var showingSection = null;
 	function writeMetaKeyValue(key, value)
 	{
 		var functionName = "setLayerProperties";
-		if (key.lastIndexOf("P2GUI_doc", 0) === 0)
+		if (key.lastIndexOf("P2GUI_doc", 0) === 0  || key.lastIndexOf("P2GUI_exp", 0) === 0)
 		{
 			functionName = "setDocumentProperties";
 		}
