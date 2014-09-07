@@ -17,7 +17,9 @@ var g_cocosAutoClassDescriptor = {
 };
 
 var g_defaultClassFieldsDescriptor = {
-	properties : true,
+	defaultFields	: {
+		properties : true,
+	},
 }
 
 var Utf8 = {
@@ -203,7 +205,7 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     for (var i = 0; i < layers.length; ++i)
     {
         var layer = layers[i];
-        // at this point we only care about groups so ignore any other layers //
+        // ignore invisible lawyer //
         if (layer.visible)
         {
         	var processedData = processNode(doc, layer, pngExportPath, exportedNames, autoClassDescriptor, classFieldsDescriptor, globalExportPNG, globalExportJSON);
@@ -378,15 +380,43 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	
 	    if (metadata['exportOptions']['overrideClassFields'] != P2GUI.value.onlyBasic)
 	    {
-	    	var exportAll = (metadata['exportOptions']['overrideClassFields'] != P2GUI.value.exportAll);
+	    	var fieldsDescriptor = classFieldsDescriptor[metadata['information']['className']];
+	    	if (!fieldsDescriptor)
+	    	{
+	    		fieldsDescriptor = classFieldsDescriptor['defaultFields'];
+	    	}
 	    	
-		    ret['properties'] = {};
-		    for (var i = 0; i < layerDescription.count; ++i)
-		    {
-		        var propertyID = layerDescription.getKey (i);
-		        var propertyValue = getKeyValueFromActionDecriptor (layerDescription, propertyID);
-		        ret['properties'][typeIDToStringID(propertyID)] = propertyValue;
-		    }
+	    	fieldsDescriptor = fieldsDescriptor['properties'];
+	    	if (metadata['exportOptions']['overrideClassFields'] != P2GUI.value.exportAll || fieldsDescriptor === true)
+	    	{
+	    		fieldsDescriptor = null;
+	    	}
+	    	
+	    	// kind of hungover while writing this code, fix it up... some day? //
+	    	if (fieldsDescriptor !== false)
+	    	{
+			    ret['properties'] = {};
+			    for (var i = 0; i < layerDescription.count; ++i)
+			    {	
+			        var propertyID = layerDescription.getKey (i);
+			        var fieldObject = null;
+			    	if (fieldsDescriptor != null)
+			    	{
+			    		fieldObject = fieldsDescriptor[propertyID];
+			    	}
+			    	
+			    	if (fieldsDescriptor == null || fieldObject)
+			    	{
+			    		if (fieldObject === true || !fieldObject)
+			    		{
+			    			fieldObject = null;
+			    		}
+			    		
+			    		var propertyValue = getKeyValueFromActionDecriptor (layerDescription, propertyID, fieldObject);
+			    		ret['properties'][typeIDToStringID(propertyID)] = propertyValue;
+			    	}
+			    }
+	    	}
 	    }
 	
 	    if (node.typename == "LayerSet" && metadata['exportOptions']['ignoreChildren'] != P2GUI.value.YES)
@@ -427,7 +457,7 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 }
 
 //----------------------------------------------------------------------------------------------------
-function getKeyValueFromActionDecriptor( object, key )
+function getKeyValueFromActionDecriptor( object, key, fieldObject )
 {
     var elementType = object.getType (key);
     var ret;
@@ -460,29 +490,42 @@ function getKeyValueFromActionDecriptor( object, key )
         case DescValueType.LISTTYPE:
             {
                 ret = [];
-                //ret = "{ ";
                 var elementList = object.getList (key);
                 for (var i = 0; i < elementList.count; ++i)
                 {
-                    ret[i] = getKeyValueFromActionDecriptor(elementList, i);
-                    //ret += "element" + i + ": { " + getKeyValueFromActionDecriptor(elementList, i) + " } \n";
+                    ret[i] = getKeyValueFromActionDecriptor(elementList, i, fieldObject);
                 }
-                //ret += "}\n\n";
             }
             break;
             
         case DescValueType.OBJECTTYPE:
             {
+	        	if (fieldObject === true)
+	            {
+	            	fieldObject = null;
+	            }
+	        	
                 ret = {};
-                //ret = "{ ";
                 var elementObject = object.getObjectValue (key);
                 for (var i = 0; i < elementObject.count; ++i)
                 {
                     var elementKey = elementObject.getKey (i);
-                    ret[typeIDToStringID(elementKey)] = getKeyValueFromActionDecriptor(elementObject, elementKey);
-                    //ret += typeIDToStringID(elementKey) + ": { " + getKeyValueFromActionDecriptor(elementObject, elementKey) + " } \n";
+                    var childFieldObject = null;
+    		    	if (fieldObject != null)
+    		    	{
+    		    		fieldObject = fieldObject[typeIDToStringID(elementKey)];
+    		    	}
+    		    	
+    		    	if (fieldObject == null || childFieldObject)
+    		    	{
+    		    		if (childFieldObject === true || !childFieldObject)
+    		    		{
+    		    			childFieldObject = null;
+    		    		}
+    		    		
+    		    		ret[typeIDToStringID(elementKey)] = getKeyValueFromActionDecriptor(elementObject, elementKey, childFieldObject);
+    		    	}
                 }
-                //ret == "}\n\n";
             }
             break;
             
