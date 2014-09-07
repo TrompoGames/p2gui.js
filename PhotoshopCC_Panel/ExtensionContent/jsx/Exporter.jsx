@@ -238,9 +238,17 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
         }
     }
     
+    var humanReadable = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.humanReadable);
     var jsonFile = new File(jsonExportPath + name + ".json");
     jsonFile.open('w');
-    jsonFile.writeln(Utf8.encode(JSON.stringify(finalExport, null, '\t')));
+    if (humanReadable == P2GUI.value.YES)
+    {
+    	jsonFile.writeln(Utf8.encode(JSON.stringify(finalExport, null, '\t')));
+    }
+    else
+    {
+    	jsonFile.writeln(Utf8.encode(JSON.stringify(finalExport, null)));
+    }
     jsonFile.close();
     
     alert ("The export process is complete.", "Tadaaaaaa!");
