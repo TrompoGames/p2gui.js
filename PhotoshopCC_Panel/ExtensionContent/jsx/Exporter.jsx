@@ -185,7 +185,21 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     }
     else
     {
-    	// TODO: Handle case //
+    	// open the file containing the custom descriptor //
+    	var filePath = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.autoClassDescriptor);
+    	var fileHandle = new File (app.activeDocument.fullName.path + "/" + filePath);
+    	if (fileHandle.exists)
+    	{
+	    	fileHandle.open("r");
+	    	var fileString = fileHandle.read();
+	    	fileHandle.close();
+	    	
+	    	autoClassDescriptor = JSON.parse(fileString, null);
+    	}
+    	else
+    	{
+    		autoClassDescriptor = g_pixiAutoClassDescriptor;
+    	}
     }
     
     var classFieldsDescriptor = null;
@@ -195,7 +209,20 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     }
     else
     {
-    	// TODO: Handle case //
+    	// open the file containing the custom descriptor //
+    	var filePath = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.classFieldsDescriptor);
+    	var fileHandle = new File (app.activeDocument.fullName.path + "/" + filePath);
+    	if (fileHandle.exists)
+    	{
+	    	fileHandle.open("r");
+	    	var fileString = fileHandle.read();
+	    	fileHandle.close();
+	    	classFieldsDescriptor = JSON.parse(fileString, null);
+    	}
+    	else
+    	{
+    		classFieldsDescriptor = g_defaultClassFieldsDescriptor;
+    	}
     }
     
     var globalExportPNG = (globalMetaExportPNG != P2GUI.value.NO); // this works even if the value was not initialized //
@@ -251,7 +278,7 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     }
     jsonFile.close();
     
-    alert ("The export process is complete.", "Tadaaaaaa!");
+    alert ("Tadaaaaaa!\nThe export process is complete.");
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -388,14 +415,14 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	
 	    if (metadata['exportOptions']['overrideClassFields'] != P2GUI.value.onlyBasic)
 	    {
-	    	var fieldsDescriptor = classFieldsDescriptor[metadata['information']['className']];
+	    	var fieldsDescriptor = classFieldsDescriptor[ret['class']];
 	    	if (!fieldsDescriptor)
 	    	{
 	    		fieldsDescriptor = classFieldsDescriptor['defaultFields'];
 	    	}
 	    	
 	    	fieldsDescriptor = fieldsDescriptor['properties'];
-	    	if (metadata['exportOptions']['overrideClassFields'] != P2GUI.value.exportAll || fieldsDescriptor === true)
+	    	if (metadata['exportOptions']['overrideClassFields'] == P2GUI.value.exportAll || fieldsDescriptor === true)
 	    	{
 	    		fieldsDescriptor = null;
 	    	}
