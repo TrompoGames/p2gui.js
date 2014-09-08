@@ -34,6 +34,6 @@
 						{
 							element.parent().hide();
 						}
-					}),
+					})
 	}
 })();

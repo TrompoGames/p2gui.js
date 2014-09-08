@@ -70,7 +70,7 @@
 								csInterface.evalScript("setLayerName(\"" + decodeURI(newValue) + "\")");
 							}
 						});
-					}),
+					})
 	};
 	
 	/* layout */
@@ -179,7 +179,7 @@
 						{
 							csInterface.evalScript("setLayerRelativeY(" + newValue + ")");
 						}
-					}),
+					})
 	};
 	
 	/* export options */
@@ -208,7 +208,7 @@
 								setTimeout(function(){csInterface.evalScript("setIsExporting(false)");}, 1);
 							});
 						});
-					}),
+					})
 	};
 	
 })();

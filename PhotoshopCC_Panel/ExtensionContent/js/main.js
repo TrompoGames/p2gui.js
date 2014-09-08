@@ -77,7 +77,7 @@ var showingSection = null;
 			move		: charIDToTypeID("move").toString(),
 			save		: charIDToTypeID("save").toString(),
 			canvasSize	: charIDToTypeID("CnvS").toString(),
-			close		: charIDToTypeID("Cls ").toString(),
+			close		: charIDToTypeID("Cls ").toString()
 		};
 	}
 

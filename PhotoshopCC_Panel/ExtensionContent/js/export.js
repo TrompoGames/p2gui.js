@@ -6,7 +6,7 @@
 			onEnter					: P2GUI.eventManager.on("onEnter_exporter_overrides", function()
 					{
 						updateMetadataAndGUI(P2GUI.exporter.overrides, P2GUI.exporter.overridesDefaults);
-					}),
+					})
 	}
 	
 	/* export */
@@ -22,7 +22,7 @@
 								setTimeout(function(){csInterface.evalScript("setIsExporting(false)");}, 1);
 							});
 						});
-					}),
+					})
 	}
 })();
 
