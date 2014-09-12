@@ -1,1 +1,5 @@
 BuildCert.p12
+P2GUI/build/P2GUI.js
+P2GUI/build/P2GUI.min.js
+P2GUI/node_modules/
+P2GUI/src/.idea/
