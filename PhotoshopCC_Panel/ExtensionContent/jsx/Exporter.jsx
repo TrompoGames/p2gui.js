@@ -250,8 +250,8 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     var finalExport = {};
     
     finalExport['exporter-version'] = version;
-    finalExport['export-name'] = name;
-    finalExport['export-rect'] = "{ { 0, 0 }, { " + doc.width.as('px') + ", " + doc.height.as('px') + " } }";
+    finalExport['export-name'] = decodeURI(name);
+    finalExport['export-rect'] = { x:0, y:0, width:doc.width.as('px'), height:doc.height.as('px') };
     finalExport['layout'] = dump;
     
     var exportFolder = new Folder(jsonExportPath);
@@ -304,25 +304,25 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
     if (globalExportJSON == true && metadata['exportOptions']['exportJSON'] != P2GUI.value.NO)
     {
 	    
-	    ret['name'] = metadata['information']['name'];
-	    ret['id'] = metadata['information']['id'];
-	    ret['class'] = metadata['information']['className'];
-	    ret['misc'] = metadata['information']['misc'];
+	    ret['name'] = decodeURI(metadata['information']['name']);
+	    ret['id'] = decodeURI(metadata['information']['id']);
+	    ret['class'] = decodeURI(metadata['information']['className']);
+	    ret['misc'] = decodeURI(metadata['information']['misc']);
 	    ret['maintainRelativeScale'] = metadata['layout']['maintainRelativeScale'];
 	    
 	    ret['horizontalPosition'] = metadata['layout']['horizontalPosition'];
-	    ret['horizontalRelative'] = metadata['layout']['horizontalRelative'];
+	    ret['horizontalRelative'] = parseFloat(metadata['layout']['horizontalRelative']);
 	    ret['horizontalSnapTo'] = metadata['layout']['horizontalSnapTo'];
 	    
 	    ret['verticalPosition'] = metadata['layout']['verticalPosition'];
-	    ret['verticalRelative'] = metadata['layout']['verticalRelative'];
+	    ret['verticalRelative'] = parseFloat(metadata['layout']['verticalRelative']);
 	    ret['verticalSnapTo'] = metadata['layout']['verticalSnapTo'];
 	    
 	    var layerRect = getLayerRect();
 	    var position = getLayerCenter()
 	    
-	    ret['rect'] = '{{' + layerRect.x + ',' + layerRect.y + '}, {' + layerRect.width + ',' + layerRect.height + '}}';
-	    ret['position'] = '{' + position.x + ',' + position.y + '}';
+	    ret['rect'] = layerRect;
+	    ret['position'] = position;
 	    /*==========================================*/
 	    if (!ret['class'] || ret['class'] == P2GUI.value.none || ret['class'].length == 0)
 	    {
@@ -475,6 +475,18 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
     else
     {
     	ret = null;
+    	if (node.typename == "LayerSet" && metadata['exportOptions']['ignoreChildren'] != P2GUI.value.YES)
+	    {
+	        var layers = node.layers;
+	        for (var i = 0; i < layers.length; ++i)
+	        {
+	            var child = layers[i];
+	            if (child.visible)
+	            {
+	            	processNode(doc, child, exportFolder, exportedNames, autoClassDescriptor, classFieldsDescriptor, globalExportPNG, false);
+	            }
+	        }
+	    }
     }
     
     
