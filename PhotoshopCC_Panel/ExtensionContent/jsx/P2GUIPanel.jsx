@@ -598,7 +598,7 @@ function setLayerPosition(x, y)
 		var saveUnit = preferences.rulerUnits;
 		var layerCenter = getLayerCenter();
 		var newX = (x != null) ? x - layerCenter.x : 0;
-		var newY = (y != null) ? layerCenter.y - y : 0;
+		var newY = (y != null) ? y - layerCenter.y : 0;
 		preferences.rulerUnits = Units.PIXELS;
 		g_doc.activeLayer.translate(newX, newY);
 		preferences.rulerUnits = saveUnit;
@@ -642,7 +642,7 @@ function getLayerCenter()
 		var doc = app.activeDocument;
 		var rect = getLayerRect();
 		ret.x = (rect.x + (rect.width * 0.5));
-		ret.y = (doc.height.as('px') - (rect.y + (rect.height * 0.5)));
+		ret.y = (rect.y + (rect.height * 0.5));
 	}
 	
 	return ret;
