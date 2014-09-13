@@ -7,7 +7,7 @@
 	"version": "1.0.0",
 	"sourceFolder": "src",
 	"outputFolder": "build",
-	"outputName": "P2GUI",
+	"outputName": "p2gui",
     "devDependencies": {
         "grunt": "~0.4.5",
         "grunt-contrib-concat": "~0.4.0",
