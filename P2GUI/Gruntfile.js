@@ -7,6 +7,10 @@ module.exports = function(grunt) {
 	
 	// source files //
 	var sourceFiles = [
+		'<%= pkg.sourceFolder %>/P2GSize.js',
+		'<%= pkg.sourceFolder %>/P2GImportCallbacks.js',
+		'<%= pkg.sourceFolder %>/P2GElement.js',
+		'<%= pkg.sourceFolder %>/P2GLayout.js',
 		'<%= pkg.sourceFolder %>/P2GImporter.js',
 	];
 
