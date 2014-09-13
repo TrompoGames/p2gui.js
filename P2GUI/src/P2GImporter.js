@@ -30,26 +30,12 @@
      */
     P2GImporter.layoutFromFile = function(filePath, classSource, callbacks)
     {
-        var request = new XMLHttpRequest();
+        var loader = new PIXI.JsonLoader(filePath);
+        loader.on('loaded', function(evt) {
+            P2GImporter.layoutFromDescriptor(evt.content.json, classSource, callbacks);
 
-        request.onreadystatechange = function()
-        {
-            if(request.readyState == request.DONE)
-            {
-                if (request.status == 200)
-                {
-                    P2GImporter.layoutFromString(request.responseText, classSource, callbacks);
-                }
-                else
-                {
-                    console.log(TAG + "Cannot load file " + filePath + " with status: " + request.status);
-                    callbacks.onLayoutLoaded.call(callbacks.target, null);
-                }
-            }
-        };
-
-        request.open('GET', filePath);
-        request.send();
+        });
+        loader.load();
     }
 
     /**
@@ -109,7 +95,7 @@
 
             var elements = descriptor["layout"];
             var elementsCount = elements.length;
-            for (var i = elementsCount - 1; i >= 0; --i)
+            for (var i = 0; i < elementsCount; ++i)
             {
                 var element = elements[i];
                 var elementRect = element["rect"];
