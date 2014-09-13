@@ -245,7 +245,8 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     
     unloadXMPLibrary();
     
-    //dump['document'] = processNode (app.activeDocument, exportFolderName);
+    // reverse the array to be consistent with draw order in rendering libraries //
+    dump.reverse();
 
     var finalExport = {};
     
