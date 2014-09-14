@@ -309,7 +309,7 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	    ret['id'] = decodeURI(metadata['information']['id']);
 	    ret['class'] = decodeURI(metadata['information']['className']);
 	    ret['misc'] = decodeURI(metadata['information']['misc']);
-	    ret['maintainRelativeScale'] = metadata['layout']['maintainRelativeScale'];
+	    ret['maintainRelativeScale'] = (metadata['layout']['maintainRelativeScale'] == P2GUI.value.YES);
 	    
 	    ret['horizontalPosition'] = metadata['layout']['horizontalPosition'];
 	    ret['horizontalRelative'] = parseFloat(metadata['layout']['horizontalRelative']);
@@ -457,7 +457,7 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	
 	    if (node.typename == "LayerSet" && metadata['exportOptions']['ignoreChildren'] != P2GUI.value.YES)
 	    {
-	        ret['children'] = [];
+	        var children = [];
 	        var layers = node.layers;
 	        for (var i = 0; i < layers.length; ++i)
 	        {
@@ -467,9 +467,14 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	            	var processedData = processNode(doc, child, exportFolder, exportedNames, autoClassDescriptor, classFieldsDescriptor, globalExportPNG, globalExportJSON);
 	            	if (processedData != null)
 	            	{
-	            		ret['children'][ret['children'].length] = processedData;
+	            		children[children.length] = processedData;
 	            	}
 	            }
+	        }
+	        
+	        if (children.length > 0)
+	        {
+	        	ret['children'] = children;
 	        }
 	    }
     }
