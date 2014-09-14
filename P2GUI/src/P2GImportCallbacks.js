@@ -42,7 +42,7 @@
 
         this.m_provideLayoutSizeDefault = function(layoutName)
         {
-            return new PIXI.Point(0, 0);
+            return new global.P2GUI.Size(0, 0);
         };
 
         this.m_providePathForAssetDefault = function(layoutName, assetFile)
@@ -55,12 +55,18 @@
             return labelName;
         };
 
+        this.m_provideImporterFunctionForClassDefault = function(layoutName, className)
+        {
+            return null;
+        }
+
         /* initialize handlers with default functions */
         this.m_onLayoutLoaded = this.m_onLayoutLoadedDefault;
         this.m_onElementCreated = this.m_onElementCreatedDefault;
         this.m_provideLayoutSize = this.m_provideLayoutSizeDefault;
         this.m_providePathForAsset = this.m_providePathForAssetDefault;
         this.m_provideCaptionForLabel = this.m_provideCaptionForLabelDefault;
+        this.m_provideImporterFunctionForClass = this.m_provideImporterFunctionForClassDefault;
 
 
     }
@@ -119,7 +125,7 @@
      * @default function that returns a zero size, which is interpreted as the same size as the layout's exported size
      * @property provideLayoutSize(layoutName) { Function }
      *                             @param layoutName { String }: The name of the layout that will be sized to the new size
-     *                             @return { Point }: The layout size represented by a PIXI.Point, if either x, y or both is zero that field is interpreted as the exported size of the layout.
+     *                             @return { P2GUI.Size }: The layout size represented by a P2GUI.Size, if either width, height or both is zero that field is interpreted as the exported size of the layout.
      */
     Object.defineProperty(P2GImportCallbacks.prototype, 'provideLayoutSize', {
         get: function()
@@ -175,6 +181,30 @@
         set: function(value)
         {
             this.m_provideCaptionForLabel = value || this.m_provideCaptionForLabelDefault;
+        }
+    });
+
+    /**
+     * Every element is imported using a class. Importer functions have the ability to create instances of such classes for use in P2GUI layouts.
+     * The importer tries to automatically find the importer functions for each class, if it fails, it resorts to this callback to provide the importer function.
+     * If this callback returns null the importer will simply draw a pink square in the element's place to make the user aware of the issue.
+     *
+     * @type { Function }
+     * @default function that returns null
+     * @property provideImporterFunctionForClass(layoutName, className) { Function }
+     *                                @param layoutName { String }: The name of the layout trying to load the asset.
+     *                                @param className { String }: The class name as configured in the export.
+     *                                @return { Function }: An importer function to create an instance of the required class.
+     */
+    Object.defineProperty(P2GImportCallbacks.prototype, 'provideImporterFunctionForClass', {
+        get: function()
+        {
+            return this.m_provideImporterFunctionForClass;
+        },
+
+        set: function(value)
+        {
+            this.m_provideImporterFunctionForClass = value || this.m_provideImporterFunctionForClassDefault;
         }
     });
 
