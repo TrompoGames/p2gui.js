@@ -51,6 +51,14 @@
          */
         var m_exportSize = new global.P2GUI.Size();
 
+        /**
+         * The proportional scale with respect to the original size
+         *
+         * @private
+         * @type { PIXI.Point }
+         */
+        var m_importScale = new global.PIXI.Point(1.0, 1.0);
+
         /* properties */
         /**
          * Layout elements container
@@ -80,12 +88,21 @@
         this.__defineGetter__("exportSize", function(){ return m_exportSize; });
 
         /**
-         * The calculated scale after processing the layout and its options
+         * The scale of the imported layout relative to the originally exported size
          *
-         * @property calculatedScale
+         * @property importScale
+         * @type { PIXI.Point }
+         * @readonly
+         */
+        this.__defineGetter__("importScale", function(){ return m_importScale; });
+
+        /**
+         * The calculated preferred scale after processing the layout and its options
+         *
+         * @property preferredScale
          * @type { Number }
          */
-        this.calculatedScale = 0;
+        this.preferredScale = 0;
     }
 
     /**
