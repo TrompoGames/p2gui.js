@@ -311,6 +311,12 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	    ret['misc'] = decodeURI(metadata['information']['misc']);
 	    ret['maintainRelativeScale'] = (metadata['layout']['maintainRelativeScale'] == P2GUI.value.YES);
 	    
+	    // curate the names //
+	    ret['name'] = (ret['name'] == P2GUI.value.none) ? null : ret['name'];
+	    ret['id'] = (ret['id'] == P2GUI.value.none) ? null : ret['id'];
+	    ret['class'] = (ret['class'] == P2GUI.value.none) ? null : ret['class'];
+	    ret['misc'] = (ret['misc'] == P2GUI.value.none) ? null : ret['misc'];
+	    
 	    ret['horizontalPosition'] = metadata['layout']['horizontalPosition'];
 	    ret['horizontalRelative'] = parseFloat(metadata['layout']['horizontalRelative']);
 	    ret['horizontalSnapTo'] = metadata['layout']['horizontalSnapTo'];
