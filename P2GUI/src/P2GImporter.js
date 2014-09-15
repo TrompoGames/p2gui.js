@@ -55,7 +55,7 @@
         else
         {
             console.log(TAG + "Cannot load parse JSON string " + jsonString);
-            callbacks.onLayoutLoaded.call(callbacks.target, null);
+            callbacks.onLayoutLoaded(null);
         }
     }
 
@@ -83,11 +83,10 @@
             layout.exportSize.set(exportedRect.width, exportedRect.height);
 
             /* get the desired size for the imported layout */
-            var layoutSize = callbacks.provideLayoutSize.call(callbacks.target, layoutName);
+            var layoutSize = callbacks.provideLayoutSize(layoutName);
             if (layoutSize.width <= 0) layoutSize.width = exportedRect.width;
             if (layoutSize.height <= 0) layoutSize.height = exportedRect.height;
-            layout.width = layoutSize.width;
-            layout.height = layoutSize.height;
+            layout.importSize.set(layoutSize.width, layoutSize.height);
 
             /* calculate the best scale to maintain the element's propertions */
             /* only compute the size if the layout size is different than the export size */
@@ -123,8 +122,7 @@
             var elements = descriptor["layout"];
 
             /* try to load an atlas with the name of the layout */
-            var atlasPath = callbacks.providePathForAsset.call(callbacks.target, layoutName, layoutName + ".json");
-            console.log("Atlas path: " + atlasPath);
+            var atlasPath = callbacks.providePathForAsset(layoutName, layoutName + ".json");
             if (atlasPath)
             {
                 P2GImporter.tryToLoadAtlas(atlasPath, function()
@@ -140,7 +138,7 @@
         else
         {
             console.log(TAG + "Layout name or rect are invalid.");
-            callbacks.onLayoutLoaded.call(callbacks.target, null);
+            callbacks.onLayoutLoaded(null);
         }
     }
 
@@ -221,28 +219,127 @@
         return null;
     }
 
+    P2GImporter.calculateDesiredRectForElement = function(elementDescription, layout)
+    {
+        /* get the needed information */
+        var rect = elementDescription["rect"];
+        var scale = (elementDescription["maintainRelativeScale"] === true) ? layout.preferredScale : 1.0;
+        var hPositionType = elementDescription["horizontalPosition"];
+        var vPositionType = elementDescription["verticalPosition"];
+
+        /* scaled rect */
+        var desiredRect = new PIXI.Rectangle(rect.x, rect.y, rect.width * scale, rect.height * scale);
+
+        /* find the rect's horizontal layout based in its position/layout type */
+        switch (hPositionType)
+        {
+            case "P2GUI_absolute":
+                /* reposition based on an anchor point at the center of the element */
+                desiredRect.x = (rect.x + (rect.width * 0.5)) - (desiredRect.width * 0.5);
+                break;
+
+            case "P2GUI_relative":
+                /* reposition based on the given relative value */
+                desiredRect.x = (layout.importSize.width * elementDescription["horizontalRelative"]) - (desiredRect.width * 0.5);
+                break;
+
+            case "P2GUI_snap":
+                /* position depending on the selected snap option */
+            {
+                var snapType = elementDescription["horizontalSnapTo"];
+                if (snapType == "P2GUI_left")
+                {
+                    desiredRect.x = rect.x * scale;
+                }
+                else if (snapType == "P2GUI_right")
+                {
+                    desiredRect.x = (layout.importSize.width - desiredRect.width) - ((layout.exportSize.width - (rect.x + rect.width)) * scale);
+                }
+                else
+                {
+                    desiredRect.x = rect.x * scale;
+                    desiredRect.width = layout.importSize.width - desiredRect.x - ((layout.exportSize.width - (rect.x + rect.width)) * scale);
+                }
+            }
+                break;
+
+            default:
+                break;
+        }
+
+        /* repeat for the rect's vertical layout */
+        switch (vPositionType)
+        {
+            case "P2GUI_absolute":
+                /* reposition based on an anchor point at the center of the element */
+                desiredRect.y = (rect.y + (rect.height * 0.5)) - (desiredRect.height * 0.5);
+                break;
+
+            case "P2GUI_relative":
+                /* reposition based on the given relative value */
+                desiredRect.y = (layout.importSize.height * elementDescription["verticalRelative"]) - (desiredRect.height * 0.5);
+                break;
+
+            case "P2GUI_snap":
+                /* position depending on the selected snap option */
+            {
+                var snapType = elementDescription["verticalSnapTo"];
+                if (snapType == "P2GUI_top")
+                {
+                    desiredRect.y = rect.y * scale;
+                }
+                else if (snapType == "P2GUI_bottom")
+                {
+                    desiredRect.y = (layout.importSize.height - desiredRect.height) - ((layout.exportSize.height - (rect.y + rect.height)) * scale);
+                }
+                else
+                {
+                    desiredRect.y = rect.y * scale;
+                    desiredRect.height = layout.importSize.height - desiredRect.y - ((layout.exportSize.height - (rect.y + rect.height)) * scale);
+                }
+            }
+                break;
+
+            default:
+                break;
+        }
+
+        return desiredRect;
+    }
+
+    P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks)
+    {
+        var graphics = new PIXI.Graphics();
+        graphics.beginFill(0xFF55FF);
+        graphics.lineStyle(2, 0x00FFFF);
+        graphics.drawRect(desiredRect.x, desiredRect.y, desiredRect.width, desiredRect.height);
+        return graphics;
+    }
+
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
     {
 
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; ++i)
         {
-            var element = elements[i];
-            var elementRect = element["rect"];
-            var graphics = new PIXI.Graphics();
+            var elementDescription = elements[i];
+            var className = elementDescription["class"];
+            var importer = P2GImporter.findImporterForClass(className, classContainer);
+            if (!importer)
+            {
+                importer = callbacks.provideImporterFunctionForClass(layout.name, className);
+                if (!importer)
+                {
+                    importer = P2GImporter.createMissingClassImporterElement;
+                }
+            }
 
-            graphics.beginFill(0xFF55FF);
-
-            // set the line style to have a width of 5 and set the color to red
-            graphics.lineStyle(2, 0x00FFFF);
-
-            // draw a rectangle
-            graphics.drawRect(elementRect.x * layout.preferredScale, elementRect.y * layout.preferredScale, elementRect.width * layout.preferredScale, elementRect.height * layout.preferredScale);
-
-            layout.addElement(graphics, element["name"], element["ID"]);
+            var desiredRect = P2GImporter.calculateDesiredRectForElement(elementDescription, layout);
+            var element = importer(layout, elementDescription, desiredRect, callbacks);
+            layout.addElement(element, elementDescription["name"], elementDescription["ID"]);
         }
 
-        callbacks.onLayoutLoaded.call(callbacks.target, layout);
+        callbacks.onLayoutLoaded(layout);
     }
 
     /**

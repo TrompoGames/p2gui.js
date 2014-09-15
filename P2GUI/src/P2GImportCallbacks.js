@@ -23,6 +23,7 @@
     function P2GImportCallbacks(target)
     {
         /* private variables */
+        var scope = this;
 
         /* properties */
         this.target = target;
@@ -32,42 +33,55 @@
         /* default handlers */
         this.m_onLayoutLoadedDefault = function(layout)
         {
-
+            if (scope.m_onLayoutLoaded)
+            {
+                scope.m_onLayoutLoaded.call(scope.target, layout);
+            }
         };
 
         this.m_onElementCreatedDefault = function(layoutName, element, elementName, elementID)
         {
-
+            if (scope.m_onElementCreated)
+            {
+                scope.m_onElementCreated.call(scope.target, layoutName, element, elementName, elementID);
+            }
         };
 
         this.m_provideLayoutSizeDefault = function(layoutName)
         {
+            if (scope.m_provideLayoutSize)
+            {
+                return scope.m_provideLayoutSize.call(scope.target, layoutName);
+            }
             return new global.P2GUI.Size(0, 0);
         };
 
         this.m_providePathForAssetDefault = function(layoutName, assetFile)
         {
+            if (scope.m_providePathForAsset)
+            {
+                return scope.m_providePathForAsset.call(scope.target, layoutName, assetFile);
+            }
             return assetFile;
         };
 
         this.m_provideCaptionForLabelDefault = function(layoutName, labelName, labelID)
         {
+            if (scope.m_provideCaptionForLabel)
+            {
+                return scope.m_provideCaptionForLabel.call(scope.target, layoutName, labelName, labelID);
+            }
             return labelName;
         };
 
         this.m_provideImporterFunctionForClassDefault = function(layoutName, className)
         {
+            if (scope.m_provideImporterFunctionForClass)
+            {
+                return scope.m_provideImporterFunctionForClass.call(scope.target, layoutName, className);
+            }
             return null;
         }
-
-        /* initialize handlers with default functions */
-        this.m_onLayoutLoaded = this.m_onLayoutLoadedDefault;
-        this.m_onElementCreated = this.m_onElementCreatedDefault;
-        this.m_provideLayoutSize = this.m_provideLayoutSizeDefault;
-        this.m_providePathForAsset = this.m_providePathForAssetDefault;
-        this.m_provideCaptionForLabel = this.m_provideCaptionForLabelDefault;
-        this.m_provideImporterFunctionForClass = this.m_provideImporterFunctionForClassDefault;
-
 
     }
 
@@ -86,12 +100,12 @@
     Object.defineProperty(P2GImportCallbacks.prototype, 'onLayoutLoaded', {
         get: function()
         {
-            return this.m_onLayoutLoaded;
+            return this.m_onLayoutLoadedDefault;
         },
 
         set: function(value)
         {
-            this.m_onLayoutLoaded = value || this.m_onLayoutLoadedDefault;
+            this.m_onLayoutLoaded = (typeof value === "function") ? value : null;
         }
     });
 
@@ -109,12 +123,12 @@
     Object.defineProperty(P2GImportCallbacks.prototype, 'onElementCreated', {
         get: function()
         {
-            return this.m_onElementCreated;
+            return this.m_onElementCreatedDefault;
         },
 
         set: function(value)
         {
-            this.m_onElementCreated = value || this.m_onElementCreatedDefault;
+            this.m_onElementCreated = (typeof value === "function") ? value : null;
         }
     });
 
@@ -130,12 +144,12 @@
     Object.defineProperty(P2GImportCallbacks.prototype, 'provideLayoutSize', {
         get: function()
         {
-            return this.m_provideLayoutSize;
+            return this.m_provideLayoutSizeDefault;
         },
 
         set: function(value)
         {
-            this.m_provideLayoutSize = value || this.m_provideLayoutSizeDefault;
+            this.m_provideLayoutSize = (typeof value === "function") ? value : null;
         }
     });
 
@@ -152,12 +166,12 @@
     Object.defineProperty(P2GImportCallbacks.prototype, 'providePathForAsset', {
         get: function()
         {
-            return this.m_providePathForAsset;
+            return this.m_providePathForAssetDefault;
         },
 
         set: function(value)
         {
-            this.m_providePathForAsset = value || this.m_providePathForAssetDefault;
+            this.m_providePathForAsset = (typeof value === "function") ? value : null;
         }
     });
 
@@ -175,12 +189,12 @@
     Object.defineProperty(P2GImportCallbacks.prototype, 'provideCaptionForLabel', {
         get: function()
         {
-            return this.m_provideCaptionForLabel;
+            return this.m_provideCaptionForLabelDefault;
         },
 
         set: function(value)
         {
-            this.m_provideCaptionForLabel = value || this.m_provideCaptionForLabelDefault;
+            this.m_provideCaptionForLabel = (typeof value === "function") ? value : null;
         }
     });
 
@@ -199,12 +213,12 @@
     Object.defineProperty(P2GImportCallbacks.prototype, 'provideImporterFunctionForClass', {
         get: function()
         {
-            return this.m_provideImporterFunctionForClass;
+            return this.m_provideImporterFunctionForClassDefault;
         },
 
         set: function(value)
         {
-            this.m_provideImporterFunctionForClass = value || this.m_provideImporterFunctionForClassDefault;
+            this.m_provideImporterFunctionForClass = (typeof value === "function") ? value : null;
         }
     });
 
