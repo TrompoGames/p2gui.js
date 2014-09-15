@@ -52,6 +52,14 @@
         var m_exportSize = new global.P2GUI.Size();
 
         /**
+         * Dimensions of the imported layout
+         *
+         * @private
+         * @type {P2GUI.Size}
+         */
+        var m_importSize = new global.P2GUI.Size();
+
+        /**
          * The proportional scale with respect to the original size
          *
          * @private
@@ -86,6 +94,15 @@
          * @readonly
          */
         this.__defineGetter__("exportSize", function(){ return m_exportSize; });
+
+        /**
+         * Dimensions of the imported layout
+         *
+         * @property importSize
+         * @type { P2GUI.Size }
+         * @readonly
+         */
+        this.__defineGetter__("importSize", function(){ return m_importSize; });
 
         /**
          * The scale of the imported layout relative to the originally exported size
