@@ -219,6 +219,13 @@
         return null;
     }
 
+    /**
+     * Calculates the rect the element should fill based on the given properties and layout size
+     *
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param layout { P2GUI.Layout }: The layout in which the object will be placed
+     * @returns { PIXI.Rectangle }: Calculated desired rect
+     */
     P2GImporter.calculateDesiredRectForElement = function(elementDescription, layout)
     {
         /* get the needed information */
@@ -307,6 +314,15 @@
         return desiredRect;
     }
 
+    /**
+     * Creates a pink rectangle where the imported element should be, this is used as an error message
+     *
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }: P2GImportCallbacks object configured for this layout.
+     * @returns { PIXI.Graphics }: The final element.
+     */
     P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks)
     {
         var graphics = new PIXI.Graphics();
