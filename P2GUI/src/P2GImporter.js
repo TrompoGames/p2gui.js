@@ -152,14 +152,13 @@
      */
     P2GImporter.tryToLoadAtlas = function(atlasPath, completionHandler)
     {
-        var atlasLoader = new PIXI.AtlasLoader(atlasPath);
+        var atlasLoader = new PIXI.JsonLoader(atlasPath);
 
         /* hack to cheat PIXI's loading system */
         var loadError = false;
-        atlasLoader.onComplete = function()
-        {
+        atlasLoader.on('loaded', function(evt) {
             completionHandler(!loadError);
-        }
+        });
 
         var ajaxRequest = new PIXI.AjaxRequest();
         ajaxRequest.onerror = function ()
@@ -172,15 +171,15 @@
             if (!loadError)
             {
                 atlasLoader.ajaxRequest = ajaxRequest;
-                atlasLoader.onAtlasLoaded.call(atlasLoader);
+                atlasLoader.onJSONLoaded();
             }
             else
             {
-                atlasLoader.onComplete();
+                atlasLoader.onLoaded();
             }
         };
 
-        ajaxRequest.open('HEAD', atlasPath, true);
+        ajaxRequest.open('GET', atlasPath, true);
         if (ajaxRequest.overrideMimeType) ajaxRequest.overrideMimeType('application/json');
         ajaxRequest.send(null);
     }
@@ -334,7 +333,7 @@
 
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
     {
-
+        console.log("createElementsInLayout");
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; ++i)
         {
