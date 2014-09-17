@@ -78,6 +78,81 @@ var Utf8 = {
 }
 
 //----------------------------------------------------------------------------------------------------
+/* metadata */
+function updateMetadataDefaults(element, properties, reference, defaults)
+{	
+	var needsUpdate = false;
+	for (var field in reference)
+	{
+		var triggerSyncEvent = true;
+		var key = reference[field];
+		var value = properties[key];
+		if (typeof value === 'undefined' || value == null)
+		{
+			needsUpdate = true;
+			value = defaults[field];
+		}
+		
+		if (value == P2GUI.value.layerName)
+		{
+			needsUpdate = true;
+			value = element.name;
+		}
+		
+		properties[key] = value;
+	}
+	
+	if (needsUpdate)
+	{
+		return properties;
+	}
+	
+	return null;
+}
+
+//----------------------------------------------------------------------------------------------------
+function updateMetadata(element, reference, defaults)
+{
+	var args = propertyQueryForElement(element, reference);
+	var properties = getObjectProperties.apply(this, args);
+	properties = updateMetadataDefaults(element, properties, reference, defaults);
+	if (properties) /* needs update */
+	{
+		var setArgs =  propertyAssignForElement(element, properties);
+		setObjectProperties.apply(this,setArgs);
+	}
+}
+
+//----------------------------------------------------------------------------------------------------
+function propertyQueryForElement(element, properties)
+{
+	var arr = [element];
+	for (var property in properties)
+	{
+		arr.push(properties[property]);
+	}
+	
+	return arr;
+}
+
+//----------------------------------------------------------------------------------------------------
+function propertyAssignForElement(element, properties)
+{
+	var arr = [element];
+	for (var property in properties)
+	{
+		var value = properties[property];
+		if (value === "")
+		{
+			value = P2GUI.value.none;
+		}
+		arr.push(property, value);
+	}
+	
+	return arr;
+}
+
+//----------------------------------------------------------------------------------------------------
 function hasExportedName(name, exportedNames)
 {
     for (var i = 0; i < exportedNames.length; ++i)
