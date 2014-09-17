@@ -475,6 +475,7 @@ var showingSection = null;
 					
 					if (value == P2GUI.value.layerName)
 					{
+						delete properties[key];
 						triggerSyncEvent = false;
 						layerNameToHTML(htmlObject, key);
 					}
@@ -501,6 +502,7 @@ var showingSection = null;
 				
 				if (value == P2GUI.value.layerName)
 				{
+					delete properties[key];
 					triggerSyncEvent = false;
 					layerNameToHTML(htmlObject, key);
 				}
@@ -535,6 +537,9 @@ var showingSection = null;
 		{
 			htmlObject.val(result);
 			P2GUI.eventManager.emit("onChanged_" + key, result);
+			var property = htmlObject.prop("id");
+			var value = encodeURI(result);
+			writeMetaKeyValue(property, value);
 		});
 	}
 	
