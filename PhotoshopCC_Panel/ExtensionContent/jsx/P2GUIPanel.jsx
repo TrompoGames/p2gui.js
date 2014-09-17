@@ -317,6 +317,7 @@ function setDocumentProperties()
 function getObjectProperties(obj)
 {
 	var ret = {};
+	var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
 	if(obj && arguments.length > 1 && loadXMPLibrary())
 	{
 		var argumentLength = arguments.length;
@@ -330,7 +331,10 @@ function getObjectProperties(obj)
 			}
 		}
 		
-		unloadXMPLibrary();
+		if (!wasXMPLoaded)
+		{
+			unloadXMPLibrary();
+		}
 	}
 	
 	return ret;
@@ -338,6 +342,7 @@ function getObjectProperties(obj)
 
 function setObjectProperties(obj)
 {
+	var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
 	if(obj && arguments.length > 1 && loadXMPLibrary())
 	{
 		var argumentLength = arguments.length;
@@ -349,12 +354,18 @@ function setObjectProperties(obj)
 			var success = setObjectMetadata(obj, property, propertyValue);
 			if (!success)
 			{
-				unloadXMPLibrary();
+				if (!wasXMPLoaded)
+				{
+					unloadXMPLibrary();
+				}
 				return false;
 			}
 		}
 		
-		unloadXMPLibrary();
+		if (!wasXMPLoaded)
+		{
+			unloadXMPLibrary();
+		}
 		return true;
 	}
 	
@@ -717,10 +728,14 @@ function exportCurrentLayerToPNG()
 		var layer = app.activeDocument.activeLayer;
 		if (!layer.isBackgroundLayer)
 		{	
+			var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
 			loadXMPLibrary();
 			var exportFolder = exportFolderPNG();
 			var exportName = getObjectMetadata(layer, P2GUI.element.information.name);
-			unloadXMPLibrary();
+			if (!wasXMPLoaded)
+			{
+				unloadXMPLibrary();
+			}
 			
 			if (exportName)
 			{
@@ -739,11 +754,15 @@ function exportCurrentDocumentLayout()
 {
 	if (hasActiveDocument())
 	{
+		var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
 		loadXMPLibrary();
 		var folderPNG = exportFolderPNG();
 		var folderJSON = exportFolderJSON();
 		var exportName = exportLayoutName();
-		unloadXMPLibrary();
+		if (!wasXMPLoaded)
+		{
+			unloadXMPLibrary();
+		}
 		
 		try
 		{

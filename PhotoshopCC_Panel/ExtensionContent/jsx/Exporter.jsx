@@ -245,6 +245,7 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     
     var exportedNames = [];
     
+    var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
     loadXMPLibrary();
     
     var autoClassType = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.autoClassType);
@@ -321,7 +322,10 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
         }
     }
     
-    unloadXMPLibrary();
+    if (!wasXMPLoaded)
+    {
+    	unloadXMPLibrary();
+    }
     
     // reverse the array to be consistent with draw order in rendering libraries //
     dump.reverse();
