@@ -77,7 +77,15 @@ var showingSection = null;
 			move		: charIDToTypeID("move").toString(),
 			save		: charIDToTypeID("save").toString(),
 			canvasSize	: charIDToTypeID("CnvS").toString(),
-			close		: charIDToTypeID("Cls ").toString()
+			close		: charIDToTypeID("Cls ").toString(),
+			duplicate	: charIDToTypeID("Dplc").toString(),
+			deselect	: charIDToTypeID("Dslc").toString(),
+			cut			: charIDToTypeID("cut ").toString(),
+			import		: charIDToTypeID("Impr").toString(),
+			merge		: charIDToTypeID("Mrg2").toString(),
+			mergeOld	: charIDToTypeID("MrgL").toString(),
+			mergeVisible: charIDToTypeID("MrgV").toString(),
+			undo		: charIDToTypeID("undo").toString()
 		};
 	}
 
@@ -253,9 +261,18 @@ var showingSection = null;
 			});
 		};
 		
-		P2GUI.eventManager.on("onAppEvent_select", checkDocumentAndLayer);
 		P2GUI.eventManager.on("onAppEvent_make", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_del", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_select", checkDocumentAndLayer);
 		P2GUI.eventManager.on("onAppEvent_close", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_duplicate", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_deselect", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_cut", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_import", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_merge", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_mergeOld", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_mergeVisible", checkDocumentAndLayer);
+		P2GUI.eventManager.on("onAppEvent_undo", checkDocumentAndLayer);
 		
 		/* register for photoshop events */
 		var event = new CSEvent("com.adobe.PhotoshopRegisterEvent", "APPLICATION");
