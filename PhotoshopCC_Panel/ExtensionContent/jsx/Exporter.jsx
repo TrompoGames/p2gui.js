@@ -248,6 +248,10 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
     loadXMPLibrary();
     
+    /* load document defaults */
+    updateMetadata(doc, P2GUI.document.configuration, P2GUI.document.configurationDefaults);
+    updateMetadata(doc, P2GUI.exporter.overrides, P2GUI.exporter.overridesDefaults);
+    
     var autoClassType = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.autoClassType);
     var classFieldsType = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.classFieldsType);
     var globalMetaExportPNG = getObjectMetadata(app.activeDocument, P2GUI.exporter.overrides.exportPNG);
@@ -371,6 +375,11 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
     
     // make the node the current layer //
     doc.activeLayer = node;
+    
+    /* update layer defaults */
+	updateMetadata(node, P2GUI.element.information, P2GUI.element.informationDefaults);
+	updateMetadata(node, P2GUI.element.layout, P2GUI.element.layoutDefaults);
+	updateMetadata(node, P2GUI.element.exportOptions, P2GUI.element.exportOptionsDefaults);
     
     // get the layer metadata //
     var metadata = {};
