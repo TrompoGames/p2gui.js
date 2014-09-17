@@ -196,7 +196,7 @@ function exportLayerToFile(layer, name, exportPath)
     // We'll merge the current layer down into a new empty layer that we create.
     // We do this because otherwise we can't copy some kinds of complicated layers.
     var layerCopy = layer.duplicate();
-    var mergedLayer = doc.artLayers.add();
+    var mergedLayer = (layer.typename == "LayerSet") ? null : doc.artLayers.add();
     
     var exportFolder = new Folder(exportPath);
     if (!exportFolder.exists)
@@ -209,7 +209,10 @@ function exportLayerToFile(layer, name, exportPath)
         }
     }
     
-    mergedLayer.move(layerCopy, ElementPlacement.PLACEAFTER);
+    if (mergedLayer)
+    {
+    	mergedLayer.move(layerCopy, ElementPlacement.PLACEAFTER);
+    }
     
     mergedLayer = layerCopy.merge();
     mergedLayer.name = name;     
