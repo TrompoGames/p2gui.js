@@ -152,14 +152,13 @@
      */
     P2GImporter.tryToLoadAtlas = function(atlasPath, completionHandler)
     {
-        var atlasLoader = new PIXI.AtlasLoader(atlasPath);
+        var atlasLoader = new PIXI.JsonLoader(atlasPath);
 
         /* hack to cheat PIXI's loading system */
         var loadError = false;
-        atlasLoader.onComplete = function()
-        {
+        atlasLoader.on('loaded', function(evt) {
             completionHandler(!loadError);
-        }
+        });
 
         var ajaxRequest = new PIXI.AjaxRequest();
         ajaxRequest.onerror = function ()
@@ -172,15 +171,15 @@
             if (!loadError)
             {
                 atlasLoader.ajaxRequest = ajaxRequest;
-                atlasLoader.onAtlasLoaded.call(atlasLoader);
+                atlasLoader.onJSONLoaded();
             }
             else
             {
-                atlasLoader.onComplete();
+                atlasLoader.onLoaded();
             }
         };
 
-        ajaxRequest.open('HEAD', atlasPath, true);
+        ajaxRequest.open('GET', atlasPath, true);
         if (ajaxRequest.overrideMimeType) ajaxRequest.overrideMimeType('application/json');
         ajaxRequest.send(null);
     }
@@ -219,6 +218,13 @@
         return null;
     }
 
+    /**
+     * Calculates the rect the element should fill based on the given properties and layout size
+     *
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param layout { P2GUI.Layout }: The layout in which the object will be placed
+     * @returns { PIXI.Rectangle }: Calculated desired rect
+     */
     P2GImporter.calculateDesiredRectForElement = function(elementDescription, layout)
     {
         /* get the needed information */
@@ -307,6 +313,15 @@
         return desiredRect;
     }
 
+    /**
+     * Creates a pink rectangle where the imported element should be, this is used as an error message
+     *
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }: P2GImportCallbacks object configured for this layout.
+     * @returns { PIXI.Graphics }: The final element.
+     */
     P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks)
     {
         var graphics = new PIXI.Graphics();
@@ -318,7 +333,7 @@
 
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
     {
-
+        console.log("createElementsInLayout");
         var elementsCount = elements.length;
         for (var i = 0; i < elementsCount; ++i)
         {
