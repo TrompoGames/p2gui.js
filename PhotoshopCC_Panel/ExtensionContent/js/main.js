@@ -35,6 +35,7 @@ function validateNumber(evt)
 
 var p2guiEnabled = !isPhotoshop;
 var showingSection = null;
+var timedUpdates = {};
 
 // jQuery code //
 (function($) {
@@ -171,7 +172,7 @@ var showingSection = null;
 				P2GUI.eventManager.emit("onChanged_" + key, value);
 			}
 			
-			console.log("input[type=text].blur()");
+			console.log("textChanged()");
 			var element = $(this);
 			var key = element.prop("id");
 			var value = element.val();
@@ -222,14 +223,36 @@ var showingSection = null;
 			});
 		};
 		
-		$("input[type=text]").blur(textChanged);
-		$("textarea").blur(textChanged);
-		$("input[type=text]").keyup(function(event)
+		var keyPressed = function(event)
 		{
-		    if(event.keyCode == 13){
-		        textChanged.apply(this);
-		    }
-		});
+			var element = $(this);
+			if (event.keyCode == 222 && event.shiftKey)
+			{
+				element.val(element.val() + "\"");
+			}
+			
+	        var key = element.prop("id");
+	        var timer = timedUpdates[key];
+	        var context = this;
+	        if (timer)
+	        {
+	        	clearTimeout(timer);
+	        	timedUpdates[key] = null;
+	        }
+	        
+	        timer = setTimeout(function(){
+	        	timedUpdates[key] = null;
+	        	textChanged.call(context);
+	        }, 300);
+	        
+	        timedUpdates[key] = timer;
+		};
+		
+		$("input[type=text]").blur(textChanged);
+		$("input[type=text]").keyup(keyPressed);
+		$("textarea").blur(textChanged);
+		$("textarea").keyup(keyPressed);
+		
 		
 		reset();
 		
