@@ -228,7 +228,12 @@ var timedUpdates = {};
 			var element = $(this);
 			if (event.keyCode == 222 && event.shiftKey)
 			{
-				element.val(element.val() + "\"");
+				var caretStart = this.selectionStart;
+				var caretEnd = this.selectionEnd;
+			    var value = element.val();
+			    element.val(value.substring(0, caretStart) + "\"" + value.substring(caretEnd));
+			    this.selectionStart = caretStart + 1;
+			    this.selectionEnd = caretStart + 1;
 			}
 			
 	        var key = element.prop("id");
