@@ -18,7 +18,7 @@
      *
      * @class ImportCallbacks
      * @constructor
-     * @param target { * }: the target from which the callbacks will be invoked.
+     * @param target { Object }: the target from which the callbacks will be invoked.
      */
     function P2GImportCallbacks(target)
     {

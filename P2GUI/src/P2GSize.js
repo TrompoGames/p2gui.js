@@ -65,8 +65,8 @@
     };
 
     /**
-     * @export P2GUI.Layout
-     * @type { Layout }
+     * @export P2GUI.Size
+     * @type { Size }
      */
     global.P2GUI.Size = P2GSize;
 
