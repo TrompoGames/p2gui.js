@@ -59,8 +59,8 @@
     }
 
     /**
-     * @export P2GUI.Layout
-     * @type { Layout }
+     * @export P2GUI.Element
+     * @type { Element }
      */
     global.P2GUI.Element = P2GElement;
 
