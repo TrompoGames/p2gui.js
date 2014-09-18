@@ -248,9 +248,9 @@ var timedUpdates = {};
 	        timedUpdates[key] = timer;
 		};
 		
-		//$("input[type=text]").blur(textChanged);
+		$("input[type=text]").bind("ForceTextFieldUpdate", textChanged);
 		$("input[type=text]").keyup(keyPressed);
-		//$("textarea").blur(textChanged);
+		$("textarea").bind("ForceTextFieldUpdate", textChanged);
 		$("textarea").keyup(keyPressed);
 		
 		

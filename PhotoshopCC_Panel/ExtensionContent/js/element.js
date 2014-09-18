@@ -22,7 +22,7 @@
 		if (element.is(':visible'))
 		{
 			element.val(P2GUI.value.relativeH);
-			element.blur();
+			element.trigger("ForceTextFieldUpdate");
 		}
 	};
 	
@@ -32,7 +32,7 @@
 		if (element.is(':visible'))
 		{
 			element.val(P2GUI.value.relativeV);
-			element.blur();
+			element.trigger("ForceTextFieldUpdate");
 		}
 	}
 	
@@ -113,7 +113,7 @@
 							relative.show();
 							var element = jQuery("#" + P2GUI.element.layout.horizontalRelative);
 							element.val(P2GUI.value.relativeH);
-							element.blur();
+							element.trigger("ForceTextFieldUpdate");
 						}
 						else if (newValue == P2GUI.value.snap)
 						{
@@ -140,7 +140,7 @@
 							relative.show();
 							var element = jQuery("#" + P2GUI.element.layout.verticalRelative);
 							element.val(P2GUI.value.relativeV);
-							element.blur();
+							element.trigger("ForceTextFieldUpdate");
 						}
 						else if (newValue == P2GUI.value.snap)
 						{
@@ -158,7 +158,7 @@
 						if (isNaN(newValue))
 						{
 							element.val(P2GUI.value.relativeH);
-							element.blur();
+							element.trigger("ForceTextFieldUpdate");
 						}
 						else if (element.is(':visible'))
 						{
@@ -173,7 +173,7 @@
 						if (isNaN(newValue))
 						{
 							element.val(P2GUI.value.relativeV);
-							element.blur();
+							element.trigger("ForceTextFieldUpdate");
 						}
 						else if (element.is(':visible'))
 						{
