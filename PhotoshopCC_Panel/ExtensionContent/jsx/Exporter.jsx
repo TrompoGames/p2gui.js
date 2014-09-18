@@ -308,6 +308,7 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     	}
     }
     
+    var currentLayer = app.activeDocument.activeLayer;
     var globalExportPNG = (globalMetaExportPNG != P2GUI.value.NO); // this works even if the value was not initialized //
     var globalExportJSON = (globalMetaExportJSON != P2GUI.value.NO);
     
@@ -365,6 +366,7 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     }
     jsonFile.close();
     
+    app.activeDocument.activeLayer = currentLayer;
     alert ("Tadaaaaaa!\nThe export process is complete.");
 }
 
