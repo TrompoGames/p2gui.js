@@ -320,8 +320,9 @@
     }
 
     /**
-     * Creates a pink rectangle where the imported element should be, this is used as an error message
+     * Creates a pink rectangle where the imported element from the missing class should be, this is used as an error message
      *
+     * @method createMissingClassImporterElement
      * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
      * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
      * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
@@ -330,13 +331,43 @@
      */
     P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks)
     {
+        return P2GImporter.createErrorRectangle(0xFF55FF, 0x00FFFF, desiredRect);
+    }
+
+    /**
+     * Creates a blue rectangle where the imported element with the missing asset should be, this is used as an error message
+     *
+     * @method createMissingAssetImporterElement
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }: P2GImportCallbacks object configured for this layout.
+     * @returns { PIXI.Graphics }: The final element.
+     */
+    P2GImporter.createMissingAssetImporterElement = function(layout, elementDescription, desiredRect, callbacks)
+    {
+        return P2GImporter.createErrorRectangle(0x0000FF, 0xAAAAFF, desiredRect);
+    }
+
+    /**
+     * Utility function to create graphical error rectangles to let the user know when the export process failed
+     *
+     * @method createErrorRectangle
+     * @param fillColor
+     * @param lineColor
+     * @param desiredRect
+     * @returns {PIXI.Graphics}
+     */
+    P2GImporter.createErrorRectangle = function(fillColor, lineColor, desiredRect)
+    {
         var graphics = new PIXI.Graphics();
-        graphics.beginFill(0xFF55FF);
-        graphics.lineStyle(2, 0x00FFFF);
+        graphics.beginFill(fillColor);
+        graphics.lineStyle(2, lineColor);
         graphics.drawRect(desiredRect.x, desiredRect.y, desiredRect.width, desiredRect.height);
         return graphics;
     }
 
+    /* COMMENT THIS! */
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
     {
         console.log("createElementsInLayout");
