@@ -32,7 +32,7 @@
     {
         var loader = new PIXI.JsonLoader(filePath);
         loader.on('loaded', function(evt) {
-            P2GImporter.layoutFromDescriptor(evt.content.json, classContainer, callbacks);
+            P2GImporter.layoutFromDescriptor(evt.content.content.json, classContainer, callbacks);
         });
         loader.load();
     }
