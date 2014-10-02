@@ -54,7 +54,7 @@
         }
         else
         {
-            console.log(TAG + "Cannot load parse JSON string " + jsonString);
+            console.log(TAG + "Cannot parse JSON string " + jsonString);
             callbacks.onLayoutLoaded(null);
         }
     }
@@ -185,7 +185,7 @@
     }
 
     /**
-     * Tries to find the default importer class for the specified class. Returns a function on success of null on failure.
+     * Tries to find the default importer class for the specified class. Returns a function on success or null on failure.
      *
      * @method findImporterForClass
      * @param classPath { String }: A string containing the path to the class which we are trying to import.
