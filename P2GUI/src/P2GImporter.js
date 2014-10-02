@@ -329,9 +329,9 @@
      * @param callbacks { P2GUI.ImportCallbacks }: P2GImportCallbacks object configured for this layout.
      * @returns { PIXI.Graphics }: The final element.
      */
-    P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks)
+    P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
-        return P2GImporter.createErrorRectangle(0xFF55FF, 0x00FFFF, desiredRect);
+        onCreated(P2GImporter.createErrorRectangle(0xFF55FF, 0x00FFFF, desiredRect), elementDescription["name"], elementDescription["id"]);
     }
 
     /**
@@ -344,9 +344,9 @@
      * @param callbacks { P2GUI.ImportCallbacks }: P2GImportCallbacks object configured for this layout.
      * @returns { PIXI.Graphics }: The final element.
      */
-    P2GImporter.createMissingAssetImporterElement = function(layout, elementDescription, desiredRect, callbacks)
+    P2GImporter.createMissingAssetImporterElement = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
-        return P2GImporter.createErrorRectangle(0x0000FF, 0xAAAAFF, desiredRect);
+        onCreated(P2GImporter.createErrorRectangle(0x0000FF, 0xAAAAFF, desiredRect), elementDescription["name"], elementDescription["id"]);
     }
 
     /**
@@ -370,28 +370,64 @@
     /* COMMENT THIS! */
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
     {
-        console.log("createElementsInLayout");
-        var elementsCount = elements.length;
-        for (var i = 0; i < elementsCount; ++i)
+        /* treat the layout as a group at this point */
+        P2GImporter.createElementsInGroup(layout, layout, elements, classContainer, callbacks, function()
         {
-            var elementDescription = elements[i];
-            var className = elementDescription["class"];
-            var importer = P2GImporter.findImporterForClass(className, classContainer);
-            if (!importer)
+            callbacks.onLayoutLoaded(layout);
+        });
+    }
+
+    /* COMMENT THIS! */
+    P2GImporter.createElementsInGroup = function(layout, group, elements, classContainer, callbacks, onFinished)
+    {
+        /* save the layout's name */
+        var layoutName = layout.name;
+        /* initialize the counter variables */
+        var elementCount = elements.length;
+        var elementIndex = 0;
+        /* only process the elements if there are any */
+        if (elementCount > 0)
+        {
+            /* create the onCreated callback */
+            var onElementCreated = function(element, elementName, elementID)
             {
-                importer = callbacks.provideImporterFunctionForClass(layout.name, className);
-                if (!importer)
+                ++elementIndex;
+                layout.addElement(element, elementName, elementID);
+                callbacks.onElementCreated(layoutName, element, elementName, elementID);
+                if (elementIndex < elementCount)
                 {
-                    importer = P2GImporter.createMissingClassImporterElement;
+                    P2GImporter.importElementInLayout(layout, elements[elementIndex], classContainer, callbacks, onElementCreated);
+                }
+                else
+                {
+                    onFinished();
                 }
             }
+            /* trigger the first element loading manually */
+            P2GImporter.importElementInLayout(layout, elements[0], classContainer, callbacks, onElementCreated);
+        }
+        else
+        {
+            onFinished();
+        }
+    }
 
-            var desiredRect = P2GImporter.calculateDesiredRectForElement(elementDescription, layout);
-            var element = importer(layout, elementDescription, desiredRect, callbacks);
-            layout.addElement(element, elementDescription["name"], elementDescription["ID"]);
+    /* COMMENT THIS */
+    P2GImporter.importElementInLayout = function(layout, elementDescription, classContainer, callbacks, onCreated)
+    {
+        var className = elementDescription["class"];
+        var importer = P2GImporter.findImporterForClass(className, classContainer);
+        if (!importer)
+        {
+            importer = callbacks.provideImporterFunctionForClass(layout.name, className);
+            if (!importer)
+            {
+                importer = P2GImporter.createMissingClassImporterElement;
+            }
         }
 
-        callbacks.onLayoutLoaded(layout);
+        var desiredRect = P2GImporter.calculateDesiredRectForElement(elementDescription, layout);
+        importer(layout, elementDescription, desiredRect, callbacks, onCreated);
     }
 
     /**
