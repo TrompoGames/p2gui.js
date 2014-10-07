@@ -21,7 +21,8 @@
         try
         {
             sprite = global.PIXI.Sprite.fromFrame(frameName);
-            if (elementDescription["arbitraryScale"])
+            var misc = misc = JSON.parse(elementDescription["misc"]);
+            if (misc && misc["arbitraryScale"])
             {
                 sprite.width = desiredRect.width;
                 sprite.height = desiredRect.height;
