@@ -21,8 +21,17 @@
         try
         {
             sprite = global.PIXI.Sprite.fromFrame(frameName);
-            sprite.width = desiredRect.width;
-            sprite.height = desiredRect.height;
+            if (elementDescription["arbitraryScale"])
+            {
+                sprite.width = desiredRect.width;
+                sprite.height = desiredRect.height;
+            }
+            else
+            {
+                var newScale = Math.min(desiredRect.width / sprite.width, desiredRect.height / sprite.height);
+                sprite.width *= newScale;
+                sprite.height *= newScale;
+            }
             sprite.anchor.set(0.5, 0.5);
             sprite.position.set(desiredRect.x + (desiredRect.width * 0.5), desiredRect.y + (desiredRect.height * 0.5));
             onCreated(sprite, elementName, elementID);
