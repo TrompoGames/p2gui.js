@@ -319,10 +319,10 @@
         }
 
         /* make sure the rect is aligned to pixels */
-        desiredRect.x = Math.round(desiredRect.x);
-        desiredRect.y = Math.round(desiredRect.y);
-        desiredRect.width = Math.round(desiredRect.width);
-        desiredRect.height = Math.round(desiredRect.height);
+        desiredRect.x = Math.floor(desiredRect.x);
+        desiredRect.y = Math.floor(desiredRect.y);
+        desiredRect.width = Math.ceil(desiredRect.width); // ??
+        desiredRect.height = Math.ceil(desiredRect.height); // ??
 
         return desiredRect;
     }
