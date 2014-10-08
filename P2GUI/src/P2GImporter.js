@@ -385,6 +385,22 @@
         });
     }
 
+    /* COMMENT THIS */
+    P2GImporter.parseMiscParameters = function(elementDescription)
+    {
+        /* assume that the misc info is in JSON format and try to import it */
+        try
+        {
+            elementDescription["misc"] = JSON.parse(elementDescription["misc"]);
+        }
+        catch (e)
+        {
+            console.log("P2GImporter WARNING: The misc field could not be imported as a JSON string.");
+        }
+
+        return elementDescription;
+    }
+
     /* COMMENT THIS! */
     P2GImporter.createElementsInGroup = function(layout, group, elements, classContainer, callbacks, onFinished)
     {
@@ -404,7 +420,8 @@
                 callbacks.onElementCreated(layoutName, element, elementName, elementID);
                 if (elementIndex < elementCount)
                 {
-                    P2GImporter.importElementInLayout(layout, elements[elementIndex], classContainer, callbacks, onElementCreated);
+                    /* import the element */
+                    P2GImporter.importElementInLayout(layout, P2GImporter.parseMiscParameters(elements[elementIndex]), classContainer, callbacks, onElementCreated);
                 }
                 else
                 {
@@ -412,7 +429,7 @@
                 }
             }
             /* trigger the first element loading manually */
-            P2GImporter.importElementInLayout(layout, elements[0], classContainer, callbacks, onElementCreated);
+            P2GImporter.importElementInLayout(layout, P2GImporter.parseMiscParameters(elements[0]), classContainer, callbacks, onElementCreated);
         }
         else
         {
