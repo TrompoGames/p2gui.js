@@ -283,6 +283,11 @@
             }
                 break;
 
+            case "P2GUI_elastic":
+                desiredRect.x = containerDescription.importRect.width * (rect.x / containerDescription.exportRect.width);
+                desiredRect.width = (containerDescription.importRect.width * ((rect.x + rect.width) / containerDescription.exportRect.width)) - desiredRect.x;
+                break;
+
             default:
                 break;
         }
@@ -320,6 +325,11 @@
                     desiredRect.height = containerDescription.importRect.height - desiredRect.y - ((containerDescription.exportRect.height - (rect.y + rect.height)) * scale);
                 }
             }
+                break;
+
+            case "P2GUI_elastic":
+                desiredRect.y = containerDescription.importRect.height * (rect.y / containerDescription.exportRect.height);
+                desiredRect.height = (containerDescription.importRect.height * ((rect.y + rect.height) / containerDescription.exportRect.height)) - desiredRect.y;
                 break;
 
             default:
