@@ -77,16 +77,18 @@
 
         if (layoutName && exportedRect)
         {
-            var layout = new global.P2GUI.Layout(layoutName);
+            var layout = new global.P2GUI.Layout(layoutName, classContainer);
 
             /* save the original size of the exported layout */
-            layout.exportSize.set(exportedRect.width, exportedRect.height);
+            layout.exportRect.width = exportedRect.width;
+            layout.exportRect.height = exportedRect.height;
 
             /* get the desired size for the imported layout */
             var layoutSize = callbacks.provideLayoutSize(layoutName);
             if (layoutSize.width <= 0) layoutSize.width = exportedRect.width;
             if (layoutSize.height <= 0) layoutSize.height = exportedRect.height;
-            layout.importSize.set(layoutSize.width, layoutSize.height);
+            layout.importRect.width = layoutSize.width;
+            layout.importRect.height = layoutSize.height;
 
             /* calculate the best scale to maintain the element's propertions */
             /* only compute the size if the layout size is different than the export size */
@@ -227,17 +229,19 @@
     }
 
     /**
-     * Calculates the rect the element should fill based on the given properties and layout size
+     * Calculates the rect the element should fill based on the given properties and containerDescription
      *
      * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
-     * @param layout { P2GUI.Layout }: The layout in which the object will be placed
+     * @param containerDescription { Object }: An object containing "exportRect", "importRect" and "preferredScale"
      * @returns { PIXI.Rectangle }: Calculated desired rect
      */
-    P2GImporter.calculateDesiredRectForElement = function(elementDescription, layout)
+    P2GImporter.calculateDesiredRectForElement = function(elementDescription, containerDescription)
     {
         /* get the needed information */
         var rect = elementDescription["rect"];
-        var scale = (elementDescription["maintainRelativeScale"] === true) ? layout.preferredScale : 1.0;
+        rect.x -= containerDescription.exportRect.x;
+        rect.y -= containerDescription.exportRect.y;
+        var scale = (elementDescription["maintainRelativeScale"] === true) ? containerDescription.preferredScale : 1.0;
         var hPositionType = elementDescription["horizontalPosition"];
         var vPositionType = elementDescription["verticalPosition"];
 
@@ -248,13 +252,15 @@
         switch (hPositionType)
         {
             case "P2GUI_absolute":
-                /* reposition based on an anchor point at the center of the element */
-                desiredRect.x = (rect.x + (rect.width * 0.5)) - (desiredRect.width * 0.5);
+                /* reposition based on the given scale */
+                desiredRect.x = rect.x * scale;
                 break;
 
             case "P2GUI_relative":
-                /* reposition based on the given relative value */
-                desiredRect.x = (layout.importSize.width * elementDescription["horizontalRelative"]) - (desiredRect.width * 0.5);
+                /* calculate the elements center's relative value using the exported rects */
+                var relativeValueX = (rect.x + (rect.width * 0.5)) / containerDescription.exportRect.width;
+                /* reposition based on the resulting relative value */
+                desiredRect.x = (containerDescription.importRect.width * relativeValueX) - (desiredRect.width * 0.5);
                 break;
 
             case "P2GUI_snap":
@@ -267,12 +273,12 @@
                 }
                 else if (snapType == "P2GUI_right")
                 {
-                    desiredRect.x = (layout.importSize.width - desiredRect.width) - ((layout.exportSize.width - (rect.x + rect.width)) * scale);
+                    desiredRect.x = (containerDescription.importRect.width - desiredRect.width) - ((containerDescription.exportRect.width - (rect.x + rect.width)) * scale);
                 }
                 else
                 {
                     desiredRect.x = rect.x * scale;
-                    desiredRect.width = layout.importSize.width - desiredRect.x - ((layout.exportSize.width - (rect.x + rect.width)) * scale);
+                    desiredRect.width = containerDescription.importRect.width - desiredRect.x - ((containerDescription.exportRect.width - (rect.x + rect.width)) * scale);
                 }
             }
                 break;
@@ -285,13 +291,15 @@
         switch (vPositionType)
         {
             case "P2GUI_absolute":
-                /* reposition based on an anchor point at the center of the element */
-                desiredRect.y = (rect.y + (rect.height * 0.5)) - (desiredRect.height * 0.5);
+                /* reposition based on the given scale */
+                desiredRect.y = rect.y * scale;
                 break;
 
             case "P2GUI_relative":
-                /* reposition based on the given relative value */
-                desiredRect.y = (layout.importSize.height * elementDescription["verticalRelative"]) - (desiredRect.height * 0.5);
+                /* calculate the elements center's relative value using the exported rects */
+                var relativeValueY = (rect.y + (rect.height * 0.5)) / containerDescription.exportRect.height;
+                /* reposition based on the resulting relative value */
+                desiredRect.y = (containerDescription.importRect.height * relativeValueY) - (desiredRect.height * 0.5);
                 break;
 
             case "P2GUI_snap":
@@ -304,12 +312,12 @@
                 }
                 else if (snapType == "P2GUI_bottom")
                 {
-                    desiredRect.y = (layout.importSize.height - desiredRect.height) - ((layout.exportSize.height - (rect.y + rect.height)) * scale);
+                    desiredRect.y = (containerDescription.importRect.height - desiredRect.height) - ((containerDescription.exportRect.height - (rect.y + rect.height)) * scale);
                 }
                 else
                 {
                     desiredRect.y = rect.y * scale;
-                    desiredRect.height = layout.importSize.height - desiredRect.y - ((layout.exportSize.height - (rect.y + rect.height)) * scale);
+                    desiredRect.height = containerDescription.importRect.height - desiredRect.y - ((containerDescription.exportRect.height - (rect.y + rect.height)) * scale);
                 }
             }
                 break;
@@ -321,8 +329,8 @@
         /* make sure the rect is aligned to pixels */
         desiredRect.x = Math.floor(desiredRect.x);
         desiredRect.y = Math.floor(desiredRect.y);
-        desiredRect.width = Math.ceil(desiredRect.width); // ??
-        desiredRect.height = Math.ceil(desiredRect.height); // ??
+        desiredRect.width = Math.floor(desiredRect.width); // ??
+        desiredRect.height = Math.floor(desiredRect.height); // ??
 
         return desiredRect;
     }
@@ -417,11 +425,12 @@
             {
                 ++elementIndex;
                 layout.addElement(element, elementName, elementID);
+                group.addChild(element);
                 callbacks.onElementCreated(layoutName, element, elementName, elementID);
                 if (elementIndex < elementCount)
                 {
                     /* import the element */
-                    P2GImporter.importElementInLayout(layout, P2GImporter.parseMiscParameters(elements[elementIndex]), classContainer, callbacks, onElementCreated);
+                    P2GImporter.importElementInGroup(layout, group, P2GImporter.parseMiscParameters(elements[elementIndex]), classContainer, callbacks, onElementCreated);
                 }
                 else
                 {
@@ -429,7 +438,7 @@
                 }
             }
             /* trigger the first element loading manually */
-            P2GImporter.importElementInLayout(layout, P2GImporter.parseMiscParameters(elements[0]), classContainer, callbacks, onElementCreated);
+            P2GImporter.importElementInGroup(layout, group, P2GImporter.parseMiscParameters(elements[0]), classContainer, callbacks, onElementCreated);
         }
         else
         {
@@ -438,7 +447,7 @@
     }
 
     /* COMMENT THIS */
-    P2GImporter.importElementInLayout = function(layout, elementDescription, classContainer, callbacks, onCreated)
+    P2GImporter.importElementInGroup = function(layout, group, elementDescription, classContainer, callbacks, onCreated)
     {
         var className = elementDescription["class"];
         var importer = P2GImporter.findImporterForClass(className, classContainer);
@@ -451,7 +460,7 @@
             }
         }
 
-        var desiredRect = P2GImporter.calculateDesiredRectForElement(elementDescription, layout);
+        var desiredRect = P2GImporter.calculateDesiredRectForElement(elementDescription, group);
         importer(layout, elementDescription, desiredRect, callbacks, onCreated);
     }
 

@@ -17,9 +17,10 @@
      *
      * @class Layout
      * @param name { String }: The name of the layout to create.
+     * @param [classContainer = global] { Object }: The container object for the classes of the elements in this layout
      * @constructor
      */
-    function P2GLayout(name)
+    function P2GLayout(name, classContainer)
     {
         name = name || "unnamed layout";
 
@@ -44,12 +45,20 @@
         var m_name = name;
 
         /**
+         * Class container, global object is used if nothing passed
+         *
+         * @private
+         * @type {Object}
+         */
+        var m_classContainer = classContainer || global;
+
+        /**
          * The original export size of the layout
          *
          * @private
          * @type { P2GUI.Size }
          */
-        var m_exportSize = new global.P2GUI.Size();
+        var m_exportRect = new global.PIXI.Rectangle();
 
         /**
          * Dimensions of the imported layout
@@ -57,7 +66,7 @@
          * @private
          * @type {P2GUI.Size}
          */
-        var m_importSize = new global.P2GUI.Size();
+        var m_importRect = new global.PIXI.Rectangle();
 
         /**
          * The proportional scale with respect to the original size
@@ -87,22 +96,31 @@
         this.__defineGetter__("name", function(){ return m_name; });
 
         /**
-         * Original export size
+         * Class container
          *
-         * @property exportSize
+         * @property classContainer
+         * @type { Object }
+         * @readonly
+         */
+        this.__defineGetter__("classContainer", function(){ return m_classContainer; });
+
+        /**
+         * Original export rect
+         *
+         * @property exportRect
          * @type { P2GUI.Size }
          * @readonly
          */
-        this.__defineGetter__("exportSize", function(){ return m_exportSize; });
+        this.__defineGetter__("exportRect", function(){ return m_exportRect; });
 
         /**
          * Dimensions of the imported layout
          *
-         * @property importSize
+         * @property importRect
          * @type { P2GUI.Size }
          * @readonly
          */
-        this.__defineGetter__("importSize", function(){ return m_importSize; });
+        this.__defineGetter__("importRect", function(){ return m_importRect; });
 
         /**
          * The scale of the imported layout relative to the originally exported size
@@ -141,7 +159,6 @@
     {
         var elementContainer = new global.P2GUI.Element(element, elementName, elementID);
         this.elements[elementName] = elementContainer;
-        this.addChild(element);
     }
 
     /**

@@ -7,6 +7,7 @@ module.exports = function(grunt) {
 	
 	// source files //
 	var sourceFiles = [
+		'<%= pkg.sourceFolder %>/Importers/PIXIDisplayObjectContainer+P2GUI.js',
 		'<%= pkg.sourceFolder %>/Importers/PIXISprite+P2GUI.js',
 		'<%= pkg.sourceFolder %>/P2GSize.js',
 		'<%= pkg.sourceFolder %>/P2GImportCallbacks.js',
