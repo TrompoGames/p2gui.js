@@ -17,6 +17,7 @@ var P2GUI = {
 		pixijs		: "P2GUI_pixi.js",
 		layerName	: "P2GUI_layerName",
 		absolute	: "P2GUI_absolute",
+		elastic		: "P2GUI_elastic",
 		relative	: "P2GUI_relative",
 		snap		: "P2GUI_snap",
 		left		: "P2GUI_left",

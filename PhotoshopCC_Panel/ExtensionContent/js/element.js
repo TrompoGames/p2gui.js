@@ -120,6 +120,11 @@
 							snapTo.show();
 							relative.hide();
 						}
+						else if (newValue == P2GUI.value.elastic)
+						{
+							snapTo.hide();
+							relative.hide();
+						}
 					}),
 					
 			calculateHorizontal		: P2GUI.eventManager.on("onClicked_P2GUI_obj_layout_horizontal_relative_calculate", updateRelativeHorizontal),
@@ -145,6 +150,11 @@
 						else if (newValue == P2GUI.value.snap)
 						{
 							snapTo.show();
+							relative.hide();
+						}
+						else if (newValue == P2GUI.value.elastic)
+						{
+							snapTo.hide();
 							relative.hide();
 						}
 					}),
