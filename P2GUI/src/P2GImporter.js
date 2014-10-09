@@ -339,8 +339,8 @@
         /* make sure the rect is aligned to pixels */
         desiredRect.x = Math.floor(desiredRect.x);
         desiredRect.y = Math.floor(desiredRect.y);
-        desiredRect.width = Math.floor(desiredRect.width); // ??
-        desiredRect.height = Math.floor(desiredRect.height); // ??
+        desiredRect.width = Math.ceil(desiredRect.width); // ??
+        desiredRect.height = Math.ceil(desiredRect.height); // ??
 
         return desiredRect;
     }
