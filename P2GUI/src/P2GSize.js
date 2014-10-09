@@ -40,6 +40,15 @@
         /* init */
     }
 
+
+    /**
+     * Convenience zero constant
+     *
+     * @type {Size}
+     * @static
+     */
+    P2GSize.ZERO_SIZE = new P2GSize();
+
     /**
      * Creates a clone of this size
      *
