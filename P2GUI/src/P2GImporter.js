@@ -238,7 +238,7 @@
     P2GImporter.calculateDesiredRectForElement = function(elementDescription, containerDescription)
     {
         /* get the needed information */
-        var rect = elementDescription["rect"];
+        var rect = new global.PIXI.Rectangle(elementDescription["rect"].x, elementDescription["rect"].y, elementDescription["rect"].width, elementDescription["rect"].height) ;
         rect.x -= containerDescription.exportRect.x;
         rect.y -= containerDescription.exportRect.y;
         var scale = (elementDescription["maintainRelativeScale"] === true) ? containerDescription.preferredScale : 1.0;
