@@ -170,17 +170,26 @@
 
         ajaxRequest.onloadend = function()
         {
-            if (!loadError)
+            if (!loadError && ajaxRequest.responseText)
             {
-                atlasLoader.ajaxRequest = ajaxRequest;
-                try
+
+                var charIndex = 0;
+                var char = ajaxRequest.responseText.charAt(charIndex);
+                while (char == ' ' || char == '\n')
                 {
-                    atlasLoader.onJSONLoaded();
+                    ++charIndex;
+                    char = ajaxRequest.responseText.charAt(charIndex);
                 }
-                catch (e)
+
+                if (char != '{')
                 {
                     console.log("P2GImporter.tryToLoadAtlas ERROR: Received response but failed to parse JSON!");
                     atlasLoader.onLoaded();
+                }
+                else
+                {
+                    atlasLoader.ajaxRequest = ajaxRequest;
+                    atlasLoader.onJSONLoaded();
                 }
             }
             else
