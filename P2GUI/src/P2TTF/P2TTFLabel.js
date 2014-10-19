@@ -30,7 +30,9 @@
         /* private variables */
         this.m_text = text;
         this.m_size = size;
-        this.m_textRect = new PIXI.Rectangle();
+        this.m_sizeScaled = new global.P2GUI.Size();
+        this.m_textRect = new global.PIXI.Rectangle();
+        this.m_textRectScaled = new global.PIXI.Rectangle();
         this.m_fontFile = fontFile;
         this.m_fontSize = fontSize;
         this.m_fontLoaded = false;
@@ -113,7 +115,8 @@
     Object.defineProperty(P2TTFLabel.prototype, 'size', {
         get: function()
         {
-            return this.m_size;
+            this.m_sizeScaled.set(this.m_size.width * this.scale.x, this.m_size.height * this.scale.y);
+            return this.m_sizeScaled;
         }
     });
 
@@ -127,7 +130,11 @@
     Object.defineProperty(P2TTFLabel.prototype, 'textRect', {
         get: function()
         {
-            return this.m_textRect;
+            this.m_textRectScaled.x = this.m_textRect.x * this.scale.x;
+            this.m_textRectScaled.y = this.m_textRect.y * this.scale.y;
+            this.m_textRectScaled.width = this.m_textRect.width * this.scale.x;
+            this.m_textRectScaled.height = this.m_textRect.height * this.scale.y;
+            return this.m_textRectScaled;
         }
     });
 
@@ -160,7 +167,7 @@
      * @method _renderText
      * @private
      */
-    P2TTFLabel.prototype._renderText = function()
+    P2TTFLabel.prototype._renderText = function() // WARNING: This rendering function was eyeballed for PACO // TODO: Make rendering more flexible
     {
         if (this.m_labelSprite)
         {
@@ -178,11 +185,10 @@
         var head = this.m_font.tables.head;
         var hhea = this.m_font.tables.hhea;
         var os2 = this.m_font.tables.os2;
-        var maxHeight = os2.sTypoAscender - head.yMin;
+        var maxHeight = os2.sTypoAscender * 1.025;
         var maxWidth = head.xMax - head.xMin;
-        var baseline = this.m_size.height * os2.sTypoAscender / maxHeight;
+        var baseline = this.m_size.height * 0.95;
         var fontScale = Math.min(this.m_size.width/(head.xMax - head.xMin), this.m_size.height/maxHeight);
-        var glyphScale = 1 / this.unitsPerEm * fontScale * this.m_font.unitsPerEm;
         var fontSize = fontScale * this.m_font.unitsPerEm;
         //var path = this.m_font.getPath(this.m_text, 0, baseline, /*this.m_fontSize*/ fontScale * this.m_font.unitsPerEm); /* TODO: Use the passed font size */
 
