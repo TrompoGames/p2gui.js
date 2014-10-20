@@ -41,7 +41,15 @@
         this.m_boundFontLoaderHandler = this._handleFontLoaded.bind(this);
         this.m_tint = 0xFFFFFF;
 
-        global.opentype.load(fontFile, this.m_boundFontLoaderHandler);
+        var loadedFont = global.P2TTF.FontManager.fontCache[fontFile];
+        if (loadedFont)
+        {
+            this._handleFontLoaded(null, loadedFont);
+        }
+        else
+        {
+            global.P2TTF.FontManager.loadFont(fontFile, this.m_boundFontLoaderHandler);
+        }
     }
 
     /**
