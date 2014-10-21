@@ -732,7 +732,13 @@ function exportCurrentLayerToPNG()
 			var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
 			loadXMPLibrary();
 			var exportFolder = exportFolderPNG();
-			var exportName = getObjectMetadata(layer, P2GUI.element.information.name);
+			var exportName = getObjectMetadata(layer, P2GUI.element.information.id);
+	        if (!exportName || exportName == P2GUI.value.none || exportName.length == 0)
+	        {
+	        	exportName = getObjectMetadata(layer, P2GUI.element.information.name);
+	        }
+			
+			
 			if (!wasXMPLoaded)
 			{
 				unloadXMPLibrary();
