@@ -5,7 +5,7 @@
 var g_pixiAutoClassDescriptor = {
 	RenderedShape	: "P2.RenderedShape",
 	Group			: "PIXI.DisplayObjectContainer",
-	TTFLabel		: "P2.TTFLabel",
+	TTFLabel		: "P2TTF.Label",
 	Sprite			: "PIXI.Sprite",
 };
 
