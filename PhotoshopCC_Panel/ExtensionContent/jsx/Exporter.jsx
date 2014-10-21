@@ -313,10 +313,10 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     var globalExportJSON = (globalMetaExportJSON != P2GUI.value.NO);
     
     // iterate through the layerSets in the root and act accordingly //
-    for (var i = 0; i < layers.length; ++i)
+    for (var i = (layers.length - 1); i >= 0; --i)
     {
         var layer = layers[i];
-        // ignore invisible lawyer //
+        // ignore invisible layers //
         if (layer.visible)
         {
         	var processedData = processNode(doc, layer, pngExportPath, exportedNames, autoClassDescriptor, classFieldsDescriptor, globalExportPNG, globalExportJSON);
@@ -333,7 +333,7 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     }
     
     // reverse the array to be consistent with draw order in rendering libraries //
-    dump.reverse();
+    //dump.reverse(); /* this should be done at export time */
 
     var finalExport = {};
     
@@ -558,7 +558,7 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	    {
 	        var children = [];
 	        var layers = node.layers;
-	        for (var i = 0; i < layers.length; ++i)
+	        for (var i = (layers.length - 1); i >= 0; --i)
 	        {
 	            var child = layers[i];
 	            if (child.visible)
@@ -583,7 +583,7 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
     	if (node.typename == "LayerSet" && metadata['exportOptions']['ignoreChildren'] != P2GUI.value.YES)
 	    {
 	        var layers = node.layers;
-	        for (var i = 0; i < layers.length; ++i)
+	        for (var i = (layers.length - 1); i >= 0 ; --i)
 	        {
 	            var child = layers[i];
 	            if (child.visible)
