@@ -159,6 +159,7 @@
         {
             this.m_font = null;
             this.m_fontLoaded = false;
+            console.log(this.m_fontFile);
             console.log(error);
         }
         else
@@ -239,6 +240,86 @@
         this.m_textRect.y = this.m_size.height;
         this.m_textRect.width = textWidth;
         this.m_textRect.height = this.m_size.height;
+    }
+
+    P2TTFLabel.createP2GUIInstance = function(layout, elementDescription, desiredRect, callbacks, onCreated)
+    {
+        P2TTFLabel.createP2GUIClassInstance(P2TTFLabel, layout, elementDescription, desiredRect, callbacks, onCreated);
+    }
+
+    P2TTFLabel.createP2GUIClassInstance = function(classDefinition, layout, elementDescription, desiredRect, callbacks, onCreated)
+    {
+        var textKey = elementDescription["properties"]["textKey"];
+        if (!textKey)
+        {
+            console.log("P2TTF.Label ERROR: Element " + elementDescription["name"] + " is not a text element");
+            global.P2GUI.Importer.createMissingClassImporterElement(layout, elementDescription, desiredRect, callbacks, onCreated);
+        }
+        else
+        {
+            var textKeyTransform = textKey["transform"];
+            var fontScale = new global.PIXI.Point(1.0, 1.0);
+            if (textKeyTransform)
+            {
+                fontScale.set(parseFloat(textKeyTransform["xx"]), parseFloat(textKeyTransform["yy"]));
+            }
+
+            var textStyle = textKey["textStyleRange"][0]["textStyle"];
+            var paragraphStyle = textKey["paragraphStyleRange"][0]["paragraphStyle"];
+
+            var fontName = textStyle["fontPostScriptName"];
+            var fontTechnology = parseInt(textStyle["fontTechnology"]);
+            var fontExtension;
+            if (fontTechnology == 0)
+            {
+                fontExtension = "otf";
+            }
+            else
+            {
+                if (fontTechnology != 1)
+                {
+                    console.log("P2TTF.Label WARNING: Unknown font technology, defaulting to TTF.");
+                }
+                fontExtension = "ttf";
+            }
+
+            var fontSize = Math.round(parseFloat(textStyle["size"] * fontScale.y));
+            var leading = parseFloat(textStyle["leading"]) * fontScale.y;
+            var kerning = parseFloat(textStyle["tracking"]);
+
+            // get the object properties //
+            var elementName = elementDescription["name"];
+            var elementID = elementDescription["id"];
+            var textShapeBounds = textKey["textShape"][0]["bounds"];
+            if (textShapeBounds)
+            {
+                /*TODO*/
+//                CGSize shapeSize = [GSGGUI_Shared getScaledSizeFromBoundsDescription:textShapeBounds];
+//                shapeSize.width *= fontScale.x;
+//                shapeSize.height *= fontScale.y;
+//                size.width = MAX(size.width, shapeSize.width);
+//                size.height = MAX(size.height, shapeSize.height);
+            }
+
+            var alignment = paragraphStyle["align"];
+
+            var fontPath = callbacks.providePathForAsset(layout.name, fontName + "." + fontExtension);
+            if (!fontPath)
+            {
+                fontPath = fontName + "." + fontExtension;
+            }
+
+            var text = callbacks.provideCaptionForLabel(layout.name, elementName, elementID);
+            if (!text)
+            {
+                text = textKey["textKey"];
+            }
+
+            var label = new classDefinition(desiredRect, text, fontPath, fontSize);
+            label.position.set(desiredRect.x, desiredRect.y);
+
+            onCreated(label, elementName, elementID);
+        }
     }
 
     /**
