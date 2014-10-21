@@ -170,17 +170,26 @@
 
         ajaxRequest.onloadend = function()
         {
-            if (!loadError)
+            if (!loadError && ajaxRequest.responseText)
             {
-                atlasLoader.ajaxRequest = ajaxRequest;
-                try
+
+                var charIndex = 0;
+                var char = ajaxRequest.responseText.charAt(charIndex);
+                while (char == ' ' || char == '\n')
                 {
-                    atlasLoader.onJSONLoaded();
+                    ++charIndex;
+                    char = ajaxRequest.responseText.charAt(charIndex);
                 }
-                catch (e)
+
+                if (char != '{')
                 {
                     console.log("P2GImporter.tryToLoadAtlas ERROR: Received response but failed to parse JSON!");
                     atlasLoader.onLoaded();
+                }
+                else
+                {
+                    atlasLoader.ajaxRequest = ajaxRequest;
+                    atlasLoader.onJSONLoaded();
                 }
             }
             else
@@ -283,6 +292,11 @@
             }
                 break;
 
+            case "P2GUI_elastic":
+                desiredRect.x = containerDescription.importRect.width * (rect.x / containerDescription.exportRect.width);
+                desiredRect.width = (containerDescription.importRect.width * ((rect.x + rect.width) / containerDescription.exportRect.width)) - desiredRect.x;
+                break;
+
             default:
                 break;
         }
@@ -322,6 +336,11 @@
             }
                 break;
 
+            case "P2GUI_elastic":
+                desiredRect.y = containerDescription.importRect.height * (rect.y / containerDescription.exportRect.height);
+                desiredRect.height = (containerDescription.importRect.height * ((rect.y + rect.height) / containerDescription.exportRect.height)) - desiredRect.y;
+                break;
+
             default:
                 break;
         }
@@ -329,8 +348,8 @@
         /* make sure the rect is aligned to pixels */
         desiredRect.x = Math.floor(desiredRect.x);
         desiredRect.y = Math.floor(desiredRect.y);
-        desiredRect.width = Math.floor(desiredRect.width); // ??
-        desiredRect.height = Math.floor(desiredRect.height); // ??
+        desiredRect.width = Math.ceil(desiredRect.width); // ??
+        desiredRect.height = Math.ceil(desiredRect.height); // ??
 
         return desiredRect;
     }

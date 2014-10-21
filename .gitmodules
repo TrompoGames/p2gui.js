@@ -1,0 +1,3 @@
+[submodule "LIBS/opentype.js"]
+	path = LIBS/opentype.js
+	url = git@github.com:TrompoGames/opentype.js.git
