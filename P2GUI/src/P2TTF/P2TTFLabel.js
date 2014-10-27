@@ -146,6 +146,11 @@
         }
     });
 
+    P2TTFLabel.prototype.destroy = function()
+    {
+        this.text = null;
+    }
+
     /**
      * Method that handles font loading.
      *
@@ -170,6 +175,8 @@
         }
     }
 
+
+
     /**
      * Updates the rendered text
      *
@@ -181,10 +188,13 @@
         if (this.m_labelSprite)
         {
             this.removeChild(this.m_labelSprite);
-            this.m_labelSprite.texture.destroy();
+            this.m_labelSprite.texture.destroy(true);
             delete this.m_labelSprite;
             this.m_labelSprite = null;
         }
+
+        /* if the text field is empty/null/undefined do not render anyting */
+        if (!this.m_text) return;
 
         var canvas = document.createElement("canvas");
         canvas.width = this.m_size.width;
