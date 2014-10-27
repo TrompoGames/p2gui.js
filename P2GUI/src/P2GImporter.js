@@ -418,7 +418,10 @@
         /* assume that the misc info is in JSON format and try to import it */
         try
         {
-            elementDescription["misc"] = JSON.parse(elementDescription["misc"]);
+            if (typeof elementDescription["misc"] === 'string' || elementDescription["misc"] instanceof String)
+            {
+                elementDescription["misc"] = JSON.parse(elementDescription["misc"]);
+            }
         }
         catch (e)
         {
