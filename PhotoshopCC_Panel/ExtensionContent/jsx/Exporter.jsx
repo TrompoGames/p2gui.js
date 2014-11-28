@@ -508,7 +508,7 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	        var fxDesc = layerDescription.getObjectValue(stringIDToTypeID('layerEffects'));
 	        executeAction(charIDToTypeID("CpFX"), layerDescription, DialogModes.NO);
 	        executeAction(charIDToTypeID("dlfx"), layerDescription, DialogModes.NO);
-	        ret['noEffectsRect'] = getRectStringFromLayer(node);
+	        ret['noEffectsRect'] = getLayerRect();
 	        executeAction(charIDToTypeID("PaFX"), layerDescription, DialogModes.NO);
 	//~         ret['rect'] = getRectStringFromLayer(node);
 	    }
