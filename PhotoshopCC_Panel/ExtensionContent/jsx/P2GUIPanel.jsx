@@ -120,7 +120,7 @@ P2GUI.element.layoutDefaults = {
 
 /* element export options defaults */
 P2GUI.element.exportOptionsDefaults = {
-	exportPNG				: P2GUI.value.YES,
+	exportPNG				: P2GUI.value.NO,
 	exportJSON				: P2GUI.value.YES,
 	ignoreChildren			: P2GUI.value.NO,
 	overrideClassFields		: P2GUI.value.none,
