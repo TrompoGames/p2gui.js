@@ -35,7 +35,7 @@
             P2GImporter.layoutFromDescriptor(evt.content.content.json, classContainer, callbacks);
         });
         loader.load();
-    }
+    };
 
     /**
      * Method used to import a layout from a JSON string describing a layout, add the resulting elements to a container and execute a callback
@@ -57,7 +57,7 @@
             console.log(TAG + "Cannot parse JSON string " + jsonString);
             callbacks.onLayoutLoaded(null);
         }
-    }
+    };
 
     /**
      * Method used to import a layout from a JSON object describing a layout, add the resulting elements to a container and execute a callback
@@ -142,7 +142,7 @@
             console.log(TAG + "Layout name or rect are invalid.");
             callbacks.onLayoutLoaded(null);
         }
-    }
+    };
 
     /**
      * This function tries to load a texture atlas but it continues silently whether or not the atlas is loaded successfully
@@ -201,7 +201,7 @@
         ajaxRequest.open('GET', atlasPath, true);
         if (ajaxRequest.overrideMimeType) ajaxRequest.overrideMimeType('application/json');
         ajaxRequest.send(null);
-    }
+    };
 
     /**
      * Tries to find the default importer class for the specified class. Returns a function on success or null on failure.
@@ -235,7 +235,7 @@
         }
 
         return null;
-    }
+    };
 
     /**
      * Calculates the rect the element should fill based on the given properties and containerDescription
@@ -352,7 +352,7 @@
         desiredRect.height = Math.ceil(desiredRect.height); // ??
 
         return desiredRect;
-    }
+    };
 
     /**
      * Creates a pink rectangle where the imported element from the missing class should be, this is used as an error message
@@ -367,7 +367,7 @@
     P2GImporter.createMissingClassImporterElement = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
         onCreated(P2GImporter.createErrorRectangle(0xFF55FF, 0x00FFFF, desiredRect), elementDescription["name"], elementDescription["id"]);
-    }
+    };
 
     /**
      * Creates a blue rectangle where the imported element with the missing asset should be, this is used as an error message
@@ -382,7 +382,7 @@
     P2GImporter.createMissingAssetImporterElement = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
         onCreated(P2GImporter.createErrorRectangle(0x0000FF, 0xAAAAFF, desiredRect), elementDescription["name"], elementDescription["id"]);
-    }
+    };
 
     /**
      * Utility function to create graphical error rectangles to let the user know when the export process failed
@@ -400,7 +400,7 @@
         graphics.lineStyle(2, lineColor);
         graphics.drawRect(desiredRect.x, desiredRect.y, desiredRect.width, desiredRect.height);
         return graphics;
-    }
+    };
 
     /* COMMENT THIS! */
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
@@ -410,7 +410,7 @@
         {
             callbacks.onLayoutLoaded(layout);
         });
-    }
+    };
 
     /* COMMENT THIS */
     P2GImporter.parseMiscParameters = function(elementDescription)
@@ -429,7 +429,7 @@
         }
 
         return elementDescription;
-    }
+    };
 
     /* COMMENT THIS! */
     P2GImporter.createElementsInGroup = function(layout, group, elements, classContainer, callbacks, onFinished)
@@ -458,7 +458,7 @@
                 {
                     onFinished();
                 }
-            }
+            };
             /* trigger the first element loading manually */
             P2GImporter.importElementInGroup(layout, group, P2GImporter.parseMiscParameters(elements[0]), classContainer, callbacks, onElementCreated);
         }
@@ -466,7 +466,7 @@
         {
             onFinished();
         }
-    }
+    };
 
     /* COMMENT THIS */
     P2GImporter.importElementInGroup = function(layout, group, elementDescription, classContainer, callbacks, onCreated)
@@ -484,7 +484,7 @@
 
         var desiredRect = P2GImporter.calculateDesiredRectForElement(elementDescription, group);
         importer(layout, elementDescription, desiredRect, callbacks, onCreated);
-    }
+    };
 
     /**
      * @export P2GUI.Importer

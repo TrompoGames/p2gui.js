@@ -17,7 +17,7 @@
 
         frameName += ".png";
 
-        var sprite = null
+        var sprite = null;
         try
         {
             sprite = global.PIXI.Sprite.fromFrame(frameName);
