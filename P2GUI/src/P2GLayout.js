@@ -159,7 +159,36 @@
     {
         var elementContainer = new global.P2GUI.Element(element, elementName, elementID);
         this.elements[elementName] = elementContainer;
-    }
+    };
+
+    /**
+     * Default P2GUI instantiation method, this only parses the needed information and creates a new object
+     *
+     * @method createP2GUIInstance
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }   : P2GImportCallbacks object configured for this layout.
+     * @param onCreated { Function }: Callback function that should be invoked when the object is created.
+     * @static
+     */
+    P2GLayout.createP2GUIInstance = function(layout, elementDescription, desiredRect, callbacks, onCreated)
+    {
+        var localCallbacks = callbacks.copy();
+
+        localCallbacks.provideLayoutSize = function()
+        {
+            return new global.P2GUI.Size(desiredRect.width, desiredRect.height);
+        };
+
+        localCallbacks.onLayoutLoaded = function(layout)
+        {
+            layout.position.set(desiredRect.x, desiredRect.y);
+            onCreated(layout, elementDescription["name"], elementDescription["id"]);
+        };
+
+        global.P2GUI.Importer.layoutFromFile(elementDescription["id"], layout.classContainer, localCallbacks);
+    };
 
     /**
      * @export P2GUI.Layout
