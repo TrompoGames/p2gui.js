@@ -4,7 +4,7 @@
 
 (function (global)
 {
-    "use strict"
+    "use strict";
 
     /**
      * @namespace P2GUI
@@ -221,6 +221,19 @@
             this.m_provideImporterFunctionForClass = (typeof value === "function") ? value : null;
         }
     });
+
+    P2GImportCallbacks.prototype.copy = function()
+    {
+        var copy = new P2GImportCallbacks(this.target);
+        copy.m_onLayoutLoaded = this.m_onLayoutLoaded;
+        copy.m_onElementCreated = this.m_onElementCreated;
+        copy.m_provideLayoutSize = this.m_provideLayoutSize;
+        copy.m_providePathForAsset = this.m_providePathForAsset;
+        copy.m_provideCaptionForLabel = this.m_provideCaptionForLabel;
+        copy.m_provideImporterFunctionForClass = this.m_provideImporterFunctionForClass;
+
+        return copy;
+    };
 
     /**
      * @export P2GUI.ImportCallbacks
