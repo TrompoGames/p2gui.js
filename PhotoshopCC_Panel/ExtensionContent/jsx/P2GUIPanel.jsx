@@ -83,6 +83,7 @@ var P2GUI = {
 		overrides		: {
 			exportJSON				: "P2GUI_exp_overrides_exportJSON",
 			exportPNG				: "P2GUI_exp_overrides_exportPNG",
+			disableUniqueNames		: "P2GUI_exp_overrides_disableUniqueNames",
 		},
 	},
 }
@@ -131,6 +132,7 @@ P2GUI.element.exportOptionsDefaults = {
 P2GUI.exporter.overridesDefaults = {
 	exportJSON				: P2GUI.value.YES,
 	exportPNG				: P2GUI.value.YES,
+	disableUniqueNames		: P2GUI.value.NO,
 }
 
 //------------///////////////////////////////////------------//

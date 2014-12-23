@@ -243,8 +243,6 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     var dump = [];
     var layers = doc.layers;
     
-    var exportedNames = [];
-    
     var wasXMPLoaded = !!(ExternalObject.AdobeXMPScript);
     loadXMPLibrary();
     
@@ -256,6 +254,9 @@ function exportLayout(doc, name, jsonExportPath, pngExportPath, version)
     var classFieldsType = getObjectMetadata(app.activeDocument, P2GUI.document.configuration.classFieldsType);
     var globalMetaExportPNG = getObjectMetadata(app.activeDocument, P2GUI.exporter.overrides.exportPNG);
     var globalMetaExportJSON = getObjectMetadata(app.activeDocument, P2GUI.exporter.overrides.exportJSON);
+    var globalMetaDisableUniqueNames = getObjectMetadata(app.activeDocument, P2GUI.exporter.overrides.disableUniqueNames);
+    
+    var exportedNames = (globalMetaDisableUniqueNames == P2GUI.value.YES) ? null : [];
     
     var autoClassDescriptor = null;
     if (autoClassType == P2GUI.value.pixijs)
@@ -429,14 +430,16 @@ function processNode(doc, node, exportFolder, exportedNames, autoClassDescriptor
 	        ret['class'] = autodetectClassType(node, autoClassDescriptor);
 	    }
 	
-	    if (hasExportedName(ret['name'], exportedNames))
+	    if (exportedNames)
 	    {
-	        alert("ERROR: Item names must be unique! Duplicated name: " + ret['name']);
-	        throw ("ERROR: Item names must be unique! Duplicated name: " + ret['name']);
-	    }
-	    else
-	    {
-	    	exportedNames.push(ret['name']);
+		    if (hasExportedName(ret['name'], exportedNames))
+		    {
+		        throw ("ERROR: Item names must be unique! Duplicated name: " + ret['name']);
+		    }
+		    else
+		    {
+		    	exportedNames.push(ret['name']);
+		    }
 	    }
 	    
 	    var pathItems = doc.pathItems;
