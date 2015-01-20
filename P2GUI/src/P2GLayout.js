@@ -158,7 +158,21 @@
     P2GLayout.prototype.addElement = function(element, elementName, elementID)
     {
         var elementContainer = new global.P2GUI.Element(element, elementName, elementID);
-        this.elements[elementName] = elementContainer;
+        if (!this.elements[elementName])
+        {
+            this.elements[elementName] = elementContainer;
+        }
+        else
+        {
+            if (this.elements[elementName] instanceof global.P2GUI.Element)
+            {
+                var array = new Array();
+                array.push(this.elements[elementName]);
+                this.elements[elementName] = array;
+            }
+
+            this.elements[elementName].push(elementContainer);
+        }
     };
 
     /**
