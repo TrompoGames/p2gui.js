@@ -27,12 +27,13 @@
      * @param filePath { String }: A string containing the path to a json file containing the layout to import.
      * @param classContainer { Object }: Global object where classes described in the layout should be looked up. Optional, can be null.
      * @param callbacks { ImportCallbacks }: P2GImportCallbacks object configured for this layout.
+     * @param layoutClass { Object }: The class used to instantiate the layout. Optional, if omitted P2GUI.Layout will be used.
      */
-    P2GImporter.layoutFromFile = function(filePath, classContainer, callbacks)
+    P2GImporter.layoutFromFile = function(filePath, classContainer, callbacks, layoutClass)
     {
         var loader = new PIXI.JsonLoader(filePath);
         loader.on('loaded', function(evt) {
-            P2GImporter.layoutFromDescriptor(evt.content.content.json, classContainer, callbacks);
+            P2GImporter.layoutFromDescriptor(evt.content.content.json, classContainer, callbacks, layoutClass);
         });
         loader.load();
     };
@@ -44,13 +45,14 @@
      * @param jsonString { String }: A JSON string describing the layout to import.
      * @param classContainer { Object }: Global object where classes described in the layout should be looked up. Optional, can be null, defaults to the global object used to generate the class.
      * @param callbacks { ImportCallbacks }: P2GImportCallbacks object configured for this layout.
+     * @param layoutClass { Object }: The class used to instantiate the layout. Optional, if omitted P2GUI.Layout will be used.
      */
-    P2GImporter.layoutFromString = function(jsonString, classContainer, callbacks)
+    P2GImporter.layoutFromString = function(jsonString, classContainer, callbacks, layoutClass)
     {
-        var descriptor = JSON.parse(jsonString);
+        var descriptor = global.JSON.parse(jsonString);
         if (descriptor)
         {
-            P2GImporter.layoutFromDescriptor(descriptor, classContainer, callbacks);
+            P2GImporter.layoutFromDescriptor(descriptor, classContainer, callbacks, layoutClass);
         }
         else
         {
@@ -66,18 +68,20 @@
      * @param descriptor { Object }: A JSON object describing the layout to import.
      * @param classContainer { Object }: Global object where classes described in the layout should be looked up. Optional, can be null.
      * @param callbacks { ImportCallbacks }: P2GImportCallbacks object configured for this layout.
+     * @param layoutClass { Object }: The class used to instantiate the layout. Optional, if omitted P2GUI.Layout will be used.
      */
-    P2GImporter.layoutFromDescriptor = function(descriptor, classContainer, callbacks)
+    P2GImporter.layoutFromDescriptor = function(descriptor, classContainer, callbacks, layoutClass)
     {
         /* default parameters */
         classContainer = classContainer || global;
+        layoutClass = layoutClass || global.P2GUI.Layout;
 
         var layoutName = descriptor["export-name"];
         var exportedRect = descriptor["export-rect"];
 
         if (layoutName && exportedRect)
         {
-            var layout = new global.P2GUI.Layout(layoutName, classContainer);
+            var layout = new layoutClass(layoutName, classContainer);
 
             /* save the original size of the exported layout */
             layout.exportRect.width = exportedRect.width;

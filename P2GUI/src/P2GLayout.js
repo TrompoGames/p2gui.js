@@ -188,6 +188,23 @@
      */
     P2GLayout.createP2GUIInstance = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
+        P2GLayout.createP2GUIClassInstance(P2GLayout, layout, elementDescription, desiredRect, callbacks, onCreated);
+    };
+
+    /**
+     * Creates an instance of the class definition supplied using the P2GUI description. Useful for inheritance.
+     *
+     * @method createP2GUIInstance
+     * @param classDefinition { Object }: The class to instantiate as a P2.Spine
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }   : P2GImportCallbacks object configured for this layout.
+     * @param onCreated { Function }: Callback function that should be invoked when the object is created.
+     * @static
+     */
+    P2GLayout.createP2GUIClassInstance = function(classDefinition, layout, elementDescription, desiredRect, callbacks, onCreated)
+    {
         var localCallbacks = callbacks.copy();
 
         localCallbacks.provideLayoutSize = function()
@@ -201,7 +218,7 @@
             onCreated(layout, elementDescription["name"], elementDescription["id"]);
         };
 
-        global.P2GUI.Importer.layoutFromFile(elementDescription["id"], layout.classContainer, localCallbacks);
+        global.P2GUI.Importer.layoutFromFile(elementDescription["id"], layout.classContainer, localCallbacks, classDefinition);
     };
 
     /**
