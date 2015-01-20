@@ -21,7 +21,7 @@
      * @param onCreated { Function }: Callback function that should be invoked when the object is created.
      * @static
      */
-    global.PIXI.createP2GUIClassInstance = function(classDefinition, layout, elementDescription, desiredRect, callbacks, onCreated)
+    global.PIXI.DisplayObjectContainer.createP2GUIClassInstance = function(classDefinition, layout, elementDescription, desiredRect, callbacks, onCreated)
     {
         var elementName = elementDescription["name"];
         var elementID = elementDescription["id"];
