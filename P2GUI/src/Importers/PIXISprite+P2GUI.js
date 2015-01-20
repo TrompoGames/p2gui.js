@@ -32,12 +32,15 @@
             frameName = elementName;
         }
 
-        frameName += ".png";
+        if (frameName.indexOf(".png", frameName.length - 4) === -1)
+        {
+            frameName += ".png";
+        }
 
         var sprite = null;
         try
         {
-            sprite = classDefinition.fromFrame(frameName);
+            sprite = global.PIXI.Sprite.fromFrameWithClass(frameName, classDefinition);
         }
         catch (e)
         {
@@ -62,4 +65,22 @@
         sprite.position.set(desiredRect.x + Math.floor(desiredRect.width * 0.5), desiredRect.y + Math.floor(desiredRect.height * 0.5));
         onCreated(sprite, elementName, elementID);
     };
+
+    /**
+     *
+     * Helper function that creates a sprite that will contain a texture from the TextureCache based on the frameId
+     * The frame ids are created when a Texture packer file has been loaded
+     *
+     * @method fromFrame
+     * @static
+     * @param frameId {String} The frame Id of the texture in the cache
+     * @return {Sprite} A new Sprite using a texture from the texture cache matching the frameId
+     */
+    global.PIXI.Sprite.fromFrameWithClass = function(frameId, classDefinition)
+    {
+        var texture = global.PIXI.TextureCache[frameId];
+        if(!texture) throw new Error('The frameId "' + frameId + '" does not exist in the texture cache' + this);
+        return new classDefinition(texture);
+    };
+
 })(this);
