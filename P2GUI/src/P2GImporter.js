@@ -258,6 +258,9 @@
         var hPositionType = elementDescription["horizontalPosition"];
         var vPositionType = elementDescription["verticalPosition"];
 
+        /* make sure the scale gets as close as possible to pixel perfect */
+        scale = Math.round(rect.width * scale) / rect.width;
+
         /* scaled rect */
         var desiredRect = new PIXI.Rectangle(rect.x, rect.y, rect.width * scale, rect.height * scale);
 
@@ -350,10 +353,10 @@
         }
 
         /* make sure the rect is aligned to pixels */
-        desiredRect.x = Math.floor(desiredRect.x);
-        desiredRect.y = Math.floor(desiredRect.y);
-        desiredRect.width = Math.ceil(desiredRect.width); // ??
-        desiredRect.height = Math.ceil(desiredRect.height); // ??
+        desiredRect.x = Math.round(desiredRect.x);
+        desiredRect.y = Math.round(desiredRect.y);
+        desiredRect.width = Math.round(desiredRect.width);
+        desiredRect.height = Math.round(desiredRect.height);
 
         return desiredRect;
     };
