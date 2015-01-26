@@ -144,6 +144,8 @@
         else
         {
             console.log(TAG + "Layout name or rect are invalid.");
+            console.log(TAG + "Name: " + layoutName);
+            console.log(TAG + "Rect: " + exportedRect);
             callbacks.onLayoutLoaded(null);
         }
     };
