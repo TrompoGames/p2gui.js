@@ -261,7 +261,7 @@
         var vPositionType = elementDescription["verticalPosition"];
 
         /* make sure the scale gets as close as possible to pixel perfect */
-        scale = Math.floor(rect.width * scale) / rect.width;
+        scale = Math.round(rect.width * scale) / rect.width;
 
         /* scaled rect */
         var desiredRect = new PIXI.Rectangle(rect.x, rect.y, rect.width * scale, rect.height * scale);
