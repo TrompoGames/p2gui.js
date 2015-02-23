@@ -100,24 +100,28 @@
             {
                 /* calculate the scale between the exported and imported sizes */
                 layout.importScale.set(layoutSize.width / exportedRect.width, layoutSize.height / exportedRect.height);
-                /* always favor the smaller dimension from the laouts import size */
-                if (layoutSize.width < layoutSize.height)
-                {
-                    layout.preferredScale = layout.importScale.x;
-                }
-                else if (layoutSize.height < layoutSize.width)
-                {
-                    layout.preferredScale = layout.importScale.y;
-                }
-                /* if the sides are equal, use the smaller side from the exported size */
-                else if (exportedRect.width < exportedRect.height)
-                {
-                    layout.preferredScale = layout.importScale.x;
-                }
-                else /* if everything else fails, just use the y axis scale */
-                {
-                    layout.preferredScale = layout.importScale.y;
-                }
+
+                /* if the sides are not equal favour the smallest scale */
+                layout.preferredScale = Math.min(layout.importScale.y, layout.importScale.x);
+
+                ///* always favor the smaller dimension from the layout's import size */
+                //if (layoutSize.width < layoutSize.height)
+                //{
+                //    layout.preferredScale = layout.importScale.x;
+                //}
+                //else if (layoutSize.height < layoutSize.width)
+                //{
+                //    layout.preferredScale = layout.importScale.y;
+                //}
+                ///* if the sides are equal, use the smaller side from the exported size */
+                //else if (exportedRect.width < exportedRect.height)
+                //{
+                //    layout.preferredScale = layout.importScale.x;
+                //}
+                //else /* if everything else fails, just use the y axis scale */
+                //{
+                //    layout.preferredScale = layout.importScale.y;
+                //}
             }
             else
             {
