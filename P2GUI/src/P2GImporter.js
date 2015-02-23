@@ -411,7 +411,15 @@
         return graphics;
     };
 
-    /* COMMENT THIS! */
+    /**
+     * Starts the process to create all the elements contained in a layout.
+     *
+     * @method createElementsInLayout
+     * @param layout
+     * @param elements
+     * @param classContainer
+     * @param callbacks
+     */
     P2GImporter.createElementsInLayout = function(layout, elements, classContainer, callbacks)
     {
         /* treat the layout as a group at this point */
@@ -421,7 +429,13 @@
         });
     };
 
-    /* COMMENT THIS */
+    /**
+     * Function to parse the misc parameters as JSON data. Leaves the field untouched if it's not a JSON string.
+     *
+     * @method parseMiscParameters
+     * @param elementDescription { Object }: An layout object description.
+     * @returns { Object }
+     */
     P2GImporter.parseMiscParameters = function(elementDescription)
     {
         /* assume that the misc info is in JSON format and try to import it */
@@ -440,7 +454,17 @@
         return elementDescription;
     };
 
-    /* COMMENT THIS! */
+    /**
+     * Creates and places the specified elements within the specified group.
+     *
+     * @method createElementsInGroup
+     * @param layout
+     * @param group
+     * @param elements
+     * @param classContainer
+     * @param callbacks
+     * @param onFinished
+     */
     P2GImporter.createElementsInGroup = function(layout, group, elements, classContainer, callbacks, onFinished)
     {
         /* save the layout's name */
@@ -477,7 +501,17 @@
         }
     };
 
-    /* COMMENT THIS */
+    /**
+     * Imports the specified element within the specified group.
+     *
+     * @method importElementInGroup
+     * @param layout
+     * @param group
+     * @param elementDescription
+     * @param classContainer
+     * @param callbacks
+     * @param onCreated
+     */
     P2GImporter.importElementInGroup = function(layout, group, elementDescription, classContainer, callbacks, onCreated)
     {
         var className = elementDescription["class"];
