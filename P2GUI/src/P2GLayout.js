@@ -25,7 +25,7 @@
         name = name || "unnamed layout";
 
         /* super init */
-        PIXI.DisplayObjectContainer.call(this);
+        global.PIXI.DisplayObjectContainer.call(this);
 
         /* private variables */
         /**
