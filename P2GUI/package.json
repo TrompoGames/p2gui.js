@@ -8,7 +8,7 @@
 	"sourceFolder": "src",
 	"outputFolder": "build",
 	"outputName": "p2gui",
-	"externals": [ "../LIBS/opentype.js/opentype.js" ],
+	"externals": [ "../LIBS/opentype.js/dist/opentype.js" ],
     "devDependencies": {
         "grunt": "~0.4.5",
         "grunt-contrib-concat": "~0.4.0",
