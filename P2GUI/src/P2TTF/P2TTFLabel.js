@@ -149,6 +149,21 @@
     P2TTFLabel.prototype.destroy = function()
     {
         this.text = null;
+        if (this.m_labelSprite)
+        {
+            this.removeChild(this.m_labelSprite);
+            this.m_labelSprite.texture.destroy(true);
+            delete this.m_labelSprite;
+            this.m_labelSprite = null;
+        }
+
+        delete this.m_size;
+        delete this.m_sizeScaled;
+        delete this.m_textRect;
+        delete this.m_textRectScaled;
+        delete this.m_font;
+        delete this.m_labelSprite;
+        delete this.m_boundFontLoaderHandler;
     }
 
     /**
