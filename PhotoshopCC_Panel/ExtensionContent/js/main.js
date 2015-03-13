@@ -5,6 +5,10 @@ var sectionHandlers = {};
 var currentSection = null;
 var host = csInterface.hostEnvironment;
 var Minibus = null;
+
+var savedSection = null;
+var savedSectionName = null;
+
 if (host && (host.appId == "PHXS" || host.appId == "PHSP"))
 {
 	isPhotoshop = true;
@@ -110,9 +114,7 @@ var timedUpdates = {};
 			var currentAttrValue = $(this).attr('href');
 
 			// Show/Hide Tabs
-			showSection('.main-content ' + currentAttrValue);
-			$('.current-section').text($(this).text());
-
+			showSection('.main-content ' + currentAttrValue, $(this).text());
 			e.preventDefault();
 		});
 
@@ -345,11 +347,19 @@ var timedUpdates = {};
 	});
 	
 
-	function showSection(section) {
+	function showSection(section, title, skipSectionSave) {
 		var element = $(section);
 		element.show().siblings().hide()
 		$('.off-canvas-wrap, .inner-wrap, .main-section, .main-content').height("100%");
 		callEnterFunction(section);
+		
+		$('.current-section').text(title);
+		
+		if (skipSectionSave !== true)
+		{
+			savedSection = section;
+			savedSectionName = title;
+		}
 	}
 	
 	function callEnterFunction(section)
@@ -369,8 +379,7 @@ var timedUpdates = {};
 	}
 
 	function reset() {
-		showSection('.main-content #detecting-p2gui');
-		$('.current-section').text("P2GUI Toolkit");
+		showSection('.main-content #detecting-p2gui', 'P2GUI Toolkit', true);
 		p2guiEnabled = false;
 		detectP2GUI();
 	}
@@ -383,8 +392,14 @@ var timedUpdates = {};
 			{
 				p2guiEnabled = (result === 'true');
 				if (p2guiEnabled) {
-					showSection('.main-content #document_configuration');
-					$('.current-section').text("Configuration");
+					if (savedSection !== null)
+					{
+						showSection(savedSection, savedSectionName);
+					}
+					else
+					{
+						showSection('.main-content #document_configuration', 'Configuration');
+					}
 					$('#p2guiDisabledModal').foundation('reveal', 'close');
 				} else {
 					$('#p2guiDisabledModal').foundation('reveal', 'open');
@@ -400,8 +415,7 @@ var timedUpdates = {};
 			p2guiEnabled = (result === 'true');
 			if (p2guiEnabled)
 			{
-				showSection('.main-content #document_configuration');
-				$('.current-section').text("Configuration");
+				showSection('.main-content #document_configuration', 'Configuration');
 				$('#p2guiDisabledModal').foundation('reveal', 'close');
 			}
 			else
