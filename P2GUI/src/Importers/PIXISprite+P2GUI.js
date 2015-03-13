@@ -62,10 +62,14 @@
             sprite.height = Math.floor(sprite.height * newScale);
         }
 
-        if (misc && misc["tint"])
+        if (misc)
         {
-            var tint = parseInt(misc["tint"]);
-            sprite.tint = isNaN(tint) ? 0xFFFFFF : tint;
+            if (misc["tint"])
+            {
+                var tint = parseInt(misc["tint"]);
+                sprite.tint = isNaN(tint) ? 0xFFFFFF : tint;
+            }
+            sprite.rotation = (misc["rotation"] || 0) * (Math.PI / 180);
         }
 
         sprite.anchor.set(0.5, 0.5);
