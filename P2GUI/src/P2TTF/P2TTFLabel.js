@@ -3,7 +3,7 @@
  */
 
 (function (global) {
-    "use strict"
+    "use strict";
 
     /**
      * @namespace P2TTF
@@ -20,8 +20,9 @@
      * @param text { String }: The text to render in the label.
      * @param fontFile { String }: Path to the font file to load and use.
      * @param fontSize { Number }: Font size to use while rendering the text.
+     * @param color { Number }: The tint value to apply to the text.
      */
-    function P2TTFLabel(size, text, fontFile, fontSize) {
+    function P2TTFLabel(size, text, fontFile, fontSize, color) {
         /* default values */
 
         /* init */
@@ -39,7 +40,7 @@
         this.m_font = null;
         this.m_labelSprite = null;
         this.m_boundFontLoaderHandler = this._handleFontLoaded.bind(this);
-        this.m_tint = 0xFFFFFF;
+        this.m_tint = color;
 
         var loadedFont = global.P2TTF.FontManager.fontCache[fontFile];
         if (loadedFont)
@@ -164,7 +165,7 @@
         delete this.m_font;
         delete this.m_labelSprite;
         delete this.m_boundFontLoaderHandler;
-    }
+    };
 
     /**
      * Method that handles font loading.
@@ -188,7 +189,7 @@
             this.m_fontLoaded = true;
             this._renderText();
         }
-    }
+    };
 
 
 
@@ -208,7 +209,7 @@
             this.m_labelSprite = null;
         }
 
-        /* if the text field is empty/null/undefined do not render anyting */
+        /* if the text field is empty/null/undefined do not render anything */
         if (!this.m_text) return;
 
         var canvas = document.createElement("canvas");
@@ -222,8 +223,8 @@
         var maxHeight = os2.sTypoAscender * 1.025;
         var maxWidth = head.xMax - head.xMin;
         var baseline = this.m_size.height * 0.95;
-        var fontScale = Math.min(this.m_size.width/(head.xMax - head.xMin), this.m_size.height/maxHeight);
-        var fontSize = fontScale * this.m_font.unitsPerEm;
+        var fontScale = (this.m_fontSize / this.m_font.unitsPerEm);//Math.min(this.m_size.width/(head.xMax - head.xMin), this.m_size.height/maxHeight);
+        var fontSize = this.m_fontSize;//fontScale * (this.m_font.unitsPerEm);
         //var path = this.m_font.getPath(this.m_text, 0, baseline, /*this.m_fontSize*/ fontScale * this.m_font.unitsPerEm); /* TODO: Use the passed font size */
 
         var glyphs = this.m_font.stringToGlyphs(this.m_text);
@@ -265,12 +266,12 @@
         this.m_textRect.y = this.m_size.height;
         this.m_textRect.width = textWidth;
         this.m_textRect.height = this.m_size.height;
-    }
+    };
 
     P2TTFLabel.createP2GUIInstance = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
         P2TTFLabel.createP2GUIClassInstance(P2TTFLabel, layout, elementDescription, desiredRect, callbacks, onCreated);
-    }
+    };
 
     P2TTFLabel.createP2GUIClassInstance = function(classDefinition, layout, elementDescription, desiredRect, callbacks, onCreated)
     {
@@ -308,7 +309,7 @@
                 fontExtension = "ttf";
             }
 
-            var fontSize = Math.round(parseFloat(textStyle["size"] * fontScale.y));
+            var fontSize = Math.floor(parseFloat(textStyle["size"]) * fontScale.y * layout.preferredScale);
             var leading = parseFloat(textStyle["leading"]) * fontScale.y;
             var kerning = parseFloat(textStyle["tracking"]);
 
@@ -340,12 +341,15 @@
                 text = textKey["textKey"];
             }
 
-            var label = new classDefinition(desiredRect, text, fontPath, fontSize);
+            var colorDescription = textStyle["color"];
+            var color = global.PIXI.rgb2hex([colorDescription["red"] / 255, colorDescription["grain"] / 255, colorDescription["blue"] / 255]);
+
+            var label = new classDefinition(desiredRect, text, fontPath, fontSize, color);
             label.position.set(desiredRect.x, desiredRect.y);
 
             onCreated(label, elementName, elementID);
         }
-    }
+    };
 
     /**
      * @export P2TTF.Label
