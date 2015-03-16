@@ -24,6 +24,7 @@
      */
     function P2TTFLabel(size, text, fontFile, fontSize, color) {
         /* default values */
+        color = isNaN(parseInt(color)) ? 0xffffff : parseInt(color);
 
         /* init */
         global.PIXI.DisplayObjectContainer.call(this);
