@@ -56,7 +56,7 @@
         }
         else
         {
-            console.log(TAG + "Cannot parse JSON string " + jsonString);
+            global.P2GUI.Log(TAG + "Cannot parse JSON string " + jsonString);
             callbacks.onLayoutLoaded(null);
         }
     };
@@ -147,9 +147,9 @@
         }
         else
         {
-            console.log(TAG + "Layout name or rect are invalid.");
-            console.log(TAG + "Name: " + layoutName);
-            console.log(TAG + "Rect: " + exportedRect);
+            global.P2GUI.Log(TAG + "Layout name or rect are invalid.");
+            global.P2GUI.Log(TAG + "Name: " + layoutName);
+            global.P2GUI.Log(TAG + "Rect: " + exportedRect);
             callbacks.onLayoutLoaded(null);
         }
     };
@@ -193,7 +193,7 @@
 
                 if (char != '{')
                 {
-                    console.log("P2GImporter.tryToLoadAtlas ERROR: Received response but failed to parse JSON!");
+                    global.P2GUI.Log("P2GImporter.tryToLoadAtlas ERROR: Received response but failed to parse JSON!");
                     atlasLoader.onLoaded();
                 }
                 else
@@ -452,7 +452,7 @@
         }
         catch (e)
         {
-            console.log("P2GImporter WARNING: The misc field could not be imported as a JSON string.");
+            global.P2GUI.Log("P2GImporter WARNING: The misc field could not be imported as a JSON string.");
         }
 
         return elementDescription;

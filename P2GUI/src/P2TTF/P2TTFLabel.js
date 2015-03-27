@@ -181,8 +181,8 @@
         {
             this.m_font = null;
             this.m_fontLoaded = false;
-            console.log(this.m_fontFile);
-            console.log(error);
+            global.P2GUI.Log(this.m_fontFile);
+            global.P2GUI.Log(error);
         }
         else
         {
@@ -279,7 +279,7 @@
         var textKey = elementDescription["properties"]["textKey"];
         if (!textKey)
         {
-            console.log("P2TTF.Label ERROR: Element " + elementDescription["name"] + " is not a text element");
+            global.P2GUI.Log("P2TTF.Label ERROR: Element " + elementDescription["name"] + " is not a text element");
             global.P2GUI.Importer.createMissingClassImporterElement(layout, elementDescription, desiredRect, callbacks, onCreated);
         }
         else
@@ -305,7 +305,7 @@
             {
                 if (fontTechnology != 1)
                 {
-                    console.log("P2TTF.Label WARNING: Unknown font technology, defaulting to TTF.");
+                    global.P2GUI.Log("P2TTF.Label WARNING: Unknown font technology, defaulting to TTF.");
                 }
                 fontExtension = "ttf";
             }

@@ -76,7 +76,7 @@
             {
                 if (error)
                 {
-                    console.log(error);
+                    global.P2GUI.Log(error);
                 }
                 else
                 {

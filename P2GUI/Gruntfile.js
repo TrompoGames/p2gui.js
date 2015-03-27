@@ -8,6 +8,7 @@ module.exports = function(grunt) {
 	// source files //
 	var sourceFiles = [
 		'<%= pkg.externals %>', /* external libraries */
+		'<%= pkg.sourceFolder %>/P2GLog.js',
 		'<%= pkg.sourceFolder %>/P2TTF/**/*.js', /* all files in the P2TTF folder */
 		'<%= pkg.sourceFolder %>/Importers/**/*.js', /* all files in the Importers folder */
 		'<%= pkg.sourceFolder %>/P2GSize.js',
