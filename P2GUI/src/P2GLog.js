@@ -17,7 +17,7 @@
      */
     var P2GLog;
 
-    if (global.console && global.console.log && typeof global.console.log === "function")
+    if (global.console && typeof global.console.log === "function")
     {
         P2GLog = function()
         {
