@@ -172,13 +172,14 @@
             completionHandler(!loadError);
         });
 
-        var ajaxRequest = new PIXI.AjaxRequest();
-        ajaxRequest.onerror = function ()
+        var ajaxRequest = null;
+
+        var errorFunction = function ()
         {
             loadError = true;
         };
 
-        ajaxRequest.onloadend = function()
+        var onloadendFunction = function()
         {
             if (!loadError && ajaxRequest.responseText)
             {
@@ -207,6 +208,38 @@
                 atlasLoader.onLoaded();
             }
         };
+
+        if(window.XDomainRequest && this.crossorigin)
+        {
+            ajaxRequest = new window.XDomainRequest();
+
+            // XDomainRequest has a few quirks. Occasionally it will abort requests
+            // A way to avoid this is to make sure ALL callbacks are set even if not used
+            // More info here: http://stackoverflow.com/questions/15786966/xdomainrequest-aborts-post-on-ie-9
+            ajaxRequest.timeout = 3000;
+
+            ajaxRequest.onerror = errorFunction.bind(this);
+
+            ajaxRequest.ontimeout = errorFunction.bind(this);
+
+            ajaxRequest.onprogress = function() {};
+
+            ajaxRequest.onload = onloadendFunction.bind(this);
+        }
+        else
+        {
+            if (window.XMLHttpRequest)
+            {
+                ajaxRequest = new window.XMLHttpRequest();
+            }
+            else
+            {
+                ajaxRequest = new window.ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            ajaxRequest.onerror = errorFunction.bind(this);
+            ajaxRequest.onloadend = onloadendFunction.bind(this);
+        }
 
         ajaxRequest.open('GET', atlasPath, true);
         if (ajaxRequest.overrideMimeType) ajaxRequest.overrideMimeType('application/json');
