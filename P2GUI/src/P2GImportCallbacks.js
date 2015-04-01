@@ -71,7 +71,7 @@
             {
                 return scope.m_provideCaptionForLabel.call(scope.target, layoutName, labelName, labelID);
             }
-            return labelName;
+            return null;
         };
 
         this.m_provideImporterFunctionForClassDefault = function(layoutName, className)
