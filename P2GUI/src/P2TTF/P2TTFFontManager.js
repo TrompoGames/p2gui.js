@@ -89,7 +89,7 @@
                 }
             });
         }
-    }
+    };
 
     /**
      * Unloads a font from the cache if it was previously loaded.
@@ -105,7 +105,7 @@
             loadedFont = null;
             delete this.m_fontCache[fontFile];
         }
-    }
+    };
 
     /**
      * @export P2TTF.FontManager
