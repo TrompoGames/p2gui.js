@@ -21,20 +21,27 @@
      * @param fontFile { String }: Path to the font file to load and use.
      * @param fontSize { Number }: Font size to use while rendering the text.
      * @param color { Number }: The tint value to apply to the text.
+     * @param tracking { Number }: The tracking as configured in photoshop.
+     * @param alignment { String }: The alignment of the test.
      */
-    function P2TTFLabel(size, text, fontFile, fontSize, color) {
+    function P2TTFLabel(size, text, fontFile, fontSize, color, tracking, alignment) {
         /* default values */
         color = isNaN(parseInt(color)) ? 0xffffff : parseInt(color);
+        tracking = tracking || 0;
+        alignment = alignment || "left";
 
         /* init */
         global.PIXI.DisplayObjectContainer.call(this);
+        var alignments = {
+            left: P2TTFLabel.leftAlignment,
+            center: P2TTFLabel.centerAlignment,
+            right: P2TTFLabel.rightAlignment
+        };
 
         /* private variables */
         this.m_text = text;
         this.m_size = size;
         this.m_sizeScaled = new global.P2GUI.Size();
-        this.m_textRect = new global.PIXI.Rectangle();
-        this.m_textRectScaled = new global.PIXI.Rectangle();
         this.m_fontFile = fontFile;
         this.m_fontSize = fontSize;
         this.m_fontLoaded = false;
@@ -42,6 +49,8 @@
         this.m_labelSprite = null;
         this.m_boundFontLoaderHandler = this._handleFontLoaded.bind(this);
         this.m_tint = color;
+        this.m_tracking = tracking;
+        this.m_alignment = alignments[alignment];
 
         var loadedFont = global.P2TTF.FontManager.fontCache[fontFile];
         if (loadedFont)
@@ -131,23 +140,10 @@
     });
 
     /**
-     * The rect of the text contained by this label, it includes all metrics therefore does not represent a pixel size.
+     * Destroy this object and all it's members.
      *
-     * @property textRect
-     * @type { PIXI.Rectangle }
-     * @readonly
+     * @method destroy
      */
-    Object.defineProperty(P2TTFLabel.prototype, 'textRect', {
-        get: function()
-        {
-            this.m_textRectScaled.x = this.m_textRect.x * this.scale.x;
-            this.m_textRectScaled.y = this.m_textRect.y * this.scale.y;
-            this.m_textRectScaled.width = this.m_textRect.width * this.scale.x;
-            this.m_textRectScaled.height = this.m_textRect.height * this.scale.y;
-            return this.m_textRectScaled;
-        }
-    });
-
     P2TTFLabel.prototype.destroy = function()
     {
         this.text = null;
@@ -161,8 +157,6 @@
 
         delete this.m_size;
         delete this.m_sizeScaled;
-        delete this.m_textRect;
-        delete this.m_textRectScaled;
         delete this.m_font;
         delete this.m_labelSprite;
         delete this.m_boundFontLoaderHandler;
@@ -192,7 +186,92 @@
         }
     };
 
+    /**
+     * Extracts the words from a given string using the specified font and tracking.
+     *
+     * @method _extractWords
+     * @param text { String } : The string from which to extract the words from.
+     * @param font { opentype.Font } : The font to use in the resulting words.
+     * @param tracking { Number } : The tracking to use in the resulting words.
+     * @returns { Array } : An array containing the words generated in this function.
+     * @private
+     */
+    P2TTFLabel.prototype._extractWords = function(text, font, tracking)
+    {
+        var char;
+        var words = [];
+        var wordText = "";
+        for (var i = 0, n = text.length; i < n; ++i)
+        {
+            char = text[i];
+            if (char === " ") // space
+            {
+                if (wordText !== "")
+                {
+                    words.push(new global.P2TTF.Word(wordText, font, tracking));
+                    wordText = "";
+                }
+                words.push(global.P2TTF.Word.space);
+            }
+            else if (char === "\n" || char === "\r")
+            {
+                if (wordText !== "")
+                {
+                    words.push(new global.P2TTF.Word(wordText, font, tracking));
+                    wordText = "";
+                }
+                words.push(global.P2TTF.Word.lineBreak);
+            }
+            else
+            {
+                wordText += char;
+            }
+        }
 
+        if (wordText !== "")
+        {
+            words.push(new global.P2TTF.Word(wordText, font, tracking));
+        }
+
+        return words;
+    };
+
+    /**
+     * Uses the given word array to build lines to be rendered.
+     *
+     * @param words { Array }: The words to use to build the lines.
+     * @param spaceWidth { Number }: The width, in ems, that a space word should take.
+     * @returns { Array }: An array containing the lines computed by this function.
+     * @private
+     */
+    P2TTFLabel.prototype._buildLines = function(words, spaceWidth)
+    {
+        var word;
+        var line = null;
+        var lines = [];
+        //var spaceWord = global.P2TTF.Word.space; // not used yet
+        var lineBreakWord = global.P2TTF.Word.lineBreak;
+
+        for (var i = 0, n = words.length - 1; i <= n; ++i) /* we need to know the last index in the array so use n to save it */
+        {
+            if (!line)
+            {
+                line =  new global.P2TTF.Line();
+                line.spaceWidth = spaceWidth;
+            }
+
+            word = words[i];
+            line.addWord(word);
+
+            if (word === lineBreakWord || i === n)
+            {
+                lines.push(line);
+                line = null;
+            }
+        }
+
+        return lines;
+    };
 
     /**
      * Updates the rendered text
@@ -218,62 +297,118 @@
         canvas.height = this.m_size.height;
         var context = canvas.getContext("2d");
 
-        var head = this.m_font.tables.head;
         var hhea = this.m_font.tables.hhea;
-        var os2 = this.m_font.tables.os2;
-        var maxHeight = os2.sTypoAscender * 1.025;
-        var maxWidth = head.xMax - head.xMin;
-        var baseline = this.m_size.height * 0.95;
-        var fontScale = (this.m_fontSize / this.m_font.unitsPerEm);//Math.min(this.m_size.width/(head.xMax - head.xMin), this.m_size.height/maxHeight);
-        var fontSize = this.m_fontSize;//fontScale * (this.m_font.unitsPerEm);
-        //var path = this.m_font.getPath(this.m_text, 0, baseline, /*this.m_fontSize*/ fontScale * this.m_font.unitsPerEm); /* TODO: Use the passed font size */
 
-        var glyphs = this.m_font.stringToGlyphs(this.m_text);
-        var glyph;
-        var i, n;
-        var textWidth = 0;
-        for (i = 0, n = glyphs.length; i < n; ++i)
+        var fontSize = this.m_fontSize;
+        var fontScale = (fontSize / this.m_font.unitsPerEm);
+
+        var words = this._extractWords(this.m_text, this.m_font, this.m_tracking);
+        var spaceWidth = (this.m_font.charToGlyph(" ").advanceWidth + this.m_tracking);
+        var lineHeight = ((hhea.ascender - hhea.descender) * fontScale);
+
+        var lines = this._buildLines(words, spaceWidth);
+
+        var alignment = this.m_alignment;
+        var left = P2TTFLabel.leftAlignment;
+        var center = P2TTFLabel.centerAlignment;
+        var right = P2TTFLabel.rightAlignment;
+        var canvasWidth = canvas.width;
+        var canvasCenter = canvasWidth * 0.5;
+
+        var offsetX = 0;
+        var offsetY = (lines[0].emHeight * fontScale);
+
+        var textPath = new global.opentype.Path();
+
+        var line;
+
+        for (var i = 0, n = lines.length; i < n; ++i)
         {
-            glyph = glyphs[i];
-            if (glyph.advanceWidth) {
-                textWidth += glyph.advanceWidth * fontScale;
+            line = lines[i];
+            if (alignment === left)
+            {
+                offsetX = (line.offsetLeft * fontScale);
             }
-            /* TODO: Add kerning support */
+            else if (alignment === center)
+            {
+                offsetX = (canvasCenter - ((line.emWidth - line.offsetLeft) * fontScale * 0.5));
+            }
+            else if (alignment === right)
+            {
+                offsetX = (canvasWidth - (line.emWidth * fontScale));
+            }
+
+            line.addToPath(textPath, fontSize, fontScale, offsetX, offsetY);
+            offsetY += lineHeight;
         }
 
-        var offset = (this.m_size.width - textWidth) * 0.5;
-        var fullPath = new global.opentype.Path();
-        var textX = 0;
-        for (i = 0, n = glyphs.length; i < n; ++i)
-        {
-            glyph = glyphs[i];
-            var path = glyph.getPath(offset + textX, baseline, fontSize);
-            fullPath.extend(path);
-            if (glyph.advanceWidth) {
-                textX += glyph.advanceWidth * fontScale;
-            }
-        }
+        //context.save();
+        //context.fillStyle = 'rgba(225,0,0,0.5)';
+        //context.fillRect(0,0,canvas.width,canvas.height);
+        //context.restore();
 
-        fullPath.fill = "#ffffff";
-        fullPath.draw(context);
+        textPath.fill = "#ffffff";
+        textPath.draw(context);
 
         var texture = PIXI.Texture.fromCanvas(canvas);
         this.m_labelSprite = new PIXI.Sprite(texture, new PIXI.Rectangle(0, 0, this.m_size.width, this.m_size.height));
         this.m_labelSprite.tint = this.m_tint;
 
         this.addChild(this.m_labelSprite);
-
-        this.m_textRect.x = offset;
-        this.m_textRect.y = this.m_size.height;
-        this.m_textRect.width = textWidth;
-        this.m_textRect.height = this.m_size.height;
     };
 
+    /**
+     * Left alignment static variable.
+     *
+     * @type {number}
+     * @static
+     */
+    P2TTFLabel.leftAlignment = 0;
+
+    /**
+     * Center alignment static variable.
+     *
+     * @type {number}
+     * @static
+     */
+    P2TTFLabel.centerAlignment = 1;
+
+    /**
+     * Right alignment static variable.
+     *
+     * @type {number}
+     * @static
+     */
+    P2TTFLabel.rightAlignment = 2;
+
+    /**
+     * Default P2GUI instantiation method, this only parses the needed information and creates a new object
+     *
+     * @method createP2GUIInstance
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }   : P2GImportCallbacks object configured for this layout.
+     * @param onCreated { Function }: Callback function that should be invoked when the object is created.
+     * @static
+     */
     P2TTFLabel.createP2GUIInstance = function(layout, elementDescription, desiredRect, callbacks, onCreated)
     {
         P2TTFLabel.createP2GUIClassInstance(P2TTFLabel, layout, elementDescription, desiredRect, callbacks, onCreated);
     };
 
+    /**
+     * Creates an instance of a P2.Spine using the class definition supplied. Useful for inheritance.
+     *
+     * @method createP2GUIInstance
+     * @param classDefinition { Object }: The class to instantiate as a P2.Spine
+     * @param layout { P2GUI.Layout }: The layout where the element was supposed to be created.
+     * @param elementDescription { Object }: An object containing the element's description, usually from a P2GUI export.
+     * @param desiredRect { PIXI.Rectangle }: Rectangle describing the desired size and position of the element.
+     * @param callbacks { P2GUI.ImportCallbacks }   : P2GImportCallbacks object configured for this layout.
+     * @param onCreated { Function }: Callback function that should be invoked when the object is created.
+     * @static
+     */
     P2TTFLabel.createP2GUIClassInstance = function(classDefinition, layout, elementDescription, desiredRect, callbacks, onCreated)
     {
         var textKey = elementDescription["properties"]["textKey"];
@@ -312,7 +447,7 @@
 
             var fontSize = Math.floor(parseFloat(textStyle["size"]) * fontScale.y * layout.preferredScale);
             var leading = parseFloat(textStyle["leading"]) * fontScale.y;
-            var kerning = parseFloat(textStyle["tracking"]);
+            var tracking = parseFloat(textStyle["tracking"]);
 
             // get the object properties //
             var elementName = elementDescription["name"];
@@ -320,12 +455,28 @@
             var textShapeBounds = textKey["textShape"][0]["bounds"];
             if (textShapeBounds)
             {
-                /*TODO*/
-//                CGSize shapeSize = [GSGGUI_Shared getScaledSizeFromBoundsDescription:textShapeBounds];
-//                shapeSize.width *= fontScale.x;
-//                shapeSize.height *= fontScale.y;
-//                size.width = MAX(size.width, shapeSize.width);
-//                size.height = MAX(size.height, shapeSize.height);
+                /* calculate the difference between the originally exported bounds and the text shape bounds */
+                var shapeWidth = Math.round(textShapeBounds["right"] - textShapeBounds["left"]);
+                var shapeHeight = Math.round(textShapeBounds["bottom"] - textShapeBounds["top"]);
+
+
+                var exportWidth = elementDescription["rect"].width;
+                var exportHeight = elementDescription["rect"].height;
+
+                var widthRatio = desiredRect.width / exportWidth;
+                var heightRatio = desiredRect.height / exportHeight;
+
+                /* apply the ratio to the desired rect */
+                var newWidth = shapeWidth * widthRatio;
+                var newHeight = shapeHeight * heightRatio;
+
+                var keyBoundingBox = textKey["boundingBox"];
+
+                desiredRect.x -= (keyBoundingBox["left"] * widthRatio);
+                desiredRect.y -= (keyBoundingBox["top"] * heightRatio);
+
+                desiredRect.width = newWidth;
+                desiredRect.height = newHeight;
             }
 
             var alignment = paragraphStyle["align"];
@@ -345,7 +496,7 @@
             var colorDescription = textStyle["color"];
             var color = global.PIXI.rgb2hex([colorDescription["red"] / 255, colorDescription["grain"] / 255, colorDescription["blue"] / 255]);
 
-            var label = new classDefinition(desiredRect, text, fontPath, fontSize, color);
+            var label = new classDefinition(desiredRect, text, fontPath, fontSize, color, tracking, alignment);
             label.position.set(desiredRect.x, desiredRect.y);
 
             onCreated(label, elementName, elementID);
