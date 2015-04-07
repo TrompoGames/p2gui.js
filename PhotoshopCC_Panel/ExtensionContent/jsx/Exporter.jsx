@@ -693,7 +693,7 @@ function getKeyValueFromActionDecriptor( object, key, fieldObject )
             break;
             
         case DescValueType.STRINGTYPE:
-            ret = object.getString (key);
+            ret = object.getString(key).replace(/[\u2018\u2019]/g, "'");
             break;
             
         case DescValueType.UNITDOUBLE:
