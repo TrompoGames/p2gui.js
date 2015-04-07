@@ -213,7 +213,7 @@
                 }
                 words.push(global.P2TTF.Word.space);
             }
-            else if (char === "\n" || char === "\r")
+            else if (char === "\n" || char === "\r" || char === "\u0003")
             {
                 if (wordText !== "")
                 {
