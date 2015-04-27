@@ -279,7 +279,7 @@
      * @method _renderText
      * @private
      */
-    P2TTFLabel.prototype._renderText = function() // WARNING: This rendering function was eyeballed for PACO // TODO: Make rendering more flexible
+    P2TTFLabel.prototype._renderText = function() // TODO: Make rendering more flexible
     {
         if (this.m_labelSprite)
         {
@@ -292,10 +292,20 @@
         /* if the text field is empty/null/undefined do not render anything */
         if (!this.m_text) return;
 
-        var canvas = document.createElement("canvas");
-        canvas.width = this.m_size.width;
-        canvas.height = this.m_size.height;
-        var context = canvas.getContext("2d");
+        var canvas = null;
+        var context = null;
+        if (global.Ejecta && global.Ejecta.P2TTFNativeRenderer) /* native renderer used in P2Platform */
+        {
+            context = new global.Ejecta.P2TTFNativeRenderer(this.m_size.width, this.m_size.height);
+            canvas = context;
+        }
+        else /* fallback to canvas renderer */
+        {
+            canvas = document.createElement("canvas");
+            canvas.width = this.m_size.width;
+            canvas.height = this.m_size.height;
+            context = canvas.getContext("2d");
+        }
 
         var hhea = this.m_font.tables.hhea;
 
