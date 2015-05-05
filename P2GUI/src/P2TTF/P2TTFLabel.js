@@ -466,8 +466,8 @@
             if (textShapeBounds)
             {
                 /* calculate the difference between the originally exported bounds and the text shape bounds */
-                var shapeWidth = Math.round(textShapeBounds["right"] - textShapeBounds["left"]);
-                var shapeHeight = Math.round(textShapeBounds["bottom"] - textShapeBounds["top"]);
+                var shapeWidth = Math.round((textShapeBounds["right"] - textShapeBounds["left"]) * fontScale.x);
+                var shapeHeight = Math.round((textShapeBounds["bottom"] - textShapeBounds["top"]) * fontScale.y);
 
 
                 var exportWidth = elementDescription["rect"].width;
@@ -482,8 +482,8 @@
 
                 var keyBoundingBox = textKey["boundingBox"];
 
-                desiredRect.x -= (keyBoundingBox["left"] * widthRatio);
-                desiredRect.y -= (keyBoundingBox["top"] * heightRatio);
+                desiredRect.x -= (keyBoundingBox["left"] * fontScale.x * widthRatio);
+                desiredRect.y -= (keyBoundingBox["top"] * fontScale.y * heightRatio);
 
                 desiredRect.width = newWidth;
                 desiredRect.height = newHeight;
