@@ -135,8 +135,19 @@
             var atlasPath = callbacks.providePathForAsset(layoutName, layoutName + ".json");
             if (atlasPath)
             {
-                P2GImporter.tryToLoadAtlas(atlasPath, function()
+                P2GImporter.tryToLoadAtlas(atlasPath, function(atlasDidLoad, atlasLoader)
                 {
+                    if (atlasDidLoad)
+                    {
+                        layout.atlasLoaded = atlasPath;
+                        layout.atlasLoader = atlasLoader;
+                    }
+                    else
+                    {
+                        layout.atlasLoaded = null;
+                        layout.atlasLoader = null;
+                    }
+
                     P2GImporter.createElementsInLayout(layout, elements, classContainer, callbacks);
                 });
             }
@@ -160,7 +171,7 @@
      * @method tryToLoadAtlas
      * @param atlasPath { String }: The path to the atlas that should be loaded.
      * @param completionHandler(loaded) { Function }: A function to call once the process is complete.
-     *                          @param loaded { Boolean }: False if an error occurred, otherwise true.
+     * @param loaded { Boolean }: False if an error occurred, otherwise true.
      */
     P2GImporter.tryToLoadAtlas = function(atlasPath, completionHandler)
     {
@@ -169,7 +180,7 @@
         /* hack to cheat PIXI's loading system */
         var loadError = false;
         atlasLoader.on('loaded', function(evt) {
-            completionHandler(!loadError);
+            completionHandler(!loadError, atlasLoader);
         });
 
         var ajaxRequest = null;
@@ -195,6 +206,7 @@
                 if (char != '{')
                 {
                     global.P2GUI.Log("P2GImporter.tryToLoadAtlas ERROR: Received response but failed to parse JSON!");
+                    loadError = true;
                     atlasLoader.onLoaded();
                 }
                 else
