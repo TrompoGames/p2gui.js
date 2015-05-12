@@ -138,6 +138,20 @@
          * @type { Number }
          */
         this.preferredScale = 0;
+
+        /**
+         * The path to the loaded atlas; if an atlas was loaded.
+         *
+         * @type { String }
+         */
+        this.atlasLoaded = null;
+
+        /**
+         * The loader used to load the atlas; if an atlas was loaded.
+         *
+         * @type { PIXI.JsonLoader }
+         */
+        this.atlasLoader = null;
     }
 
     /**
