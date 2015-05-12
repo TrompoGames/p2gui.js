@@ -70,6 +70,16 @@
                 sprite.tint = isNaN(tint) ? 0xFFFFFF : tint;
             }
             sprite.rotation = (misc["rotation"] || 0) * (Math.PI / 180);
+
+            if (misc["flipHorizontal"])
+            {
+                sprite.scale.x *= -1;
+            }
+
+            if (misc["flipVertical"])
+            {
+                sprite.scale.y *= -1;
+            }
         }
 
         sprite.anchor.set(0.5, 0.5);
