@@ -232,7 +232,7 @@
             onCreated(layout, elementDescription["name"], elementDescription["id"]);
         };
 
-        global.P2GUI.Importer.layoutFromFile(callbacks.providePathForAsset(layout.name, elementDescription["id"]), layout.classContainer, localCallbacks, classDefinition);
+        global.P2GUI.Importer.layoutFromFile(callbacks.providePathForAsset(layout, elementDescription["id"]), layout.classContainer, localCallbacks, classDefinition);
     };
 
     /**

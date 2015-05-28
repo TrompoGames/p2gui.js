@@ -39,46 +39,46 @@
             }
         };
 
-        this.m_onElementCreatedDefault = function(layoutName, element, elementName, elementID)
+        this.m_onElementCreatedDefault = function(layout, element, elementName, elementID)
         {
             if (scope.m_onElementCreated)
             {
-                scope.m_onElementCreated.call(scope.target, layoutName, element, elementName, elementID);
+                scope.m_onElementCreated.call(scope.target, layout, element, elementName, elementID);
             }
         };
 
-        this.m_provideLayoutSizeDefault = function(layoutName)
+        this.m_provideLayoutSizeDefault = function(layout)
         {
             if (scope.m_provideLayoutSize)
             {
-                return scope.m_provideLayoutSize.call(scope.target, layoutName);
+                return scope.m_provideLayoutSize.call(scope.target, layout);
             }
             return new global.P2GUI.Size(0, 0);
         };
 
-        this.m_providePathForAssetDefault = function(layoutName, assetFile)
+        this.m_providePathForAssetDefault = function(layout, assetFile)
         {
             if (scope.m_providePathForAsset)
             {
-                return scope.m_providePathForAsset.call(scope.target, layoutName, assetFile);
+                return scope.m_providePathForAsset.call(scope.target, layout, assetFile);
             }
             return assetFile;
         };
 
-        this.m_provideCaptionForLabelDefault = function(layoutName, labelName, labelID)
+        this.m_provideCaptionForLabelDefault = function(layout, labelName, labelID)
         {
             if (scope.m_provideCaptionForLabel)
             {
-                return scope.m_provideCaptionForLabel.call(scope.target, layoutName, labelName, labelID);
+                return scope.m_provideCaptionForLabel.call(scope.target, layout, labelName, labelID);
             }
             return null;
         };
 
-        this.m_provideImporterFunctionForClassDefault = function(layoutName, className)
+        this.m_provideImporterFunctionForClassDefault = function(layout, className)
         {
             if (scope.m_provideImporterFunctionForClass)
             {
-                return scope.m_provideImporterFunctionForClass.call(scope.target, layoutName, className);
+                return scope.m_provideImporterFunctionForClass.call(scope.target, layout, className);
             }
             return null;
         }
@@ -94,7 +94,7 @@
      *
      * @type { Function }
      * @default empty function
-     * @property onLayoutLoaded(layout, layoutName) { Function }
+     * @property onLayoutLoaded(layout) { Function }
      *                          @param layout { Layout }: The resulting layout when the load process is complete or null if an error occurred.
      */
     Object.defineProperty(P2GImportCallbacks.prototype, 'onLayoutLoaded', {
@@ -114,8 +114,8 @@
      *
      * @type { Function }
      * @default empty function
-     * @property onElementCreated(layoutName, element, elementName, elementID) { Function }
-     *                            @param layoutName { String }: The name of the layout to which the element belongs.
+     * @property onElementCreated(layout, element, elementName, elementID) { Function }
+     *                            @param layout { P2GUI.Layout }: The layout to which the element belongs.
      *                            @param element { DisplayObject }: The loaded element.
      *                            @param elementName { String }: Name of the loaded element.
      *                            @param elementID { String }: ID of the loaded element.
@@ -137,8 +137,8 @@
      *
      * @type { Function }
      * @default function that returns a zero size, which is interpreted as the same size as the layout's exported size
-     * @property provideLayoutSize(layoutName) { Function }
-     *                             @param layoutName { String }: The name of the layout that will be sized to the new size
+     * @property provideLayoutSize(layout) { Function }
+     *                             @param layout { P2GUI.Layout }: The layout that will be sized to the new size
      *                             @return { P2GUI.Size }: The layout size represented by a P2GUI.Size, if either width, height or both is zero that field is interpreted as the exported size of the layout.
      */
     Object.defineProperty(P2GImportCallbacks.prototype, 'provideLayoutSize', {
@@ -158,8 +158,8 @@
      *
      * @type { Function }
      * @default function that returns the file name as if the file was stored at the root of the working folder
-     * @property providePathForAsset(layoutName, assetFile) { Function }
-     *                                @param layoutName { String }: The name of the layout trying to load the asset.
+     * @property providePathForAsset(layout, assetFile) { Function }
+     *                                @param layout { P2GUI.Layout }: The layout trying to load the asset.
      *                                @param assetFile { String }: The file name of the asset to load.
      *                                @return { String }: The path to the asset to load, including the file name.
      */
@@ -180,8 +180,8 @@
      *
      * @type { Function }
      * @default function that returns the label's name as the text to be rendered
-     * @property provideCaptionForLabel(layoutName, labelName, labelID) { Function }
-     *                                  @param layoutName { String }: The name of the layout to which the label belongs.
+     * @property provideCaptionForLabel(layout, labelName, labelID) { Function }
+     *                                  @param layout { P2GUI.Layout }: The layout to which the label belongs.
      *                                  @param labelName { String }: The name of the label on which the text will be rendered.
      *                                  @param labelID { String }: The ID of the label on which the text will be rendered.
      *                                  @return { String }: The string that should be rendered on the label.
@@ -205,8 +205,8 @@
      *
      * @type { Function }
      * @default function that returns null
-     * @property provideImporterFunctionForClass(layoutName, className) { Function }
-     *                                @param layoutName { String }: The name of the layout trying to load the asset.
+     * @property provideImporterFunctionForClass(layout, className) { Function }
+     *                                @param layout { String }: The layout trying to load the asset.
      *                                @param className { String }: The class name as configured in the export.
      *                                @return { Function }: An importer function to create an instance of the required class.
      */

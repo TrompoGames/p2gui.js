@@ -491,13 +491,13 @@
 
             var alignment = paragraphStyle["align"];
 
-            var fontPath = callbacks.providePathForAsset(layout.name, fontName + "." + fontExtension);
+            var fontPath = callbacks.providePathForAsset(layout, fontName + "." + fontExtension);
             if (!fontPath)
             {
                 fontPath = fontName + "." + fontExtension;
             }
 
-            var text = callbacks.provideCaptionForLabel(layout.name, elementName, elementID);
+            var text = callbacks.provideCaptionForLabel(layout, elementName, elementID);
             if (!text)
             {
                 text = textKey["textKey"];

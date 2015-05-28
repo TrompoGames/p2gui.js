@@ -88,7 +88,7 @@
             layout.exportRect.height = exportedRect.height;
 
             /* get the desired size for the imported layout */
-            var layoutSize = callbacks.provideLayoutSize(layoutName);
+            var layoutSize = callbacks.provideLayoutSize(layout);
             if (layoutSize.width <= 0) layoutSize.width = exportedRect.width;
             if (layoutSize.height <= 0) layoutSize.height = exportedRect.height;
             layout.importRect.width = layoutSize.width;
@@ -132,7 +132,7 @@
             var elements = descriptor["layout"];
 
             /* try to load an atlas with the name of the layout */
-            var atlasPath = callbacks.providePathForAsset(layoutName, layoutName + ".json");
+            var atlasPath = callbacks.providePathForAsset(layout, layoutName + ".json");
             if (atlasPath)
             {
                 P2GImporter.tryToLoadAtlas(atlasPath, function(atlasDidLoad, atlasLoader)
@@ -516,8 +516,6 @@
      */
     P2GImporter.createElementsInGroup = function(layout, group, elements, classContainer, callbacks, onFinished)
     {
-        /* save the layout's name */
-        var layoutName = layout.name;
         /* initialize the counter variables */
         var elementCount = elements.length;
         var elementIndex = 0;
@@ -530,7 +528,7 @@
                 ++elementIndex;
                 layout.addElement(element, elementName, elementID);
                 group.addChild(element);
-                callbacks.onElementCreated(layoutName, element, elementName, elementID);
+                callbacks.onElementCreated(layout, element, elementName, elementID);
                 if (elementIndex < elementCount)
                 {
                     /* import the element */
@@ -567,7 +565,7 @@
         var importer = P2GImporter.findImporterForClass(className, classContainer);
         if (!importer)
         {
-            importer = callbacks.provideImporterFunctionForClass(layout.name, className);
+            importer = callbacks.provideImporterFunctionForClass(layout, className);
             if (!importer)
             {
                 importer = P2GImporter.createMissingClassImporterElement;
