@@ -1,0 +1,530 @@
+<!doctype html>
+<html>
+<head>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="stylesheet" href="./css/style.css" />
+<link rel="stylesheet" href="./css/foundation.css" />
+
+<script src="./lib/CSInterface-4.0.0.js"></script>
+<script src="./lib/modernizr.js"></script>
+<script src="./lib/jquery-2.1.1.min.js"></script>
+<script src="./lib/foundation.min.js"></script>
+
+<script src="./js/main.js"></script>
+
+<title>P2GUI Toolkit</title>
+
+</head>
+
+<body>
+	<!-- P2GUI Disabled modal -->
+	<div id="p2guiDisabledModal" class="reveal-modal full" data-reveal>
+		<h2>P2GUI Disabled!</h2>
+		<p class="subtitle">Please enable P2GUI for this file.</p>
+		
+		<li style="display: inline-block; width: 100%; max-width: 100%;">
+			<a id="activate-p2gui-button" href="#" class="button expand"
+			style="position: absolute; bottom: 3%; left: 0;">Enable P2GUI</a>
+		</li>
+	</div>
+
+	<!-- Off canvas menu and content -->
+	<div class="off-canvas-wrap" data-offcanvas>
+		<div class="inner-wrap">
+			<nav class="tab-bar">
+				<section class="left-small">
+					<a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+				</section>
+
+				<section class="middle tab-bar-section">
+					<span class="current-section">P2GUI Toolkit</span>
+				</section>
+			</nav>
+
+			<aside class="left-off-canvas-menu">
+				<ul class="off-canvas-list">
+					<li><label>Document</label></li>
+					<li><a href="#document_configuration">Configuration</a></li>
+					<li><label>Element</label></li>
+					<li><a href="#element_information">Information</a></li>
+					<li><a href="#element_layout">Layout</a></li>
+					<li><a href="#element_exportOptions">Export Options</a></li>
+					<li><label>Export</label></li>
+					<li><a href="#exporter_overrides">Overrides</a></li>
+					<li><a href="#export_export">Export...</a></li>
+					<li><label>P2GUI</label></li>
+					<li><a href="#P2GUI_about">About...</a></li>
+				</ul>
+			</aside>
+
+			<section class="main-section">
+				<div class="main-content">
+					
+					<!-- Detecting P2GUI (default screen) -->
+					<div id="detecting-p2gui">
+						<p class="content-text-bold">DETECTING P2GUI...</p>
+					</div>
+					
+					<!-- Document >>> Configuration -->
+					<div id="document_configuration">
+						<form>
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="exportJsonNameInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Name of the json file used to save the export. Exclude the extension (.json)">
+										Export json name
+										</span>
+										<input id="P2GUI_doc_config_exportJsonName" type="text" placeholder="Same as PSD file" />
+									</label>
+								</div>
+							</div>
+							<div class="row">
+    							<div class="small-6 columns">
+									<label id="autoClassTypeInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="How default class names should be mapped">
+										Auto-class type
+										</span>
+										<select id="P2GUI_doc_config_autoClassType">
+											<option value="P2GUI_pixi.js">pixi.js</option>
+											<option value="P2GUI_cocos2d">Cocos2D</option>
+											<option value="P2GUI_custom">Custom</option>
+								        </select>
+									</label>
+								</div>
+								<div class="small-6 columns">
+									<label id="classFieldsTypeInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="How fields of each class should be exported">
+										Class fields type
+										</span>
+										<select id="P2GUI_doc_config_classFieldsType">
+											<option value="P2GUI_none">None</option>
+											<option value="P2GUI_custom">Custom</option>
+								        </select>
+									</label>
+								</div>
+							</div>
+							<div class="row">
+    							<div class="small-12 columns">
+    								<label id="exportJsonPrettyInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="This defines if the exported json should be human readable or minified">
+										Human readable json  
+										</span>
+										<input id="P2GUI_doc_config_humanReadable" type="checkbox" placeholder="Same as PSD file" />
+									</label>
+    							</div>
+    						</div>
+    						<div class="row collapse">
+								<fieldset>
+									<legend class="no-background">
+										Config Files
+									</legend>
+									<label id="exportJsonPathInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Path where the exported json should be placed. Relative to the PSD file">
+										Export json path
+										</span>
+										<input id="P2GUI_doc_config_exportJsonPath" type="text" placeholder="P2GUI/JSON" />
+									</label>
+									<label id="exportImagePathInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Path where the exported PNG assets should be placed. Relative to the PSD file">
+										Export image path
+										</span>
+										<input id="P2GUI_doc_config_exportImagePath" type="text" placeholder="P2GUI/PNG" />
+									</label>
+									<label id="autoClassInput" class="content-text">
+										<span data-tooltip class="has-tip" title="Path to the file describing how default class names should be mapped. Relative to the PSD file">
+										Auto-classes descriptor
+										</span>
+										<input id="P2GUI_doc_config_autoClassDescriptor" type="text" placeholder="none" />
+									</label>
+									<label id="classDescriptorInput" class="content-text">
+										<span data-tooltip class="has-tip tip-top" title="Path to the file describing which fields of each class should be exported. Relative to the PSD file">
+										Class fields descriptor
+										</span>
+										<input id="P2GUI_doc_config_classFieldsDescriptor" type="text" placeholder="none" />
+									</label>
+								</fieldset>
+							</div>
+						</form>
+					</div>
+					
+					<!-- Element >>> Information -->
+					<div id="element_information">
+						<form>
+							<!-- name -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementNameInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Name of the currently selected object. Names must be unique amongst all elements in a single file">
+										Name
+										</span>
+										<input id="P2GUI_obj_info_name" type="text" placeholder="Unique Name" />
+									</label>
+								</div>
+							</div>
+							
+							<!-- id -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementIdInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Optional ID of the currently selected object. IDs do not have to be unique and can be used as a mechanisim to group objects">
+										ID
+										</span>
+										<input id="P2GUI_obj_info_id" type="text" placeholder="none" />
+									</label>
+								</div>
+							</div>
+							
+							<!-- class -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementClassInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Handler class of the currently selected object. The class that will be used to handle the creation of this object when it is imported at runtime">
+										Class
+										</span>
+										<input id="P2GUI_obj_info_class" type="text" placeholder="(default class)" />
+									</label>
+								</div>
+							</div>
+							
+							<!-- misc -->
+							<div class="row">
+    							<div class="small-12 columns">
+									<label id="elementMiscInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Extra information passed at runtime. Use this field to define misc information needed by classes to handle this object at runtime. Although the recomended format for misc information is JSON, any text written in this field will be passed verbatim to the importer class">
+										Misc
+										</span>
+										<textarea id="P2GUI_obj_info_misc" placeholder="..." rows=13 style="resize: none;" wrap="off"></textarea>
+									</label>
+								</div>
+							</div>
+						</form>
+					</div>
+					
+					<!-- Element >>> Layout -->
+					<div id="element_layout">
+						<form>
+							<!-- horizontal alignment -->
+							<div class="row collapse">
+								<div class="small-5 columns">
+									<label for="P2GUI_obj_layout_hPosition" id="autoClassTypeInput" class="content-text inline">
+										<span data-tooltip class="has-tip content-text-bold" title="<b>Horizontal position type.</b><br/><b>Absolute:</b> The absolute position with the top left corner as the origin is exported (same as snap to top/left).<br/><b>Relative:</b> The element's relative position to the stage is exported, represented as a percentile value.<br/><b>Snap:</b> Exports the element's edge distance to the defined side, if two sides are selected, the element is scaled at import time to preserve the distance between its edges and the selected sides.">
+										Horizontal position:
+										</span>
+									</label>
+								</div>
+								<div class="small-7 columns top-offset">
+									<select id=P2GUI_obj_layout_hPosition>
+										<option value="P2GUI_absolute">Absolute</option>
+										<option value="P2GUI_relative">Relative</option>
+										<option value="P2GUI_snap">Snap</option>
+										<option value="P2GUI_elastic">Elastic</option>
+							        </select>
+								</div>
+							</div>
+							
+							<div class="row collapse">
+								<!-- relative box -->
+								<div id="horizontalRelativeBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_hRelative" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="A value between 0 and 1 representing the percentage of the document the element should be placed at. Press 'calculate' to calculate the element's current percentage">
+											Percentage:
+											</span>
+										</label>
+									</div>
+									<div class="small-3 columns">
+										<input class="top-offset" id="P2GUI_obj_layout_hRelative" type="text" placeholder="%" />
+									</div>
+									<div class="small-1 columns">
+										<span class="content-text-bold">%</span>
+									</div>
+									<div class="small-3 columns">
+										<a href="#" id="P2GUI_obj_layout_horizontal_relative_calculate" class="button tiny radius">Calculate</a>
+									</div>
+								</div>
+								
+								<!-- snap box -->
+								<div id="horizontalSnapBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_hSnapTo" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="Select the edge of the screen this element will snap to">
+											Snap to:
+											</span>
+										</label>
+									</div>
+									<div class="small-7 columns">
+										<select id=P2GUI_obj_layout_hSnapTo>
+											<option value="P2GUI_left">Left</option>
+											<option value="P2GUI_right">Right</option>
+											<option value="P2GUI_leftRight">Left/right</option>
+								        </select>
+									</div>
+								</div>
+							</div>
+							
+							<!-- spacer -->
+							<div class="row collapse" style="margin:1rem">
+							</div>
+							
+							<!-- vertical alignment -->
+							<div class="row collapse">
+								<div class="small-5 columns">
+									<label for="P2GUI_obj_layout_vPosition" id="autoClassTypeInput" class="content-text inline">
+										<span data-tooltip class="has-tip content-text-bold" title="<b>Vertical position type.</b><br/><b>Absolute:</b> The absolute position with the top left corner as the origin is exported (same as snap to top/left).<br/><b>Relative:</b> The element's relative position to the stage is exported, represented as a percentile value.<br/><b>Snap:</b> Exports the element's edge distance to the defined side, if two sides are selected, the element is scaled at import time to preserve the distance between its edges and the selected sides.">
+										Vertical position:
+										</span>
+									</label>
+								</div>
+								<div class="small-7 columns">
+									<select id=P2GUI_obj_layout_vPosition>
+										<option value="P2GUI_absolute">Absolute</option>
+										<option value="P2GUI_relative">Relative</option>
+										<option value="P2GUI_snap">Snap</option>
+										<option value="P2GUI_elastic">Elastic</option>
+							        </select>
+								</div>
+							</div>
+							
+							<div class="row collapse">
+								<!-- relative box -->
+								<div id="verticalRelativeBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_vRelative" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="A value between 0 and 1 representing the percentage of the document the element should be placed at. Press 'calculate' to calculate the element's current percentage">
+											Percentage:
+											</span>
+										</label>
+									</div>
+									<div class="small-3 columns">
+										<input class="top-offset" id="P2GUI_obj_layout_vRelative" type="text" placeholder="%" />
+									</div>
+									<div class="small-1 columns">
+										<span class="content-text-bold">%</span>
+									</div>
+									<div class="small-3 columns">
+										<a href="#" id="P2GUI_obj_layout_vertical_relative_calculate" class="button tiny radius">Calculate</a>
+									</div>
+								</div>
+								
+								<!-- snap box -->
+								<div id="verticalSnapBox" class="row collapse">
+									<div class="small-5 columns">
+										<label for="P2GUI_obj_layout_vSnapTo" id="autoClassTypeInput" class="content-text inline">
+											<span data-tooltip class="has-tip content-text-bold" title="Select the edge of the screen this element will snap to">
+											Snap to:
+											</span>
+										</label>
+									</div>
+									<div class="small-7 columns">
+										<select id=P2GUI_obj_layout_vSnapTo>
+											<option value="P2GUI_top">Top</option>
+											<option value="P2GUI_bottom">Bottom</option>
+											<option value="P2GUI_topBottom">Top/bottom</option>
+								        </select>
+									</div>
+								</div>
+							</div>
+							
+							<!-- spacer -->
+							<div class="row collapse" style="margin:1rem">
+							</div>
+							
+							<!-- relative scale -->
+							<div class="row collapse">
+    							<div class="small-12 columns">
+    								<label id="elementRelativeScale" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="If enabled, the element's scale relative to the document size will be maintained when placed on bigger, smaller or different aspect ratio screens">
+										Preserve relative scale
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_layout_relativeScale" type="checkbox" />
+									</label>
+    							</div>
+    						</div>
+						</form>
+					</div>
+
+					<!-- Element >>> Export Options -->		
+					<div id="element_exportOptions">
+						<form>
+							<!-- spacer -->
+							<div class="row collapse" style="margin:1rem">
+							</div>
+							
+							<div class="row">
+								<!-- Export PNG -->
+    							<div class="small-6 columns">
+    								<label id="exportPNG" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="If enabled, the contents of the element's layer will be exported as a PNG file and placed in the defined export image path">
+										Export PNG
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_exportConfig_exportPNG" type="checkbox" />
+									</label>
+    							</div>
+    							
+    							<!-- Export JSON -->
+    							<div class="small-6 columns">
+    								<label id="exportJSON" class="content-text right">
+										<span data-tooltip class="has-tip content-text-bold" title="If disabled, this element and all of its sub-elements (if any) will not be exported in the JSON layout, the export PNG option is independent from this value">
+										Export JSON
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_exportConfig_exportJSON" type="checkbox" />
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- Ignore children -->
+    						<div class="row">
+    							<div class="small-8 small-centered columns">
+    								<label id="ignoreChildren" class="content-text right">
+										<span data-tooltip class="has-tip content-text-bold" title="If the export JSON option is enabled, this is a group layer and this option is enabled, all the group's sub-layers will be ignored.">
+										Ignore Children (if any)
+										</span>
+										&emsp;&emsp;&emsp;
+										<input id="P2GUI_obj_exportConfig_ignoreChildren" type="checkbox" />
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- spacer -->
+							<div class="row collapse" style="margin:1rem">
+							</div>
+    						
+    						<div class="row">
+    							<!-- Quick Export PNG -->
+    							<div class="small-7 small-centered columns">
+    								<label id="quickExportPNG" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="Exports the current layer as a PNG file and places it in the defined export image path">
+											<a href="#" id="P2GUI_obj_exportConfig_quickExport" class="button tiny radius">Quick Export PNG</a>
+										</span>
+									</label>
+    							</div>
+    						</div>
+    						
+    						<!-- Class fields override -->
+    						<div class="row">
+    							<div class="small-12 columns">
+									<label id="classFieldsOverrideInput" class="content-text">
+										<span data-tooltip class="has-tip content-text-bold" title="<b>Defines if this element should override the class fields specified in the document configuration.</b><br /><b>None:</b> Class fields will be exported as specified in the document configuration<br /><b>Export All:</b> This element will be exported with all the information available, including photoshop's layer information, effects and metadata<br /><b>Only Basic Info:</b> This element will be exported with all the information specified in this panel plus only the basic information needed to load, size and position the asset">
+										Override class fields
+										</span>
+										<select id="P2GUI_obj_exportConfig_classFields">
+											<option value="P2GUI_none">None</option>
+											<option value="P2GUI_exportAll">Export All</option>
+											<option value="P2GUI_onlyBasic">Only Basic Info</option>
+								        </select>
+									</label>
+								</div>
+							</div>
+						</form>
+					</div>
+					
+					<!-- Export >>> Overrides -->
+					<div id="exporter_overrides">
+						<!-- Export PNG -->
+   						<div class="row">
+   							<div class="small-8 small-centered columns">
+   								<label id="exporterExportPNG" class="content-text">
+									<span data-tooltip class="has-tip content-text-bold" title="When this option is disabled no element will be exported as a PNG file even if otherwise configured in such element's configuration. When enabled, only elements configured to export PNG files will be processed">
+									Export PNG
+									</span>
+									&emsp;&emsp;&emsp;
+									<input id="P2GUI_exp_overrides_exportPNG" type="checkbox" />
+								</label>
+   							</div>
+   						</div>
+   						
+   						<!-- Export JSON -->
+   						<div class="row">
+   							<div class="small-8 small-centered columns">
+   								<label id="exporterExportJSON" class="content-text">
+									<span data-tooltip class="has-tip content-text-bold" title="When this option is disabled the exporter will not write a JSON file. When enabled, only elements configured to export JSON files will be processed">
+									Export JSON
+									</span>
+									&emsp;&emsp;&emsp;
+									<input id="P2GUI_exp_overrides_exportJSON" type="checkbox" />
+								</label>
+   							</div>
+   						</div>
+   						
+   						<!-- Disable Unique Names -->
+   						<div class="row">
+   							<div class="small-8 small-centered columns">
+   								<label id="exporterDisableUniqueNames" class="content-text">
+									<span data-tooltip class="has-tip content-text-bold" title="Enable this option to allow elements with he same name to be exported.">
+									Disable Unique Names
+									</span>
+									&emsp;&emsp;&emsp;
+									<input id="P2GUI_exp_overrides_disableUniqueNames" type="checkbox" />
+								</label>
+   							</div>
+   						</div>
+					</div>
+					
+					<!-- Export >>> Export... -->
+					<div id="export_export">
+						<div class="row">
+							<p class="content-text-bold">Instructions:</p>
+							<ol class="content-text">
+								<li>Check the export paths in the document configuration</li>
+								<li>Make sure all layers have unique names</li>
+								<li>Double check for spelling mistakes in the layer information section</li>
+								<li>If you are having issues with sizing, try enabling/disabling the "Preserve relative scale" option on your layers</li>
+								<li>Enable the "Ignore" option for layers that you don't want to export</li>
+								<li>Only enable the "Export PNG" option for layers which you want to be exported as images</li>
+								<li>Brace yourself</li>
+								<li>Click the red button!</li>
+							</ol>
+						</div>
+						<li style="display: inline-block; width: 100%; max-width: 100%;">
+							<a id="P2GUI_exportDocument" href="#" class="button alert expand"
+							style="position: absolute; bottom: 4%; left: 0;">EXPORT</a>
+						</li>
+					</div>
+					
+					<!-- About -->
+					<div id="P2GUI_about">
+						<div class="row collapse">
+							<img src="./assets/TrompoGames_Banner_950x150.png" alt="Trompo Games Inc." />
+						</div>
+						
+						<!-- spacer -->
+						<div class="row collapse" style="margin:1rem">
+						</div>
+						
+						<div class="row">
+							<p class="content-text"><br />P2GUI v1.0.0 -Norris-<br />Created by Trompo Games Inc. 2014</p>
+							<p class="content-text">
+							<b>P2GUI depends on these open source projects:</b><br />
+							<b>jquery - </b><a href="http://jquery.com/" target="_blank">http://jquery.com/</a><br />
+							<b>Foundation - </b><a href="http://foundation.zurb.com/" target="_blank">http://foundation.zurb.com/</a><br />
+							<b>json2 - </b><a href="https://github.com/douglascrockford/JSON-js" target="_blank">https://github.com/douglascrockford/JSON-js</a><br />
+							<b>minibus.js - </b><a href="https://github.com/axelpale/minibus" target="_blank">https://github.com/axelpale/minibus</a><br />
+							<b>Modernizr - </b><a href="http://modernizr.com/" target="_blank">http://modernizr.com/</a><br />
+							</p>
+						</div>
+						
+						<!-- spacer -->
+						<div class="row collapse" style="margin:1rem">
+						</div>
+						
+						<div class="row">
+							<p class="content-text-bold text-center">"2014 is the year of the ant"</p>
+						</div>
+					</div>
+					
+				</div>
+			</section>
+
+			<a class="exit-off-canvas"></a>
+
+		</div>
+	</div>
+
+</body>
+</html>
