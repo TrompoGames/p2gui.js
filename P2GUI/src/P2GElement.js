@@ -3,7 +3,7 @@
  */
 
 (function (global) {
-    "use strict"
+    "use strict";
 
     /**
      * @namespace P2GUI
