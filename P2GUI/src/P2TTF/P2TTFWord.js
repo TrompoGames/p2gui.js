@@ -209,26 +209,27 @@
             var tracking = this.m_tracking;
             var offsets = this.m_offsets;
             var offset = 0;
-            var glyph;
+            var glyph, glyphMetrics;
             var glyphs = this.m_font.stringToGlyphs(this.m_text);
             for (var i = 0, n = glyphs.length; i < n; ++i)
             {
                 offsets.push(offset);
                 glyph = glyphs[i];
+                glyphMetrics = glyph.getMetrics();
                 if (glyph.advanceWidth)
                 {
                     offset += glyph.advanceWidth;
                     offset += tracking;
                 }
 
-                if (glyph.yMax > yMax)
+                if (glyphMetrics.yMax > yMax)
                 {
-                    yMax = glyph.yMax;
+                    yMax = glyphMetrics.yMax;
                 }
 
                 if (i === 0)
                 {
-                    this.m_offsetLeft = -glyph.xMin;
+                    this.m_offsetLeft = -glyphMetrics.xMin;
                 }
             }
 
