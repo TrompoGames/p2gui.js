@@ -71,7 +71,9 @@
             {
                 return scope.m_provideCaptionForLabel.call(scope.target, layout, labelName, labelID);
             }
-            return null;
+
+            var ret = global.P2GUI.Localization().localizedCaptionForLabel(layout, labelName, labelID);
+            return ret;
         };
 
         this.m_provideImporterFunctionForClassDefault = function(layout, className)
