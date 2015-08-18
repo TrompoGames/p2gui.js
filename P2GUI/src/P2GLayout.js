@@ -18,11 +18,14 @@
      * @class Layout
      * @param name { String }: The name of the layout to create.
      * @param [classContainer = global] { Object }: The container object for the classes of the elements in this layout
+     * @param [fingerprint = null] { String }: A unique string identifier for this layout, generally an MD5 hash generated from the layout file itself
      * @constructor
      */
-    function P2GLayout(name, classContainer)
+    function P2GLayout(name, classContainer, fingerprint)
     {
         name = name || "unnamed layout";
+        classContainer = classContainer || global;
+        fingerprint = fingerprint || null;
 
         /* super init */
         global.PIXI.DisplayObjectContainer.call(this);
@@ -50,7 +53,14 @@
          * @private
          * @type {Object}
          */
-        var m_classContainer = classContainer || global;
+        var m_classContainer = classContainer;
+
+        /**
+         * A unique string used to identify this layout.
+         *
+         * @type { String|null }
+         */
+        var m_fingerprint = fingerprint;
 
         /**
          * The original export size of the layout
@@ -103,6 +113,15 @@
          * @readonly
          */
         this.__defineGetter__("classContainer", function(){ return m_classContainer; });
+
+        /**
+         * Fingerprint string
+         *
+         * @property fingerprint
+         * @type { String }
+         * @readonly
+         */
+        this.__defineGetter__("fingerprint", function(){ return m_fingerprint; });
 
         /**
          * Original export rect
@@ -180,7 +199,7 @@
         {
             if (this.elements[elementName] instanceof global.P2GUI.Element)
             {
-                var array = new Array();
+                var array = [];
                 array.push(this.elements[elementName]);
                 this.elements[elementName] = array;
             }
