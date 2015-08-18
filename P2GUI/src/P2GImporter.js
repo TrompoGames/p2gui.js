@@ -33,7 +33,7 @@
     {
         var loader = new PIXI.JsonLoader(filePath);
         loader.on('loaded', function(evt) {
-            P2GImporter.layoutFromDescriptor(evt.content.content.json, classContainer, callbacks, layoutClass);
+            P2GImporter.layoutFromDescriptor(evt.content.content.json, classContainer, callbacks, layoutClass, md5(evt.content.content.ajaxRequest.responseText));
         });
         loader.load();
     };
@@ -52,7 +52,7 @@
         var descriptor = global.JSON.parse(jsonString);
         if (descriptor)
         {
-            P2GImporter.layoutFromDescriptor(descriptor, classContainer, callbacks, layoutClass);
+            P2GImporter.layoutFromDescriptor(descriptor, classContainer, callbacks, layoutClass, md5(jsonString));
         }
         else
         {
@@ -69,8 +69,9 @@
      * @param classContainer { Object }: Global object where classes described in the layout should be looked up. Optional, can be null.
      * @param callbacks { ImportCallbacks }: P2GImportCallbacks object configured for this layout.
      * @param layoutClass { Object }: The class used to instantiate the layout. Optional, if omitted P2GUI.Layout will be used.
+     * @param fingerprint { String }: A unique string used to identify this layout from other layouts.
      */
-    P2GImporter.layoutFromDescriptor = function(descriptor, classContainer, callbacks, layoutClass)
+    P2GImporter.layoutFromDescriptor = function(descriptor, classContainer, callbacks, layoutClass, fingerprint)
     {
         /* default parameters */
         classContainer = classContainer || global;
@@ -81,7 +82,7 @@
 
         if (layoutName && exportedRect)
         {
-            var layout = new layoutClass(layoutName, classContainer);
+            var layout = new layoutClass(layoutName, classContainer, fingerprint);
 
             /* save the original size of the exported layout */
             layout.exportRect.width = exportedRect.width;
