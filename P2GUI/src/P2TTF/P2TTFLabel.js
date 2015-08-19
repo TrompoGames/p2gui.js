@@ -326,13 +326,50 @@
         var canvasCenter = canvasWidth * 0.5;
 
         var offsetX = 0;
-        var offsetY = (lines[0].emHeight * fontScale);
+        var offsetY = (lines[0].minBaseline * fontScale);
 
         var textPath = new global.opentype.Path();
 
-        var line;
+        var line, i, n;
 
-        for (var i = 0, n = lines.length; i < n; ++i)
+        /* simple scaling algorithm to force the text to fit in its designated space */
+        var emWidth = 0;
+        var emHeight = 0;
+        for (i = 0, n = lines.length; i < n; ++i)
+        {
+            line = lines[i];
+            if (line.emWidth > emWidth)
+            {
+                emWidth = line.emWidth;
+            }
+
+            if (i)
+            {
+                emHeight += (hhea.ascender - hhea.descender);
+            }
+            else
+            {
+                emHeight += line.emHeight;
+            }
+        }
+
+        var fitScale = 1;
+        if ((emWidth * fontScale * fitScale) > this.m_size.width)
+        {
+            fitScale *= (this.m_size.width / (emWidth * fontScale * fitScale));
+        }
+
+        if ((emHeight * fontScale * fitScale) > this.m_size.height)
+        {
+            fitScale *= (this.m_size.height / (emHeight * fontScale * fitScale));
+        }
+
+        fontSize *= fitScale;
+        fontScale *= fitScale;
+        lineHeight *= fitScale;
+        offsetY *= fitScale;
+
+        for (i = 0, n = lines.length; i < n; ++i)
         {
             line = lines[i];
             if (alignment === left)
