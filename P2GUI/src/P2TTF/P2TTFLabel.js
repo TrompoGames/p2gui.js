@@ -528,10 +528,12 @@
 
             var alignment = paragraphStyle["align"];
 
-            var fontPath = callbacks.providePathForAsset(layout, fontName + "." + fontExtension);
+            var fontFile = global.P2GUI.Localization().localizedFont(fontName + "." + fontExtension);
+
+            var fontPath = callbacks.providePathForAsset(layout, fontFile);
             if (!fontPath)
             {
-                fontPath = fontName + "." + fontExtension;
+                fontPath = fontFile;
             }
 
             var text = callbacks.provideCaptionForLabel(layout, elementName, elementID);
