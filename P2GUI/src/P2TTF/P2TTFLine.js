@@ -26,6 +26,7 @@
         this.m_words = [];
         this.m_emWidth = 0;
         this.m_emHeight = 0;
+        this.m_minBaseline = 0;
         this.m_spaceWidth = 0;
 
         /* init */
@@ -70,6 +71,20 @@
         get: function()
         {
             return this.m_emHeight;
+        }
+    });
+
+    /**
+     * The minimum baseline height, in ems, for this line to render properly.
+     *
+     * @property minBaseline
+     * @type { Number }
+     * @readonly
+     */
+    Object.defineProperty(P2TTFLine.prototype, 'minBaseline', {
+        get: function()
+        {
+            return this.m_minBaseline;
         }
     });
 
@@ -143,6 +158,11 @@
             if (word.unscaledHeight > this.m_emHeight)
             {
                 this.m_emHeight = word.unscaledHeight;
+            }
+
+            if (word.ascending > this.m_minBaseline)
+            {
+                this.m_minBaseline = word.ascending;
             }
         }
     };
