@@ -30,6 +30,8 @@
         this.m_offsets = [];
         this.m_unscaledWidth = 0;
         this.m_unscaledHeight = 0;
+        this.m_ascending = 0;
+        this.m_descending = 0;
         this.m_offsetLeft = 0;
         this.m_text = text;
         this.m_font = font;
@@ -94,6 +96,34 @@
         get: function()
         {
             return this.m_unscaledHeight;
+        }
+    });
+
+    /**
+     * The ascending size of this word in ems.
+     *
+     * @property ascending
+     * @type { Number }
+     * @readonly
+     */
+    Object.defineProperty(P2TTFWord.prototype, 'ascending', {
+        get: function()
+        {
+            return this.m_ascending;
+        }
+    });
+
+    /**
+     * The descending size of this word in ems.
+     *
+     * @property descending
+     * @type { Number }
+     * @readonly
+     */
+    Object.defineProperty(P2TTFWord.prototype, 'descending', {
+        get: function()
+        {
+            return this.m_descending;
         }
     });
 
@@ -205,7 +235,9 @@
     {
         if (this.m_font && this.m_text)
         {
-            var yMax = 0;
+            var height = null;
+            var ascending = null;
+            var descending = null;
             var tracking = this.m_tracking;
             var offsets = this.m_offsets;
             var offset = 0;
@@ -221,10 +253,20 @@
                     offset += glyph.advanceWidth;
                     offset += tracking;
                 }
-
-                if (glyphMetrics.yMax > yMax)
+                
+                if (ascending === null || glyphMetrics.yMax > ascending)
                 {
-                    yMax = glyphMetrics.yMax;
+                    ascending = glyphMetrics.yMax;
+                }
+
+                if (descending === null || glyphMetrics.yMin < descending)
+                {
+                    descending = glyphMetrics.yMin;
+                }
+
+                if (height === null || (ascending - descending) > height)
+                {
+                    height = (ascending - descending);
                 }
 
                 if (i === 0)
@@ -235,7 +277,9 @@
 
             this.m_glyphs = glyphs;
             this.m_unscaledWidth = offset;
-            this.m_unscaledHeight = yMax;
+            this.m_unscaledHeight = height;
+            this.m_ascending = ascending;
+            this.m_descending = descending;
         }
     };
 
