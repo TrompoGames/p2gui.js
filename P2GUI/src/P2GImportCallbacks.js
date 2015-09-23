@@ -65,7 +65,7 @@
             return assetFile;
         };
 
-        this.m_provideCaptionForLabelDefault = function(layout, labelName, labelID)
+        this.m_provideCaptionForLabelDefault = function(layout, labelName, labelID, labelText)
         {
             if (scope.m_provideCaptionForLabel)
             {
@@ -73,6 +73,12 @@
             }
 
             var ret = global.P2GUI.Localization().localizedCaptionForLabel(layout, labelName, labelID);
+
+            if (!ret)
+            {
+                ret = labelText;
+            }
+
             return ret;
         };
 
@@ -182,10 +188,11 @@
      *
      * @type { Function }
      * @default function that returns the label's name as the text to be rendered
-     * @property provideCaptionForLabel(layout, labelName, labelID) { Function }
+     * @property provideCaptionForLabel(layout, labelName, labelID, labelText) { Function }
      *                                  @param layout { P2GUI.Layout }: The layout to which the label belongs.
      *                                  @param labelName { String }: The name of the label on which the text will be rendered.
      *                                  @param labelID { String }: The ID of the label on which the text will be rendered.
+     *                                  @param labelText { String }: The default text for the label as it was exported.
      *                                  @return { String }: The string that should be rendered on the label.
      */
     Object.defineProperty(P2GImportCallbacks.prototype, 'provideCaptionForLabel', {

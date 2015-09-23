@@ -536,7 +536,7 @@
                 fontPath = fontFile;
             }
 
-            var text = callbacks.provideCaptionForLabel(layout, elementName, elementID);
+            var text = callbacks.provideCaptionForLabel(layout, elementName, elementID, textKey["textKey"]);
             if (!text)
             {
                 text = textKey["textKey"];
